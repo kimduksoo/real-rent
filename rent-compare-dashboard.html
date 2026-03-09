@@ -100,7 +100,7 @@ body {
 }
 .setting-item {
   flex: 1;
-  min-width: 160px;
+  min-width: 120px;
 }
 .setting-item label {
   display: block;
@@ -438,11 +438,7 @@ body {
         <input type="number" id="workDays" value="22" step="1" min="1" max="31">
       </div>
       <div class="setting-item">
-        <label>총급여 (만원) <span style="color:var(--text-sub);font-size:11px;">7000 이하 시 세액공제</span></label>
-        <input type="number" id="grossSalary" value="" placeholder="예: 5000" min="0">
-      </div>
-      <div class="setting-item">
-        <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">→ 시급 자동 계산</span></label>
+        <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">시급 계산 + 세액공제 판단</span></label>
         <input type="number" id="salary" value="" placeholder="예: 5000" min="0">
       </div>
       <div class="setting-item">
@@ -521,7 +517,6 @@ function init() {
   document.getElementById('btnCalc').addEventListener('click', calculate);
 
   document.getElementById('annualRate').addEventListener('change', saveToStorage);
-  document.getElementById('grossSalary').addEventListener('input', saveToStorage);
   document.getElementById('workDays').addEventListener('change', () => {
     calcHourlyFromSalary();
     saveToStorage();
@@ -645,7 +640,7 @@ function calculate() {
   const rate = parseFloat(document.getElementById('annualRate').value) || 3.5;
   const days = parseInt(document.getElementById('workDays').value) || 22;
   const hourly = parseFloat(document.getElementById('hourlyWage').value) || 0;
-  const grossSalary = parseFloat(document.getElementById('grossSalary').value) || 0;
+  const grossSalary = parseFloat(document.getElementById('salary').value) || 0;
 
   const results = properties.map(p => {
     const deposit = parseFloat(p.deposit) || 0;
@@ -855,7 +850,6 @@ function saveToStorage() {
   const data = {
     annualRate: document.getElementById('annualRate').value,
     workDays: document.getElementById('workDays').value,
-    grossSalary: document.getElementById('grossSalary').value,
     salary: document.getElementById('salary').value,
     hourlyWage: document.getElementById('hourlyWage').value,
     properties
@@ -870,8 +864,8 @@ function loadFromStorage() {
     const data = JSON.parse(raw);
     if (data.annualRate) document.getElementById('annualRate').value = data.annualRate;
     if (data.workDays) document.getElementById('workDays').value = data.workDays;
-    if (data.grossSalary) document.getElementById('grossSalary').value = data.grossSalary;
     if (data.salary) document.getElementById('salary').value = data.salary;
+    if (data.grossSalary && !data.salary) document.getElementById('salary').value = data.grossSalary;
     if (data.hourlyWage) document.getElementById('hourlyWage').value = data.hourlyWage;
     if (data.properties && data.properties.length > 0) {
       properties = data.properties;
