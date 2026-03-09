@@ -735,7 +735,7 @@ function renderSummary(results, minCost, hasCommuteCost, hasTaxCredit, hasGrandT
 }
 
 function renderCharts(results, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
-  const labels = results.map(r => r.name);
+  const labels = results.map(r => r.name.replace(/\s*https?:\/\/\S+/g, '').trim() || r.name);
 
   const datasets = [
     { label: '월세', data: results.map(r => r.rent), backgroundColor: '#3182F6' },
