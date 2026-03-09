@@ -415,8 +415,12 @@ body {
         <span class="formula-eq">= 편도 통근시간 × 2 × 출근일수 ÷ 60 × 시급 ÷ 10,000</span>
       </div>
       <div class="formula-line">
+        <span class="formula-label">세액공제</span>
+        <span class="formula-eq">= min(월세 × 12, 1000만) × 공제율 ÷ 12 (총급여 7000만 이하, 공제율: ~5500만 17%, ~7000만 15%)</span>
+      </div>
+      <div class="formula-line">
         <span class="formula-label">총 비용</span>
-        <span class="formula-eq">= 실질 월비용 + 통근시간 비용</span>
+        <span class="formula-eq">= 실질 월비용 + 통근시간 비용 - 세액공제</span>
       </div>
     </div>
   </div>
@@ -432,6 +436,10 @@ body {
       <div class="setting-item">
         <label>월 출근일수 (일)</label>
         <input type="number" id="workDays" value="22" step="1" min="1" max="31">
+      </div>
+      <div class="setting-item">
+        <label>총급여 (만원) <span style="color:var(--text-sub);font-size:11px;">7000 이하 시 세액공제</span></label>
+        <input type="number" id="grossSalary" value="" placeholder="예: 5000" min="0">
       </div>
       <div class="setting-item">
         <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">→ 시급 자동 계산</span></label>
@@ -513,6 +521,7 @@ function init() {
   document.getElementById('btnCalc').addEventListener('click', calculate);
 
   document.getElementById('annualRate').addEventListener('change', saveToStorage);
+  document.getElementById('grossSalary').addEventListener('input', saveToStorage);
   document.getElementById('workDays').addEventListener('change', () => {
     calcHourlyFromSalary();
     saveToStorage();
@@ -636,6 +645,7 @@ function calculate() {
   const rate = parseFloat(document.getElementById('annualRate').value) || 3.5;
   const days = parseInt(document.getElementById('workDays').value) || 22;
   const hourly = parseFloat(document.getElementById('hourlyWage').value) || 0;
+  const grossSalary = parseFloat(document.getElementById('grossSalary').value) || 0;
 
   const results = properties.map(p => {
     const deposit = parseFloat(p.deposit) || 0;
@@ -649,7 +659,17 @@ function calculate() {
     const totalCost = rent + depositCost + maintenance + transportCost;
     const monthlyCommute = commute * 2 * days / 60;         // 시간
     const commuteCost = monthlyCommute * hourly / 10000;    // 만원
-    const grandTotal = totalCost + commuteCost;
+
+    // 월세 세액공제 (총급여 7000만원 이하)
+    let taxCredit = 0;
+    if (grossSalary > 0 && grossSalary <= 7000 && rent > 0) {
+      const annualRent = rent * 12;  // 만원
+      const eligible = Math.min(annualRent, 1000);  // 한도 1000만원
+      const creditRate = grossSalary <= 5500 ? 0.17 : 0.15;
+      taxCredit = eligible * creditRate / 12;  // 월 환산 만원
+    }
+
+    const grandTotal = totalCost + commuteCost - taxCredit;
 
     return {
       name: p.name || '이름 없음',
@@ -659,16 +679,19 @@ function calculate() {
       totalCost: Math.round(totalCost * 100) / 100,
       monthlyCommute: Math.round(monthlyCommute * 10) / 10,
       commuteCost: Math.round(commuteCost * 100) / 100,
+      taxCredit: Math.round(taxCredit * 100) / 100,
       grandTotal: Math.round(grandTotal * 100) / 100
     };
   });
 
   const hasCommuteCost = hourly > 0;
-  const minCost = Math.min(...results.map(r => hasCommuteCost ? r.grandTotal : r.totalCost));
+  const hasTaxCredit = results.some(r => r.taxCredit > 0);
+  const hasGrandTotal = hasCommuteCost || hasTaxCredit;
+  const minCost = Math.min(...results.map(r => hasGrandTotal ? r.grandTotal : r.totalCost));
 
-  renderSummary(results, minCost, hasCommuteCost);
-  renderCharts(results, hasCommuteCost);
-  renderTable(results, minCost, hasCommuteCost);
+  renderSummary(results, minCost, hasCommuteCost, hasTaxCredit, hasGrandTotal);
+  renderCharts(results, hasCommuteCost, hasTaxCredit, hasGrandTotal);
+  renderTable(results, minCost, hasCommuteCost, hasTaxCredit, hasGrandTotal);
 
   document.getElementById('resultSection').classList.remove('hidden');
   document.getElementById('chartSection').classList.remove('hidden');
@@ -677,10 +700,10 @@ function calculate() {
   document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function renderSummary(results, minCost, hasCommuteCost) {
+function renderSummary(results, minCost, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
   const grid = document.getElementById('summaryGrid');
   grid.innerHTML = results.map(r => {
-    const compareVal = hasCommuteCost ? r.grandTotal : r.totalCost;
+    const compareVal = hasGrandTotal ? r.grandTotal : r.totalCost;
     const isBest = compareVal === minCost && results.length > 1;
     return `
       <div class="summary-card ${isBest ? 'best-cost' : ''}">
@@ -698,6 +721,14 @@ function renderSummary(results, minCost, hasCommuteCost) {
           <span class="cost-label">통근시간 비용</span>
           <span style="font-size:15px;color:var(--text-sub);">${formatNum(r.commuteCost)}<span class="cost-unit"> 만원</span></span>
         </div>
+        ` : ''}
+        ${hasTaxCredit ? `
+        <div class="cost-row" style="margin-top:4px;">
+          <span class="cost-label">세액공제</span>
+          <span style="font-size:15px;color:var(--success);">-${formatNum(r.taxCredit)}<span class="cost-unit"> 만원</span></span>
+        </div>
+        ` : ''}
+        ${hasGrandTotal ? `
         <div class="cost-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
           <span class="cost-label" style="font-weight:600;color:var(--text);">총 비용</span>
           <span class="cost-value" style="color:#FF9100;">${formatNum(r.grandTotal)}<span class="cost-unit"> 만원</span></span>
@@ -708,7 +739,7 @@ function renderSummary(results, minCost, hasCommuteCost) {
   }).join('');
 }
 
-function renderCharts(results, hasCommuteCost) {
+function renderCharts(results, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
   const labels = results.map(r => r.name);
 
   const datasets = [
@@ -719,6 +750,9 @@ function renderCharts(results, hasCommuteCost) {
   ];
   if (hasCommuteCost) {
     datasets.push({ label: '통근시간 비용', data: results.map(r => r.commuteCost), backgroundColor: '#F04452' });
+  }
+  if (hasTaxCredit) {
+    datasets.push({ label: '세액공제', data: results.map(r => -r.taxCredit), backgroundColor: '#00C853' });
   }
 
   // Stacked Bar
@@ -748,7 +782,7 @@ function renderCharts(results, hasCommuteCost) {
     data: {
       datasets: results.map((r, i) => ({
         label: r.name,
-        data: [{ x: r.monthlyCommute, y: hasCommuteCost ? r.grandTotal : r.totalCost }],
+        data: [{ x: r.monthlyCommute, y: hasGrandTotal ? r.grandTotal : r.totalCost }],
         backgroundColor: COLORS[i % COLORS.length],
         pointRadius: 10,
         pointHoverRadius: 13
@@ -772,7 +806,7 @@ function renderCharts(results, hasCommuteCost) {
   });
 }
 
-function renderTable(results, minCost, hasCommuteCost) {
+function renderTable(results, minCost, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
   const table = document.getElementById('detailTable');
   table.innerHTML = `
     <thead>
@@ -787,8 +821,8 @@ function renderTable(results, minCost, hasCommuteCost) {
       <tr><td>관리비</td>${results.map(r => `<td>${formatNum(r.maintenance)} 만원</td>`).join('')}</tr>
       <tr><td>보증금 기회비용</td>${results.map(r => `<td>${formatNum(r.depositCost)} 만원</td>`).join('')}</tr>
       <tr><td>교통비</td>${results.map(r => `<td>${formatNum(r.transportCost)} 만원</td>`).join('')}</tr>
-      <tr><td><strong>실질 월비용</strong></td>${results.map(r => `<td${!hasCommuteCost && r.totalCost === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
-      ${results.length > 1 ? (() => {
+      <tr><td><strong>실질 월비용</strong></td>${results.map(r => `<td${!hasGrandTotal && r.totalCost === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
+      ${!hasGrandTotal && results.length > 1 ? (() => {
         const maxCost = Math.max(...results.map(r => r.totalCost));
         return `<tr><td style="color:var(--accent);">vs 최고가 절감액</td>${results.map(r => {
           const diff = maxCost - r.totalCost;
@@ -797,11 +831,12 @@ function renderTable(results, minCost, hasCommuteCost) {
       })() : ''}
       <tr><td>편도 통근시간</td>${results.map(r => `<td>${r.commute} 분</td>`).join('')}</tr>
       <tr><td>월 통근시간</td>${results.map(r => `<td>${r.monthlyCommute} 시간</td>`).join('')}</tr>
-      ${hasCommuteCost ? (() => {
+      ${hasCommuteCost ? `<tr><td>통근시간 비용</td>${results.map(r => `<td>${formatNum(r.commuteCost)} 만원</td>`).join('')}</tr>` : ''}
+      ${hasTaxCredit ? `<tr><td style="color:var(--success);">월세 세액공제</td>${results.map(r => `<td style="color:var(--success);font-weight:600;">${r.taxCredit > 0 ? '-' + formatNum(r.taxCredit) : '-'} 만원</td>`).join('')}</tr>` : ''}
+      ${hasGrandTotal ? (() => {
         const maxGrand = Math.max(...results.map(r => r.grandTotal));
         return `
-      <tr><td>통근시간 비용</td>${results.map(r => `<td>${formatNum(r.commuteCost)} 만원</td>`).join('')}</tr>
-      <tr><td><strong>총 비용 (시간 포함)</strong></td>${results.map(r => `<td${r.grandTotal === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.grandTotal)} 만원</strong></td>`).join('')}</tr>
+      <tr><td><strong>총 비용</strong></td>${results.map(r => `<td${r.grandTotal === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.grandTotal)} 만원</strong></td>`).join('')}</tr>
       ${results.length > 1 ? `<tr><td style="color:var(--accent);">vs 최고가 절감액</td>${results.map(r => {
           const diff = maxGrand - r.grandTotal;
           return diff > 0 ? `<td style="color:var(--accent);font-weight:600;">-${formatNum(diff)} 만원</td>` : `<td style="color:var(--text-sub);">-</td>`;
@@ -820,6 +855,7 @@ function saveToStorage() {
   const data = {
     annualRate: document.getElementById('annualRate').value,
     workDays: document.getElementById('workDays').value,
+    grossSalary: document.getElementById('grossSalary').value,
     salary: document.getElementById('salary').value,
     hourlyWage: document.getElementById('hourlyWage').value,
     properties
@@ -834,6 +870,7 @@ function loadFromStorage() {
     const data = JSON.parse(raw);
     if (data.annualRate) document.getElementById('annualRate').value = data.annualRate;
     if (data.workDays) document.getElementById('workDays').value = data.workDays;
+    if (data.grossSalary) document.getElementById('grossSalary').value = data.grossSalary;
     if (data.salary) document.getElementById('salary').value = data.salary;
     if (data.hourlyWage) document.getElementById('hourlyWage').value = data.hourlyWage;
     if (data.properties && data.properties.length > 0) {
