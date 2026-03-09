@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>월세 비교 계산기</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #191919;
+  --card: #262626;
+  --accent: #3182F6;
+  --text: #FFFFFF;
+  --text-sub: #8B95A1;
+  --border: #333333;
+  --danger: #F04452;
+  --success: #00C853;
+  --card-radius: 16px;
+  --btn-radius: 12px;
+}
+
+body {
+  font-family: 'Pretendard', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.header p {
+  color: var(--text-sub);
+  font-size: 14px;
+}
+
+/* Section */
+.section {
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Common Settings */
+.settings-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.setting-item {
+  flex: 1;
+  min-width: 160px;
+}
+.setting-item label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+}
+.setting-item input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.setting-item input:focus {
+  border-color: var(--accent);
+}
+
+/* Property Cards */
+.property-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.property-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  position: relative;
+}
+.property-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.property-card .card-number {
+  background: var(--accent);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.property-card .card-header input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 0;
+  outline: none;
+}
+.property-card .card-header input:focus {
+  border-bottom-color: var(--accent);
+}
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.btn-delete:hover {
+  color: var(--danger);
+  background: rgba(240, 68, 82, 0.1);
+}
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.input-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+.input-group .unit-wrap {
+  position: relative;
+}
+.input-group input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 40px 10px 12px;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-group input:focus {
+  border-color: var(--accent);
+}
+.input-group .unit {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-sub);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* Add Button */
+.btn-add {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 2px dashed var(--border);
+  border-radius: var(--card-radius);
+  color: var(--text-sub);
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Calculate Button */
+.btn-calc {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--btn-radius);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-bottom: 24px;
+}
+.btn-calc:hover {
+  opacity: 0.9;
+}
+
+/* Summary Cards */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.summary-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.summary-card.best-cost {
+  border-color: var(--success);
+}
+.summary-card .name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.summary-card .cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.summary-card .cost-label {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.summary-card .cost-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+.summary-card .cost-unit {
+  font-size: 13px;
+  color: var(--text-sub);
+  font-weight: 400;
+}
+.summary-card .time-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.summary-card .badge {
+  display: inline-block;
+  background: rgba(0, 200, 83, 0.15);
+  color: var(--success);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+/* Charts */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.chart-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+}
+.chart-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.chart-card canvas {
+  width: 100% !important;
+}
+
+/* Detail Table */
+.table-wrap {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  overflow-x: auto;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table-wrap th, .table-wrap td {
+  padding: 12px 16px;
+  text-align: right;
+  white-space: nowrap;
+}
+.table-wrap th {
+  color: var(--text-sub);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.table-wrap th:first-child, .table-wrap td:first-child {
+  text-align: left;
+}
+.table-wrap td {
+  border-bottom: 1px solid rgba(51,51,51,0.5);
+}
+.table-wrap tr:last-child td {
+  border-bottom: none;
+}
+.table-wrap tr.row-highlight td {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 12px;
+  padding: 32px 0 16px;
+}
+
+/* Hidden */
+.hidden { display: none; }
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container { padding: 16px 12px 32px; }
+  .header h1 { font-size: 22px; }
+  .settings-card { flex-direction: column; gap: 12px; }
+  .input-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .summary-card .cost-value { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 1. Header -->
+  <div class="header">
+    <h1>월세 비교 계산기</h1>
+    <p>보증금 기회비용·관리비·교통비를 포함한 실질 월비용과 통근시간 비교</p>
+  </div>
+
+  <!-- 2. Common Settings -->
+  <div class="section">
+    <div class="section-title">공통 설정</div>
+    <div class="settings-card">
+      <div class="setting-item">
+        <label>연이율 (%)</label>
+        <input type="number" id="annualRate" value="3.5" step="0.1" min="0" max="20">
+      </div>
+      <div class="setting-item">
+        <label>월 출근일수 (일)</label>
+        <input type="number" id="workDays" value="22" step="1" min="1" max="31">
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Property Cards -->
+  <div class="section">
+    <div class="section-title">매물 목록</div>
+    <div class="property-list" id="propertyList"></div>
+    <button class="btn-add" id="btnAdd" style="margin-top: 12px;">+ 매물 추가</button>
+  </div>
+
+  <!-- Calculate -->
+  <button class="btn-calc" id="btnCalc">비교 계산하기</button>
+
+  <!-- 4. Summary -->
+  <div class="section hidden" id="resultSection">
+    <div class="section-title">비교 요약</div>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+
+  <!-- 5. Charts -->
+  <div class="section hidden" id="chartSection">
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>비용 구성 비교</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>비용 vs 통근시간</h3>
+        <canvas id="scatterChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Detail Table -->
+  <div class="section hidden" id="tableSection">
+    <div class="section-title">상세 비교</div>
+    <div class="table-wrap">
+      <table id="detailTable"></table>
+    </div>
+  </div>
+
+  <!-- 7. Footer -->
+  <div class="footer">Powered by Delamain</div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'rent-compare-data';
+const COLORS = ['#3182F6', '#F04452', '#00C853', '#FF9100', '#AA00FF', '#00B8D4', '#FF6D00', '#6200EA'];
+
+let properties = [];
+let barChartInstance = null;
+let scatterChartInstance = null;
+
+// --- Init ---
+function init() {
+  loadFromStorage();
+  if (properties.length === 0) {
+    addProperty('매물 1');
+    addProperty('매물 2');
+  }
+  renderProperties();
+
+  document.getElementById('btnAdd').addEventListener('click', () => {
+    addProperty(`매물 ${properties.length + 1}`);
+    renderProperties();
+    saveToStorage();
+  });
+
+  document.getElementById('btnCalc').addEventListener('click', calculate);
+
+  document.getElementById('annualRate').addEventListener('change', saveToStorage);
+  document.getElementById('workDays').addEventListener('change', saveToStorage);
+}
+
+function addProperty(name) {
+  properties.push({
+    id: Date.now() + Math.random(),
+    name: name || '',
+    deposit: '',
+    rent: '',
+    maintenance: '',
+    transport: '',
+    commute: ''
+  });
+}
+
+function removeProperty(id) {
+  if (properties.length <= 1) return;
+  properties = properties.filter(p => p.id !== id);
+  renderProperties();
+  saveToStorage();
+}
+
+function renderProperties() {
+  const list = document.getElementById('propertyList');
+  list.innerHTML = '';
+  properties.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'property-card';
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-number">${i + 1}</span>
+        <input type="text" value="${escHtml(p.name)}" placeholder="매물명" data-id="${p.id}" data-field="name">
+        ${properties.length > 1 ? `<button class="btn-delete" data-id="${p.id}" title="삭제">×</button>` : ''}
+      </div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>보증금</label>
+          <div class="unit-wrap">
+            <input type="number" value="${p.deposit}" placeholder="0" data-id="${p.id}" data-field="deposit" min="0">
+            <span class="unit">만원</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>월세</label>
+          <div class="unit-wrap">
+            <input type="number" value="${p.rent}" placeholder="0" data-id="${p.id}" data-field="rent" min="0">
+            <span class="unit">만원</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>관리비</label>
+          <div class="unit-wrap">
+            <input type="number" value="${p.maintenance}" placeholder="0" data-id="${p.id}" data-field="maintenance" min="0">
+            <span class="unit">만원</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>교통비 편도</label>
+          <div class="unit-wrap">
+            <input type="number" value="${p.transport}" placeholder="0" data-id="${p.id}" data-field="transport" min="0">
+            <span class="unit">원</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>편도 통근시간</label>
+          <div class="unit-wrap">
+            <input type="number" value="${p.commute}" placeholder="0" data-id="${p.id}" data-field="commute" min="0">
+            <span class="unit">분</span>
+          </div>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  // Event delegation
+  list.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const id = parseFloat(e.target.dataset.id);
+      const field = e.target.dataset.field;
+      const prop = properties.find(p => p.id === id);
+      if (prop) {
+        prop[field] = field === 'name' ? e.target.value : e.target.value;
+        saveToStorage();
+      }
+    });
+  });
+
+  list.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      removeProperty(parseFloat(e.target.dataset.id));
+    });
+  });
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// --- Calculation ---
+function calculate() {
+  const rate = parseFloat(document.getElementById('annualRate').value) || 3.5;
+  const days = parseInt(document.getElementById('workDays').value) || 22;
+
+  const results = properties.map(p => {
+    const deposit = parseFloat(p.deposit) || 0;
+    const rent = parseFloat(p.rent) || 0;
+    const maintenance = parseFloat(p.maintenance) || 0;
+    const transport = parseFloat(p.transport) || 0;
+    const commute = parseFloat(p.commute) || 0;
+
+    const depositCost = deposit * (rate / 100) / 12;       // 만원
+    const transportCost = transport * 2 * days / 10000;     // 만원
+    const totalCost = rent + depositCost + maintenance + transportCost;
+    const monthlyCommute = commute * 2 * days / 60;         // 시간
+
+    return {
+      name: p.name || '이름 없음',
+      deposit, rent, maintenance, transport, commute,
+      depositCost: Math.round(depositCost * 100) / 100,
+      transportCost: Math.round(transportCost * 100) / 100,
+      totalCost: Math.round(totalCost * 100) / 100,
+      monthlyCommute: Math.round(monthlyCommute * 10) / 10
+    };
+  });
+
+  const minCost = Math.min(...results.map(r => r.totalCost));
+
+  renderSummary(results, minCost);
+  renderCharts(results);
+  renderTable(results, minCost);
+
+  document.getElementById('resultSection').classList.remove('hidden');
+  document.getElementById('chartSection').classList.remove('hidden');
+  document.getElementById('tableSection').classList.remove('hidden');
+
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSummary(results, minCost) {
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = results.map(r => {
+    const isBest = r.totalCost === minCost && results.length > 1;
+    return `
+      <div class="summary-card ${isBest ? 'best-cost' : ''}">
+        <div class="name">${escHtml(r.name)}${isBest ? '<span class="badge">최저 비용</span>' : ''}</div>
+        <div class="cost-row">
+          <span class="cost-label">실질 월비용</span>
+          <span class="cost-value">${formatNum(r.totalCost)}<span class="cost-unit"> 만원</span></span>
+        </div>
+        <div class="cost-row">
+          <span class="cost-label">월 통근시간</span>
+          <span class="time-value">${r.monthlyCommute}<span class="cost-unit"> 시간</span></span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCharts(results) {
+  const labels = results.map(r => r.name);
+
+  // Stacked Bar
+  if (barChartInstance) barChartInstance.destroy();
+  barChartInstance = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '월세', data: results.map(r => r.rent), backgroundColor: '#3182F6' },
+        { label: '보증금 기회비용', data: results.map(r => r.depositCost), backgroundColor: '#FF9100' },
+        { label: '관리비', data: results.map(r => r.maintenance), backgroundColor: '#AA00FF' },
+        { label: '교통비', data: results.map(r => r.transportCost), backgroundColor: '#00B8D4' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#8B95A1', font: { size: 11 } } },
+        tooltip: {
+          callbacks: { label: ctx => `${ctx.dataset.label}: ${formatNum(ctx.raw)} 만원` }
+        }
+      },
+      scales: {
+        x: { stacked: true, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } },
+        y: { stacked: true, ticks: { color: '#8B95A1', callback: v => v + '만' }, grid: { color: 'rgba(51,51,51,0.5)' } }
+      }
+    }
+  });
+
+  // Scatter
+  if (scatterChartInstance) scatterChartInstance.destroy();
+  scatterChartInstance = new Chart(document.getElementById('scatterChart'), {
+    type: 'scatter',
+    data: {
+      datasets: results.map((r, i) => ({
+        label: r.name,
+        data: [{ x: r.monthlyCommute, y: r.totalCost }],
+        backgroundColor: COLORS[i % COLORS.length],
+        pointRadius: 10,
+        pointHoverRadius: 13
+      }))
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#8B95A1', font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw.y}만원, ${ctx.raw.x}시간`
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: '월 통근시간 (시간)', color: '#8B95A1' }, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } },
+        y: { title: { display: true, text: '실질 월비용 (만원)', color: '#8B95A1' }, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } }
+      }
+    }
+  });
+}
+
+function renderTable(results, minCost) {
+  const table = document.getElementById('detailTable');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>항목</th>
+        ${results.map(r => `<th>${escHtml(r.name)}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>보증금</td>${results.map(r => `<td>${formatNum(r.deposit)} 만원</td>`).join('')}</tr>
+      <tr><td>월세</td>${results.map(r => `<td>${formatNum(r.rent)} 만원</td>`).join('')}</tr>
+      <tr><td>관리비</td>${results.map(r => `<td>${formatNum(r.maintenance)} 만원</td>`).join('')}</tr>
+      <tr><td>보증금 기회비용</td>${results.map(r => `<td>${formatNum(r.depositCost)} 만원</td>`).join('')}</tr>
+      <tr><td>교통비 (편도 ${results[0]?.transport?.toLocaleString() || 0}원 기준)</td>${results.map(r => `<td>${formatNum(r.transportCost)} 만원</td>`).join('')}</tr>
+      <tr><td>편도 통근시간</td>${results.map(r => `<td>${r.commute} 분</td>`).join('')}</tr>
+      <tr class="${results.length > 1 ? '' : ''}"><td><strong>실질 월비용</strong></td>${results.map(r => `<td class="${r.totalCost === minCost && results.length > 1 ? 'row-highlight' : ''}"><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
+      <tr><td><strong>월 통근시간</strong></td>${results.map(r => `<td><strong>${r.monthlyCommute} 시간</strong></td>`).join('')}</tr>
+    </tbody>
+  `;
+}
+
+function formatNum(n) {
+  return Number(n).toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+}
+
+// --- Storage ---
+function saveToStorage() {
+  const data = {
+    annualRate: document.getElementById('annualRate').value,
+    workDays: document.getElementById('workDays').value,
+    properties
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.annualRate) document.getElementById('annualRate').value = data.annualRate;
+    if (data.workDays) document.getElementById('workDays').value = data.workDays;
+    if (data.properties && data.properties.length > 0) {
+      properties = data.properties;
+    }
+  } catch (e) {
+    console.warn('저장된 데이터 로드 실패:', e);
+  }
+}
+
+// Start
+init();
+</script>
+</body>
+</html>
