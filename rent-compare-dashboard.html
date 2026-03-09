@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>월세 비교 계산기</title>
+<title>진짜월세 - 실질 월비용 비교 계산기</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
@@ -11,12 +11,12 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #191919;
-  --card: #262626;
+  --bg: #F4F5F7;
+  --card: #FFFFFF;
   --accent: #3182F6;
-  --text: #FFFFFF;
-  --text-sub: #8B95A1;
-  --border: #333333;
+  --text: #191F28;
+  --text-sub: #6B7684;
+  --border: #E5E8EB;
   --danger: #F04452;
   --success: #00C853;
   --card-radius: 16px;
@@ -51,6 +51,32 @@ body {
   color: var(--text-sub);
   font-size: 14px;
 }
+.formula-card {
+  background: #EBF2FF;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  text-align: left;
+  display: inline-block;
+}
+.formula-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.formula-line:last-child { margin-bottom: 0; }
+.formula-label {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.formula-eq {
+  color: var(--text-sub);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+}
 
 /* Section */
 .section {
@@ -70,6 +96,7 @@ body {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .setting-item {
   flex: 1;
@@ -83,7 +110,7 @@ body {
 }
 .setting-item input {
   width: 100%;
-  background: var(--bg);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
@@ -108,6 +135,7 @@ body {
   border-radius: var(--card-radius);
   padding: 20px;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .property-card .card-header {
   display: flex;
@@ -173,7 +201,7 @@ body {
 }
 .input-group input {
   width: 100%;
-  background: var(--bg);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
@@ -245,6 +273,7 @@ body {
   padding: 20px;
   border: 2px solid transparent;
   transition: border-color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .summary-card.best-cost {
   border-color: var(--success);
@@ -299,6 +328,7 @@ body {
   background: var(--card);
   border-radius: var(--card-radius);
   padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .chart-card h3 {
   font-size: 15px;
@@ -314,6 +344,7 @@ body {
   background: var(--card);
   border-radius: var(--card-radius);
   overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .table-wrap table {
   width: 100%;
@@ -334,7 +365,7 @@ body {
   text-align: left;
 }
 .table-wrap td {
-  border-bottom: 1px solid rgba(51,51,51,0.5);
+  border-bottom: 1px solid var(--border);
 }
 .table-wrap tr:last-child td {
   border-bottom: none;
@@ -372,8 +403,22 @@ body {
 
   <!-- 1. Header -->
   <div class="header">
-    <h1>월세 비교 계산기</h1>
-    <p>보증금 기회비용·관리비·교통비를 포함한 실질 월비용과 통근시간 비교</p>
+    <h1>진짜월세</h1>
+    <p>보증금 기회비용·관리비·교통비·통근시간 비용을 포함한 실질 월비용 비교</p>
+    <div class="formula-card">
+      <div class="formula-line">
+        <span class="formula-label">실질 월비용</span>
+        <span class="formula-eq">= 월세 + (보증금 × 연이율 ÷ 12) + 관리비 + (교통비 편도 × 2 × 출근일수 ÷ 10,000)</span>
+      </div>
+      <div class="formula-line">
+        <span class="formula-label">통근시간 비용</span>
+        <span class="formula-eq">= 편도 통근시간 × 2 × 출근일수 ÷ 60 × 시급 ÷ 10,000</span>
+      </div>
+      <div class="formula-line">
+        <span class="formula-label">총 비용</span>
+        <span class="formula-eq">= 실질 월비용 + 통근시간 비용</span>
+      </div>
+    </div>
   </div>
 
   <!-- 2. Common Settings -->
@@ -387,6 +432,14 @@ body {
       <div class="setting-item">
         <label>월 출근일수 (일)</label>
         <input type="number" id="workDays" value="22" step="1" min="1" max="31">
+      </div>
+      <div class="setting-item">
+        <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">→ 시급 자동 계산</span></label>
+        <input type="number" id="salary" value="" placeholder="예: 5000" min="0">
+      </div>
+      <div class="setting-item">
+        <label>시급 (원) <span style="color:var(--text-sub);font-size:11px;">직접 수정 가능</span></label>
+        <input type="number" id="hourlyWage" value="0" placeholder="0" min="0">
       </div>
     </div>
   </div>
@@ -460,7 +513,24 @@ function init() {
   document.getElementById('btnCalc').addEventListener('click', calculate);
 
   document.getElementById('annualRate').addEventListener('change', saveToStorage);
-  document.getElementById('workDays').addEventListener('change', saveToStorage);
+  document.getElementById('workDays').addEventListener('change', () => {
+    calcHourlyFromSalary();
+    saveToStorage();
+  });
+  document.getElementById('salary').addEventListener('input', () => {
+    calcHourlyFromSalary();
+    saveToStorage();
+  });
+  document.getElementById('hourlyWage').addEventListener('input', saveToStorage);
+}
+
+function calcHourlyFromSalary() {
+  const salary = parseFloat(document.getElementById('salary').value) || 0;
+  const days = parseInt(document.getElementById('workDays').value) || 22;
+  if (salary > 0) {
+    const hourly = Math.round(salary * 10000 / 12 / days / 8);
+    document.getElementById('hourlyWage').value = hourly;
+  }
 }
 
 function addProperty(name) {
@@ -565,6 +635,7 @@ function escHtml(s) {
 function calculate() {
   const rate = parseFloat(document.getElementById('annualRate').value) || 3.5;
   const days = parseInt(document.getElementById('workDays').value) || 22;
+  const hourly = parseFloat(document.getElementById('hourlyWage').value) || 0;
 
   const results = properties.map(p => {
     const deposit = parseFloat(p.deposit) || 0;
@@ -577,6 +648,8 @@ function calculate() {
     const transportCost = transport * 2 * days / 10000;     // 만원
     const totalCost = rent + depositCost + maintenance + transportCost;
     const monthlyCommute = commute * 2 * days / 60;         // 시간
+    const commuteCost = monthlyCommute * hourly / 10000;    // 만원
+    const grandTotal = totalCost + commuteCost;
 
     return {
       name: p.name || '이름 없음',
@@ -584,15 +657,18 @@ function calculate() {
       depositCost: Math.round(depositCost * 100) / 100,
       transportCost: Math.round(transportCost * 100) / 100,
       totalCost: Math.round(totalCost * 100) / 100,
-      monthlyCommute: Math.round(monthlyCommute * 10) / 10
+      monthlyCommute: Math.round(monthlyCommute * 10) / 10,
+      commuteCost: Math.round(commuteCost * 100) / 100,
+      grandTotal: Math.round(grandTotal * 100) / 100
     };
   });
 
-  const minCost = Math.min(...results.map(r => r.totalCost));
+  const hasCommuteCost = hourly > 0;
+  const minCost = Math.min(...results.map(r => hasCommuteCost ? r.grandTotal : r.totalCost));
 
-  renderSummary(results, minCost);
-  renderCharts(results);
-  renderTable(results, minCost);
+  renderSummary(results, minCost, hasCommuteCost);
+  renderCharts(results, hasCommuteCost);
+  renderTable(results, minCost, hasCommuteCost);
 
   document.getElementById('resultSection').classList.remove('hidden');
   document.getElementById('chartSection').classList.remove('hidden');
@@ -601,10 +677,11 @@ function calculate() {
   document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function renderSummary(results, minCost) {
+function renderSummary(results, minCost, hasCommuteCost) {
   const grid = document.getElementById('summaryGrid');
   grid.innerHTML = results.map(r => {
-    const isBest = r.totalCost === minCost && results.length > 1;
+    const compareVal = hasCommuteCost ? r.grandTotal : r.totalCost;
+    const isBest = compareVal === minCost && results.length > 1;
     return `
       <div class="summary-card ${isBest ? 'best-cost' : ''}">
         <div class="name">${escHtml(r.name)}${isBest ? '<span class="badge">최저 비용</span>' : ''}</div>
@@ -616,38 +693,50 @@ function renderSummary(results, minCost) {
           <span class="cost-label">월 통근시간</span>
           <span class="time-value">${r.monthlyCommute}<span class="cost-unit"> 시간</span></span>
         </div>
+        ${hasCommuteCost ? `
+        <div class="cost-row" style="margin-top:4px;">
+          <span class="cost-label">통근시간 비용</span>
+          <span style="font-size:15px;color:var(--text-sub);">${formatNum(r.commuteCost)}<span class="cost-unit"> 만원</span></span>
+        </div>
+        <div class="cost-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <span class="cost-label" style="font-weight:600;color:var(--text);">총 비용</span>
+          <span class="cost-value" style="color:#FF9100;">${formatNum(r.grandTotal)}<span class="cost-unit"> 만원</span></span>
+        </div>
+        ` : ''}
       </div>
     `;
   }).join('');
 }
 
-function renderCharts(results) {
+function renderCharts(results, hasCommuteCost) {
   const labels = results.map(r => r.name);
+
+  const datasets = [
+    { label: '월세', data: results.map(r => r.rent), backgroundColor: '#3182F6' },
+    { label: '보증금 기회비용', data: results.map(r => r.depositCost), backgroundColor: '#FF9100' },
+    { label: '관리비', data: results.map(r => r.maintenance), backgroundColor: '#AA00FF' },
+    { label: '교통비', data: results.map(r => r.transportCost), backgroundColor: '#00B8D4' }
+  ];
+  if (hasCommuteCost) {
+    datasets.push({ label: '통근시간 비용', data: results.map(r => r.commuteCost), backgroundColor: '#F04452' });
+  }
 
   // Stacked Bar
   if (barChartInstance) barChartInstance.destroy();
   barChartInstance = new Chart(document.getElementById('barChart'), {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: '월세', data: results.map(r => r.rent), backgroundColor: '#3182F6' },
-        { label: '보증금 기회비용', data: results.map(r => r.depositCost), backgroundColor: '#FF9100' },
-        { label: '관리비', data: results.map(r => r.maintenance), backgroundColor: '#AA00FF' },
-        { label: '교통비', data: results.map(r => r.transportCost), backgroundColor: '#00B8D4' }
-      ]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#8B95A1', font: { size: 11 } } },
+        legend: { labels: { color: '#6B7684', font: { size: 11 } } },
         tooltip: {
           callbacks: { label: ctx => `${ctx.dataset.label}: ${formatNum(ctx.raw)} 만원` }
         }
       },
       scales: {
-        x: { stacked: true, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } },
-        y: { stacked: true, ticks: { color: '#8B95A1', callback: v => v + '만' }, grid: { color: 'rgba(51,51,51,0.5)' } }
+        x: { stacked: true, ticks: { color: '#6B7684' }, grid: { color: 'rgba(0,0,0,0.08)' } },
+        y: { stacked: true, ticks: { color: '#6B7684', callback: v => v + '만' }, grid: { color: 'rgba(0,0,0,0.08)' } }
       }
     }
   });
@@ -659,7 +748,7 @@ function renderCharts(results) {
     data: {
       datasets: results.map((r, i) => ({
         label: r.name,
-        data: [{ x: r.monthlyCommute, y: r.totalCost }],
+        data: [{ x: r.monthlyCommute, y: hasCommuteCost ? r.grandTotal : r.totalCost }],
         backgroundColor: COLORS[i % COLORS.length],
         pointRadius: 10,
         pointHoverRadius: 13
@@ -668,7 +757,7 @@ function renderCharts(results) {
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#8B95A1', font: { size: 11 } } },
+        legend: { labels: { color: '#6B7684', font: { size: 11 } } },
         tooltip: {
           callbacks: {
             label: ctx => `${ctx.dataset.label}: ${ctx.raw.y}만원, ${ctx.raw.x}시간`
@@ -676,14 +765,14 @@ function renderCharts(results) {
         }
       },
       scales: {
-        x: { title: { display: true, text: '월 통근시간 (시간)', color: '#8B95A1' }, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } },
-        y: { title: { display: true, text: '실질 월비용 (만원)', color: '#8B95A1' }, ticks: { color: '#8B95A1' }, grid: { color: 'rgba(51,51,51,0.5)' } }
+        x: { title: { display: true, text: '월 통근시간 (시간)', color: '#6B7684' }, ticks: { color: '#6B7684' }, grid: { color: 'rgba(0,0,0,0.08)' } },
+        y: { title: { display: true, text: '실질 월비용 (만원)', color: '#6B7684' }, ticks: { color: '#6B7684' }, grid: { color: 'rgba(0,0,0,0.08)' } }
       }
     }
   });
 }
 
-function renderTable(results, minCost) {
+function renderTable(results, minCost, hasCommuteCost) {
   const table = document.getElementById('detailTable');
   table.innerHTML = `
     <thead>
@@ -697,10 +786,14 @@ function renderTable(results, minCost) {
       <tr><td>월세</td>${results.map(r => `<td>${formatNum(r.rent)} 만원</td>`).join('')}</tr>
       <tr><td>관리비</td>${results.map(r => `<td>${formatNum(r.maintenance)} 만원</td>`).join('')}</tr>
       <tr><td>보증금 기회비용</td>${results.map(r => `<td>${formatNum(r.depositCost)} 만원</td>`).join('')}</tr>
-      <tr><td>교통비 (편도 ${results[0]?.transport?.toLocaleString() || 0}원 기준)</td>${results.map(r => `<td>${formatNum(r.transportCost)} 만원</td>`).join('')}</tr>
+      <tr><td>교통비</td>${results.map(r => `<td>${formatNum(r.transportCost)} 만원</td>`).join('')}</tr>
+      <tr><td><strong>실질 월비용</strong></td>${results.map(r => `<td${!hasCommuteCost && r.totalCost === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
       <tr><td>편도 통근시간</td>${results.map(r => `<td>${r.commute} 분</td>`).join('')}</tr>
-      <tr class="${results.length > 1 ? '' : ''}"><td><strong>실질 월비용</strong></td>${results.map(r => `<td class="${r.totalCost === minCost && results.length > 1 ? 'row-highlight' : ''}"><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
-      <tr><td><strong>월 통근시간</strong></td>${results.map(r => `<td><strong>${r.monthlyCommute} 시간</strong></td>`).join('')}</tr>
+      <tr><td>월 통근시간</td>${results.map(r => `<td>${r.monthlyCommute} 시간</td>`).join('')}</tr>
+      ${hasCommuteCost ? `
+      <tr><td>통근시간 비용</td>${results.map(r => `<td>${formatNum(r.commuteCost)} 만원</td>`).join('')}</tr>
+      <tr><td><strong>총 비용 (시간 포함)</strong></td>${results.map(r => `<td${r.grandTotal === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.grandTotal)} 만원</strong></td>`).join('')}</tr>
+      ` : ''}
     </tbody>
   `;
 }
@@ -714,6 +807,8 @@ function saveToStorage() {
   const data = {
     annualRate: document.getElementById('annualRate').value,
     workDays: document.getElementById('workDays').value,
+    salary: document.getElementById('salary').value,
+    hourlyWage: document.getElementById('hourlyWage').value,
     properties
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -726,6 +821,8 @@ function loadFromStorage() {
     const data = JSON.parse(raw);
     if (data.annualRate) document.getElementById('annualRate').value = data.annualRate;
     if (data.workDays) document.getElementById('workDays').value = data.workDays;
+    if (data.salary) document.getElementById('salary').value = data.salary;
+    if (data.hourlyWage) document.getElementById('hourlyWage').value = data.hourlyWage;
     if (data.properties && data.properties.length > 0) {
       properties = data.properties;
     }
