@@ -788,12 +788,25 @@ function renderTable(results, minCost, hasCommuteCost) {
       <tr><td>보증금 기회비용</td>${results.map(r => `<td>${formatNum(r.depositCost)} 만원</td>`).join('')}</tr>
       <tr><td>교통비</td>${results.map(r => `<td>${formatNum(r.transportCost)} 만원</td>`).join('')}</tr>
       <tr><td><strong>실질 월비용</strong></td>${results.map(r => `<td${!hasCommuteCost && r.totalCost === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.totalCost)} 만원</strong></td>`).join('')}</tr>
+      ${results.length > 1 ? (() => {
+        const maxCost = Math.max(...results.map(r => r.totalCost));
+        return `<tr><td style="color:var(--accent);">vs 최고가 절감액</td>${results.map(r => {
+          const diff = maxCost - r.totalCost;
+          return diff > 0 ? `<td style="color:var(--accent);font-weight:600;">-${formatNum(diff)} 만원</td>` : `<td style="color:var(--text-sub);">-</td>`;
+        }).join('')}</tr>`;
+      })() : ''}
       <tr><td>편도 통근시간</td>${results.map(r => `<td>${r.commute} 분</td>`).join('')}</tr>
       <tr><td>월 통근시간</td>${results.map(r => `<td>${r.monthlyCommute} 시간</td>`).join('')}</tr>
-      ${hasCommuteCost ? `
+      ${hasCommuteCost ? (() => {
+        const maxGrand = Math.max(...results.map(r => r.grandTotal));
+        return `
       <tr><td>통근시간 비용</td>${results.map(r => `<td>${formatNum(r.commuteCost)} 만원</td>`).join('')}</tr>
       <tr><td><strong>총 비용 (시간 포함)</strong></td>${results.map(r => `<td${r.grandTotal === minCost && results.length > 1 ? ' class="row-highlight"' : ''}><strong>${formatNum(r.grandTotal)} 만원</strong></td>`).join('')}</tr>
-      ` : ''}
+      ${results.length > 1 ? `<tr><td style="color:var(--accent);">vs 최고가 절감액</td>${results.map(r => {
+          const diff = maxGrand - r.grandTotal;
+          return diff > 0 ? `<td style="color:var(--accent);font-weight:600;">-${formatNum(diff)} 만원</td>` : `<td style="color:var(--text-sub);">-</td>`;
+        }).join('')}</tr>` : ''}`;
+      })() : ''}
     </tbody>
   `;
 }
