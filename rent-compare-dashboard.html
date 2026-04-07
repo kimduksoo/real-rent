@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>진짜월세 - 실질 월비용 비교 계산기</title>
+<title>분당 신혼집 대작전 - 월세/전세/매매 비교</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
@@ -14,11 +14,17 @@
   --bg: #F4F5F7;
   --card: #FFFFFF;
   --accent: #3182F6;
+  --accent-light: #EBF2FF;
   --text: #191F28;
   --text-sub: #6B7684;
   --border: #E5E8EB;
   --danger: #F04452;
+  --danger-light: #FEE8EA;
   --success: #00C853;
+  --success-light: #E6F9EE;
+  --warning: #FF9100;
+  --warning-light: #FFF3E0;
+  --gold: #FFD700;
   --card-radius: 16px;
   --btn-radius: 12px;
 }
@@ -43,14 +49,671 @@ body {
   padding: 32px 0 24px;
 }
 .header h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 800;
   margin-bottom: 8px;
+  background: linear-gradient(135deg, #3182F6 0%, #00C853 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .header p {
   color: var(--text-sub);
-  font-size: 14px;
+  font-size: 15px;
 }
+
+/* Tab Bar */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 14px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-sub);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+.tab:hover {
+  color: var(--accent);
+  background: var(--accent-light);
+  border-radius: 8px 8px 0 0;
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+/* Tab Contents */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.tab-content.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Intro Card */
+.intro-card {
+  background: linear-gradient(135deg, var(--accent-light) 0%, #F0FFF4 100%);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent);
+}
+.intro-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.intro-card .intro-desc {
+  color: var(--text-sub);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Section Title */
+.section {
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Persona Grid */
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.persona-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.persona-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.persona-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.persona-label {
+  font-size: 12px;
+  color: var(--text-sub);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.persona-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.persona-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+/* Warning Card */
+.warning-card {
+  background: var(--warning-light);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  border-left: 4px solid var(--warning);
+  margin-bottom: 24px;
+}
+.warning-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.warning-item {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed rgba(0,0,0,0.1);
+}
+.warning-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.warning-item strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.warning-item p {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+/* Market Summary */
+.market-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.market-stat {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.market-stat .stat-label {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+}
+.market-stat .stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.market-stat .stat-sub {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.4;
+}
+
+/* Region Section */
+.region-section {
+  margin-bottom: 20px;
+}
+.region-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+.region-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.region-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  background: var(--accent-light);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* Market Table */
+.table-wrap {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table-wrap th, .table-wrap td {
+  padding: 12px 16px;
+  text-align: right;
+  white-space: nowrap;
+}
+.table-wrap th {
+  color: var(--text-sub);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  background: #FAFBFC;
+}
+.table-wrap th:first-child, .table-wrap td:first-child {
+  text-align: left;
+}
+.table-wrap td {
+  border-bottom: 1px solid var(--border);
+}
+.table-wrap tr:last-child td {
+  border-bottom: none;
+}
+.table-wrap tr.highlight {
+  background: var(--success-light);
+}
+.table-wrap tr.highlight td {
+  font-weight: 700;
+  color: var(--success);
+}
+.table-wrap tr.row-highlight td {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Insight Card */
+.insight-card {
+  background: var(--success-light);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  border-left: 4px solid var(--success);
+  margin-top: 16px;
+}
+.insight-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.insight-card ul {
+  list-style: none;
+  padding: 0;
+}
+.insight-card li {
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 4px 0 4px 20px;
+  position: relative;
+  color: var(--text);
+}
+.insight-card li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--success);
+  font-weight: 700;
+}
+
+/* Concept Card */
+.concept-card {
+  background: var(--accent-light);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--accent);
+}
+.concept-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.concept-card p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.concept-example {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-sub);
+}
+.concept-example strong {
+  color: var(--accent);
+}
+
+/* Compare Chart */
+.compare-chart-wrap {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.compare-chart-wrap h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.compare-chart-wrap .chart-container {
+  position: relative;
+  height: 400px;
+  margin-top: 8px;
+}
+.compare-chart-wrap canvas {
+  max-height: 400px;
+}
+
+/* Ranking */
+.ranking-section {
+  margin-bottom: 24px;
+}
+.ranking-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rank-item {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--border);
+}
+.rank-item.rank-1 {
+  border-left-color: var(--gold);
+  background: linear-gradient(90deg, #FFFBEB 0%, #FFFFFF 100%);
+}
+.rank-item.rank-2 {
+  border-left-color: #C0C0C0;
+}
+.rank-item.rank-3 {
+  border-left-color: #CD7F32;
+}
+.rank-item.rank-bad {
+  border-left-color: var(--danger);
+  background: var(--danger-light);
+  opacity: 0.85;
+}
+.rank-badge {
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 64px;
+}
+.rank-body {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rank-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.rank-cost {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.rank-item.rank-1 .rank-cost { color: var(--success); }
+.rank-item.rank-bad .rank-cost { color: var(--danger); }
+
+/* Scenario Cards */
+.scenario-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.scenario-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-top: 4px solid var(--border);
+}
+.scenario-card.scenario-win {
+  border-top-color: var(--success);
+}
+.scenario-card.scenario-meh {
+  border-top-color: var(--warning);
+}
+.scenario-card.scenario-no {
+  border-top-color: var(--danger);
+}
+.scenario-head {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.scenario-pros, .scenario-cons {
+  margin-bottom: 14px;
+}
+.scenario-pros strong, .scenario-cons strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--text-sub);
+}
+.scenario-pros strong { color: var(--success); }
+.scenario-cons strong { color: var(--danger); }
+.scenario-card ul {
+  list-style: none;
+  padding: 0;
+}
+.scenario-card li {
+  font-size: 13px;
+  line-height: 1.7;
+  padding-left: 14px;
+  position: relative;
+  color: var(--text);
+}
+.scenario-card li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--text-sub);
+}
+
+/* Verdict Card */
+.verdict-card {
+  background: linear-gradient(135deg, #00C853 0%, #3182F6 100%);
+  color: #fff;
+  border-radius: var(--card-radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.verdict-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.verdict-body p {
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+.verdict-body p:last-child { margin-bottom: 0; }
+.verdict-body strong {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* Complex Card */
+.complex-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-top: 4px solid var(--border);
+}
+.complex-card.complex-winner {
+  border-top-color: var(--gold);
+  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 40%);
+}
+.complex-rank {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: var(--accent-light);
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.complex-winner .complex-rank {
+  background: #FFF3CD;
+  color: #856404;
+}
+.complex-name {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.complex-price {
+  font-size: 16px;
+  color: var(--text-sub);
+  margin-bottom: 20px;
+}
+.complex-price strong {
+  font-size: 28px;
+  color: var(--accent);
+  font-weight: 800;
+}
+.complex-price .complex-size {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: 8px;
+}
+.complex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.complex-item {
+  background: #FAFBFC;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+}
+.complex-item.complex-warn {
+  background: var(--warning-light);
+  border-color: var(--warning);
+}
+.complex-label {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.complex-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.complex-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+.complex-cost {
+  background: var(--accent-light);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 8px;
+}
+.cost-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.cost-item {
+  text-align: center;
+}
+.cost-item div {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+.cost-item strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+}
+.cost-item.cost-total strong {
+  color: var(--accent);
+  font-size: 17px;
+}
+
+/* Compare Pick Card */
+.compare-pick-card {
+  background: var(--card);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+.compare-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.pick-compare {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.pick-compare th, .pick-compare td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.pick-compare th {
+  font-weight: 700;
+  background: #FAFBFC;
+  color: var(--text);
+}
+.pick-compare th:first-child, .pick-compare td:first-child {
+  text-align: left;
+  color: var(--text-sub);
+  font-weight: 500;
+}
+.compare-verdict {
+  background: var(--success-light);
+  border-radius: 12px;
+  padding: 16px 20px;
+  border-left: 4px solid var(--success);
+}
+.compare-verdict strong {
+  font-size: 15px;
+  color: var(--success);
+  display: block;
+  margin-bottom: 4px;
+}
+.compare-verdict p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Calculator — existing styles preserved */
 .formula-card {
   background: #EBF2FF;
   border-radius: 12px;
@@ -78,17 +741,6 @@ body {
   font-size: 12px;
 }
 
-/* Section */
-.section {
-  margin-bottom: 24px;
-}
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-/* Common Settings */
 .settings-card {
   background: var(--card);
   border-radius: var(--card-radius);
@@ -124,7 +776,6 @@ body {
   border-color: var(--accent);
 }
 
-/* Property Cards */
 .property-list {
   display: flex;
   flex-direction: column;
@@ -224,7 +875,6 @@ body {
   pointer-events: none;
 }
 
-/* Add Button */
 .btn-add {
   width: 100%;
   padding: 14px;
@@ -242,7 +892,6 @@ body {
   color: var(--accent);
 }
 
-/* Calculate Button */
 .btn-calc {
   width: 100%;
   padding: 16px;
@@ -261,7 +910,6 @@ body {
   opacity: 0.9;
 }
 
-/* Summary Cards */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -318,7 +966,6 @@ body {
   margin-left: 8px;
 }
 
-/* Charts */
 .chart-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -339,42 +986,6 @@ body {
   width: 100% !important;
 }
 
-/* Detail Table */
-.table-wrap {
-  background: var(--card);
-  border-radius: var(--card-radius);
-  overflow-x: auto;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-.table-wrap table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.table-wrap th, .table-wrap td {
-  padding: 12px 16px;
-  text-align: right;
-  white-space: nowrap;
-}
-.table-wrap th {
-  color: var(--text-sub);
-  font-weight: 500;
-  border-bottom: 1px solid var(--border);
-}
-.table-wrap th:first-child, .table-wrap td:first-child {
-  text-align: left;
-}
-.table-wrap td {
-  border-bottom: 1px solid var(--border);
-}
-.table-wrap tr:last-child td {
-  border-bottom: none;
-}
-.table-wrap tr.row-highlight td {
-  color: var(--success);
-  font-weight: 600;
-}
-
 /* Footer */
 .footer {
   text-align: center;
@@ -383,110 +994,643 @@ body {
   padding: 32px 0 16px;
 }
 
-/* Hidden */
 .hidden { display: none; }
 
 /* Mobile */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .container { padding: 16px 12px 32px; }
-  .header h1 { font-size: 22px; }
+  .header h1 { font-size: 24px; }
+  .tab { padding: 12px 14px; font-size: 14px; }
+  .persona-grid { grid-template-columns: 1fr; }
+  .market-summary { grid-template-columns: 1fr; }
+  .scenario-cards { grid-template-columns: 1fr; }
+  .cost-breakdown { grid-template-columns: repeat(2, 1fr); }
   .settings-card { flex-direction: column; gap: 12px; }
   .input-grid { grid-template-columns: repeat(2, 1fr); }
   .chart-grid { grid-template-columns: 1fr; }
   .summary-grid { grid-template-columns: 1fr; }
   .summary-card .cost-value { font-size: 18px; }
+  .rank-body { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .pick-compare { font-size: 11px; }
+  .pick-compare th, .pick-compare td { padding: 8px 6px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- 1. Header -->
+  <!-- Header -->
   <div class="header">
-    <h1>진짜월세</h1>
-    <p>보증금 기회비용·관리비·교통비·통근시간 비용을 포함한 실질 월비용 비교</p>
-    <div class="formula-card">
-      <div class="formula-line">
-        <span class="formula-label">실질 월비용</span>
-        <span class="formula-eq">= 월세 + (보증금 × 연이율 ÷ 12) + 관리비 + (교통비 편도 × 2 × 출근일수 ÷ 10,000)</span>
+    <h1>🏠 분당 신혼집 대작전</h1>
+    <p>월세 · 전세 · 매매 뭐가 유리할까? 실제 데이터로 증명</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="situation">📌 우리 상황</button>
+    <button class="tab" data-tab="market">📊 분당 시세</button>
+    <button class="tab" data-tab="compare">⚖️ 비교 분석</button>
+    <button class="tab" data-tab="picks">🏆 추천 단지</button>
+    <button class="tab" data-tab="calculator">🧮 월세 계산기</button>
+  </div>
+
+  <!-- Tab 1: 우리 상황 -->
+  <div class="tab-content active" id="tab-situation">
+    <div class="intro-card">
+      <h2>🏠 행님네 신혼집 상황</h2>
+      <p class="intro-desc">2026년 10월 결혼하는 커플이 분당에서 2년 살 집을 구해유. 월세로 갈지 전세로 갈지 매매로 갈지 결정해야 하는디, 데이터로 증명해드릴게유.</p>
+    </div>
+
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="persona-icon">👫</div>
+        <div class="persona-label">누구?</div>
+        <div class="persona-value">1987년생 커플</div>
+        <div class="persona-sub">2026년 10월 결혼 예정 · 아이는 나중에</div>
       </div>
-      <div class="formula-line">
-        <span class="formula-label">통근시간 비용</span>
-        <span class="formula-eq">= 편도 통근시간 × 2 × 출근일수 ÷ 60 × 시급 ÷ 10,000</span>
+      <div class="persona-card">
+        <div class="persona-icon">💼</div>
+        <div class="persona-label">직장</div>
+        <div class="persona-value">강남 출근</div>
+        <div class="persona-sub">통근 1시간 이내 희망</div>
       </div>
-      <div class="formula-line">
-        <span class="formula-label">세액공제</span>
-        <span class="formula-eq">= min(월세 × 12, 1000만) × 공제율 ÷ 12 (총급여 7000만 이하, 공제율: ~5500만 17%, ~7000만 15%)</span>
+      <div class="persona-card">
+        <div class="persona-icon">💰</div>
+        <div class="persona-label">자산</div>
+        <div class="persona-value">현금 1.5억</div>
+        <div class="persona-sub">기존 대출 0원 · 무주택자</div>
       </div>
-      <div class="formula-line">
-        <span class="formula-label">총 비용</span>
-        <span class="formula-eq">= 실질 월비용 + 통근시간 비용 - 세액공제</span>
+      <div class="persona-card">
+        <div class="persona-icon">📊</div>
+        <div class="persona-label">부부 연소득</div>
+        <div class="persona-value">1억원 이상</div>
+        <div class="persona-sub">신혼 특례 대출 소득 한도 초과</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">📍</div>
+        <div class="persona-label">희망 지역</div>
+        <div class="persona-value">분당</div>
+        <div class="persona-sub">1순위 정자·수내·서현·판교<br>2순위 미금·이매·야탑</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">⏰</div>
+        <div class="persona-label">거주 기간</div>
+        <div class="persona-value">2년 단기</div>
+        <div class="persona-sub">2년 후 재결정</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">🚪</div>
+        <div class="persona-label">최소 조건</div>
+        <div class="persona-value">2룸 이상</div>
+        <div class="persona-sub">전용 40~60m² · 방 2개 필수</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">🏦</div>
+        <div class="persona-label">주거 투입 자금</div>
+        <div class="persona-value">전세 1억 / 월세 5천</div>
+        <div class="persona-sub">나머지 5천만은 결혼·비상금</div>
+      </div>
+    </div>
+
+    <div class="warning-card">
+      <div class="warning-title">⚠️ 왜 집 구하기가 어려워유?</div>
+      <div class="warning-item">
+        <strong>① 분당구가 "조정대상지역"으로 지정 (2025년 10월 16일)</strong>
+        <p>원래 집을 살 때 대출을 최대 70%까지 받을 수 있었슈. 그런디 2025년 10월부터 분당은 규제 지역이 돼서 40%밖에 못 받아유. 예를 들어 5억짜리 집을 사려면 원래 현금 1.5억 + 대출 3.5억이면 됐는디, 지금은 현금 3억 + 대출 2억이 필요해유.</p>
+      </div>
+      <div class="warning-item">
+        <strong>② 신혼부부 특례 대출 탈락</strong>
+        <p>부부 합산 연소득이 1억을 넘어서 저금리 대출(디딤돌, 버팀목, 보금자리론)을 못 써유. 이 대출들은 소득이 7,500만~8,500만 이하여야 신청 가능해유. 결과적으로 시중은행 일반 대출만 가능하고, 금리는 4% 대유.</p>
+      </div>
+      <div class="warning-item">
+        <strong>③ 그래도 다행인 것: 생애최초 LTV 70% 우대</strong>
+        <p>평생 처음 집을 사는 사람한테는 조정지역에서도 LTV 70% 우대가 있슈. 하지만 금리 할인은 없고, 2년 단기 거주엔 취득세(약 1천만원) 회수도 어려워서 매매 자체가 비효율이유.</p>
       </div>
     </div>
   </div>
 
-  <!-- 2. Common Settings -->
-  <div class="section">
-    <div class="section-title">공통 설정</div>
-    <div class="settings-card">
-      <div class="setting-item">
-        <label>연이율 (%)</label>
-        <input type="number" id="annualRate" value="3.5" step="0.1" min="0" max="20">
+  <!-- Tab 2: 분당 시세 -->
+  <div class="tab-content" id="tab-market">
+    <div class="intro-card">
+      <h2>📊 분당 2룸 전세 실거래가</h2>
+      <p class="intro-desc">2026년 1~4월에 실제로 거래된 가격이유. 59m² (25평급) 아파트 기준으로 정리했슈. 추정치 아니고 진짜 계약된 데이터유.</p>
+    </div>
+
+    <div class="market-summary">
+      <div class="market-stat">
+        <div class="stat-label">최저 전세가</div>
+        <div class="stat-value">3.4억</div>
+        <div class="stat-sub">야탑 매화공1<br>금곡 청솔공5</div>
       </div>
-      <div class="setting-item">
-        <label>월 출근일수 (일)</label>
-        <input type="number" id="workDays" value="22" step="1" min="1" max="31">
+      <div class="market-stat">
+        <div class="stat-label">평균 전세가</div>
+        <div class="stat-value">약 4.2억</div>
+        <div class="stat-sub">이매·야탑·금곡<br>59m² 종합</div>
       </div>
-      <div class="setting-item">
-        <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">시급 계산 + 세액공제 판단</span></label>
-        <input type="number" id="salary" value="" placeholder="예: 5000" min="0">
+      <div class="market-stat">
+        <div class="stat-label">최고 전세가</div>
+        <div class="stat-value">4.9억</div>
+        <div class="stat-sub">이매동신3<br>금곡 청솔계룡</div>
       </div>
-      <div class="setting-item">
-        <label>시급 (원) <span style="color:var(--text-sub);font-size:11px;">직접 수정 가능</span></label>
-        <input type="number" id="hourlyWage" value="0" placeholder="0" min="0">
+    </div>
+
+    <div class="region-section">
+      <div class="region-title">
+        <span class="region-name">📍 이매동</span>
+        <span class="region-desc">가장 비싼 편 · 평균 4.5억</span>
+      </div>
+      <div class="table-wrap">
+        <table class="market-table">
+          <thead>
+            <tr><th>단지명</th><th>평형</th><th>전세가</th><th>계약일</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>이매동신3단지</td><td>59.49m²</td><td>4.9억</td><td>26.03.02</td></tr>
+            <tr><td>이매촌삼성</td><td>59.53m²</td><td>4.4억</td><td>26.02.23</td></tr>
+            <tr><td>이매촌진흥8단지</td><td>59.58m²</td><td>4.5억</td><td>26.02.19</td></tr>
+            <tr><td>이매촌청구6단지</td><td>59.92m²</td><td>4.1억</td><td>26.02.06</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="region-section">
+      <div class="region-title">
+        <span class="region-name">📍 야탑동</span>
+        <span class="region-desc">가성비 · 3.4~4.6억</span>
+      </div>
+      <div class="table-wrap">
+        <table class="market-table">
+          <thead>
+            <tr><th>단지명</th><th>평형</th><th>전세가</th><th>계약일</th></tr>
+          </thead>
+          <tbody>
+            <tr class="highlight"><td>⭐ 매화마을공무원1단지</td><td>58.92m²</td><td>3.4억</td><td>26.03.24</td></tr>
+            <tr><td>매화마을공무원2단지</td><td>58.71m²</td><td>3.9억</td><td>26.04.01</td></tr>
+            <tr><td>목련마을한신</td><td>59.88m²</td><td>3.6억</td><td>26.02.21</td></tr>
+            <tr><td>장미마을</td><td>59.55m²</td><td>4.6억</td><td>26.03.27</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="region-section">
+      <div class="region-title">
+        <span class="region-name">📍 금곡동 (미금 지역)</span>
+        <span class="region-desc">교통 좋은 가성비 · 3.4~4.9억</span>
+      </div>
+      <div class="table-wrap">
+        <table class="market-table">
+          <thead>
+            <tr><th>단지명</th><th>평형</th><th>전세가</th><th>계약일</th></tr>
+          </thead>
+          <tbody>
+            <tr class="highlight"><td>⭐ 청솔마을공무원5단지</td><td>58.71m²</td><td>3.4억</td><td>26.03.21</td></tr>
+            <tr><td>청솔마을한라3단지</td><td>58.8m²</td><td>4.2억</td><td>26.01.31</td></tr>
+            <tr><td>청솔마을서광영남</td><td>53.6m²</td><td>4.2억</td><td>26.02.19</td></tr>
+            <tr><td>청솔마을계룡</td><td>55.44m²</td><td>4.9억</td><td>26.03.24</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title">💡 핵심 발견</div>
+      <ul>
+        <li><strong>분당 2룸 전세는 3.4~4.9억 구간</strong> (평균 약 4.2억)</li>
+        <li><strong>3.4억 최저선</strong>: 공무원 연금공단이 공급한 구축 (야탑 매화공1, 금곡 청솔공5)</li>
+        <li><strong>3억 이하 매물</strong>은 전용 35~50m² (1~1.5룸 수준이라 실거주 불편)</li>
+        <li><strong>4.5억 이상</strong>은 이매동 주요 단지 및 프리미엄 입지</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tab 3: 비교 분석 -->
+  <div class="tab-content" id="tab-compare">
+    <div class="intro-card">
+      <h2>⚖️ 월세 vs 전세 vs 매매 (2년 기준)</h2>
+      <p class="intro-desc">어떤 선택이 진짜 돈이 덜 드는지 계산해봤슈. 기회비용까지 전부 반영했슈.</p>
+    </div>
+
+    <div class="concept-card">
+      <div class="concept-title">🤔 기회비용이 뭐유?</div>
+      <p>"이 돈을 다른 곳에 썼다면 벌 수 있었을 이익"을 말해유. 실제로 돈이 나가는 건 아닌디, 벌 수 있었던 걸 포기한 거라 비용으로 계산해야 해유.</p>
+      <div class="concept-example">
+        <strong>예시</strong><br>
+        1억원을 전세 보증금에 넣었슈. 이 돈은 2년 동안 꽉 묶여 있슈.<br>
+        만약 대신 예금(연 3%)에 넣었다면 → 2년에 약 510만원 벌 수 있었슈.<br>
+        이 <strong>510만원이 바로 "기회비용"</strong>이유. 실제로는 돈을 쓴 게 아니지만, 벌 수 있었던 걸 포기한 손실이쥬.
+      </div>
+    </div>
+
+    <div class="compare-chart-wrap">
+      <h3>💰 2년 실질비용 비교 (적을수록 유리)</h3>
+      <div class="chart-container">
+        <canvas id="scenarioChart"></canvas>
+      </div>
+    </div>
+
+    <div class="ranking-section">
+      <h3>📊 시나리오 랭킹</h3>
+      <div class="rank-list">
+        <div class="rank-item rank-1">
+          <div class="rank-badge">🥇 1위</div>
+          <div class="rank-body">
+            <div class="rank-name">전세 3.4억 (야탑 매화공1 / 금곡 청솔공5)</div>
+            <div class="rank-cost">-2,403만원</div>
+          </div>
+        </div>
+        <div class="rank-item rank-2">
+          <div class="rank-badge">🥈 2위</div>
+          <div class="rank-body">
+            <div class="rank-name">전세 3.9억 (야탑 매화공2)</div>
+            <div class="rank-cost">-2,775만원</div>
+          </div>
+        </div>
+        <div class="rank-item rank-3">
+          <div class="rank-badge">🥉 3위</div>
+          <div class="rank-body">
+            <div class="rank-name">전세 4.5억 (이매·금곡 중급)</div>
+            <div class="rank-cost">-3,265만원</div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-badge">4위</div>
+          <div class="rank-body">
+            <div class="rank-name">월세 보증5천+월150만 (저렴 매물 발견 시)</div>
+            <div class="rank-cost">-3,545만원</div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-badge">5위</div>
+          <div class="rank-body">
+            <div class="rank-name">전세 5억 (정자·수내·서현 프리미엄)</div>
+            <div class="rank-cost">-3,675만원</div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-badge">6위</div>
+          <div class="rank-body">
+            <div class="rank-name">월세 보증5천+월180만 (분당 일반 시세)</div>
+            <div class="rank-cost">-4,265만원</div>
+          </div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-badge">7위</div>
+          <div class="rank-body">
+            <div class="rank-name">월세 보증5천+월200만 (핵심 입지)</div>
+            <div class="rank-cost">-4,745만원</div>
+          </div>
+        </div>
+        <div class="rank-item rank-bad">
+          <div class="rank-badge">🚫 불가</div>
+          <div class="rank-body">
+            <div class="rank-name">매매 6.31억 (청솔공5 최저가 매매)</div>
+            <div class="rank-cost">현금 3,900만 부족</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-cards">
+      <div class="scenario-card scenario-win">
+        <div class="scenario-head">✅ 전세 (1등)</div>
+        <div class="scenario-pros">
+          <strong>장점</strong>
+          <ul>
+            <li>2년 후 보증금 100% 돌려받음</li>
+            <li>대출 이자만 손실 (월 약 82만)</li>
+            <li>보증보험 들면 깡통 위험 방어</li>
+            <li>분당 2룸 84m² 급도 가능</li>
+          </ul>
+        </div>
+        <div class="scenario-cons">
+          <strong>단점</strong>
+          <ul>
+            <li>1억 현금이 2년 묶임</li>
+            <li>깡통전세 리스크 체크 필수</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-card scenario-meh">
+        <div class="scenario-head">⚖️ 월세 (2등)</div>
+        <div class="scenario-pros">
+          <strong>장점</strong>
+          <ul>
+            <li>초기 부담 최소 (보증 5천만)</li>
+            <li>이사 유연성 높음</li>
+            <li>1억 투자 여력 생김</li>
+          </ul>
+        </div>
+        <div class="scenario-cons">
+          <strong>단점</strong>
+          <ul>
+            <li>월세 지출 큼 (월 180~200만)</li>
+            <li>2년 누적 지출 4,265만+</li>
+            <li>분당 2룸 월세 매물 희소</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario-card scenario-no">
+        <div class="scenario-head">❌ 매매 (불가)</div>
+        <div class="scenario-pros">
+          <strong>장점</strong>
+          <ul>
+            <li>자산 형성 (장기 시)</li>
+            <li>집값 오르면 이익</li>
+          </ul>
+        </div>
+        <div class="scenario-cons">
+          <strong>단점</strong>
+          <ul>
+            <li><strong>현금 3,900만 부족</strong> 🚫</li>
+            <li>취득세 등 부대비용 2천만+</li>
+            <li>2년 단기엔 비효율</li>
+            <li>집값 하락 시 손실</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="verdict-card">
+      <div class="verdict-title">🏆 최종 결론</div>
+      <div class="verdict-body">
+        <p><strong>전세 3.4억</strong> (야탑 매화공1 또는 금곡 청솔공5)이 2년 기준 가장 유리해유.</p>
+        <p>2년 실질비용 약 <strong>2,403만원</strong>으로 다른 모든 선택지를 이겨유.</p>
+        <p>매매는 현금 부족으로 아예 불가능, 월세는 전세보다 최소 <strong>1,140만원+</strong> 더 들어유.</p>
       </div>
     </div>
   </div>
 
-  <!-- 3. Property Cards -->
-  <div class="section">
-    <div class="section-title">매물 목록</div>
-    <div class="property-list" id="propertyList"></div>
-    <button class="btn-add" id="btnAdd" style="margin-top: 12px;">+ 매물 추가</button>
-  </div>
+  <!-- Tab 4: 추천 단지 -->
+  <div class="tab-content" id="tab-picks">
+    <div class="intro-card">
+      <h2>🏆 추천 단지 상세</h2>
+      <p class="intro-desc">실거래가 3.4억대로 가장 유리한 두 단지를 비교해드릴게유. 둘 다 25평(58m²급) 2룸 구조유.</p>
+    </div>
 
-  <!-- Calculate -->
-  <button class="btn-calc" id="btnCalc">비교 계산하기</button>
+    <div class="complex-card complex-winner">
+      <div class="complex-rank">🥇 1순위 추천</div>
+      <div class="complex-name">금곡동 청솔마을공무원5단지</div>
+      <div class="complex-price">전세 <strong>3.46억</strong><span class="complex-size">58.71m² (25평)</span></div>
 
-  <!-- 4. Summary -->
-  <div class="section hidden" id="resultSection">
-    <div class="section-title">비교 요약</div>
-    <div class="summary-grid" id="summaryGrid"></div>
-  </div>
-
-  <!-- 5. Charts -->
-  <div class="section hidden" id="chartSection">
-    <div class="chart-grid">
-      <div class="chart-card">
-        <h3>비용 구성 비교</h3>
-        <canvas id="barChart"></canvas>
+      <div class="complex-grid">
+        <div class="complex-item">
+          <div class="complex-label">🚈 지하철</div>
+          <div class="complex-val">미금역 도보 10분</div>
+          <div class="complex-sub">신분당선 + 수인분당선</div>
+          <div class="complex-sub">→ 강남역 약 20분</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">🏠 규모</div>
+          <div class="complex-val">474세대 / 12동</div>
+          <div class="complex-sub">1994년 11월 준공 (33년차)</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">📚 학군</div>
+          <div class="complex-val">초·중·고 도보권</div>
+          <div class="complex-sub">청솔초 3분 · 청솔중 3분</div>
+          <div class="complex-sub">분당경영고 5분</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">💵 관리비</div>
+          <div class="complex-val">월 약 24.7만원</div>
+          <div class="complex-sub">여름 20.7만 · 겨울 31.5만</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">🏘 매매가</div>
+          <div class="complex-val">6.31억 (24평)</div>
+          <div class="complex-sub">전세가율 55% (안전)</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">⚠️ 특이사항</div>
+          <div class="complex-val">재건축 추진 중</div>
+          <div class="complex-sub">5/9/10단지 통합재건축 논의</div>
+          <div class="complex-sub">2년 단기엔 영향 적음</div>
+        </div>
       </div>
-      <div class="chart-card">
-        <h3>비용 vs 통근시간</h3>
-        <canvas id="scatterChart"></canvas>
+
+      <div class="complex-cost">
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <div>자기자본</div>
+            <strong>1억</strong>
+          </div>
+          <div class="cost-item">
+            <div>전세대출</div>
+            <strong>2.46억 @ 4%</strong>
+          </div>
+          <div class="cost-item">
+            <div>월 이자</div>
+            <strong>약 82만원</strong>
+          </div>
+          <div class="cost-item cost-total">
+            <div>2년 실질비용</div>
+            <strong>2,403만원</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="complex-card">
+      <div class="complex-rank">🥈 2순위</div>
+      <div class="complex-name">야탑동 매화마을공무원1단지</div>
+      <div class="complex-price">전세 <strong>3.47억</strong><span class="complex-size">58.92m² (24평)</span></div>
+
+      <div class="complex-grid">
+        <div class="complex-item complex-warn">
+          <div class="complex-label">🚈 지하철</div>
+          <div class="complex-val">도보 10분 내 없음</div>
+          <div class="complex-sub">버스 정류장 도보 2분</div>
+          <div class="complex-sub">야탑역까지 환승 필요</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">🏠 규모</div>
+          <div class="complex-val">562세대 / 10동</div>
+          <div class="complex-sub">1995년 10월 준공 (32년차)</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">📚 학군</div>
+          <div class="complex-val">초·중·고 도보권</div>
+          <div class="complex-sub">중탑초 7분 · 야탑중 6분</div>
+          <div class="complex-sub">분당아람고 5분</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">💵 관리비</div>
+          <div class="complex-val">월 약 22.5만원</div>
+          <div class="complex-sub">여름 18.7만 · 겨울 28.7만</div>
+        </div>
+        <div class="complex-item complex-warn">
+          <div class="complex-label">🏘 매매가</div>
+          <div class="complex-val">10.48억 (24평) ⚠️</div>
+          <div class="complex-sub">전세가율 33% (매매 과열)</div>
+          <div class="complex-sub">재건축 기대감 반영</div>
+        </div>
+        <div class="complex-item">
+          <div class="complex-label">🛒 편의</div>
+          <div class="complex-val">홈플러스익스프레스 3분</div>
+          <div class="complex-sub">편의점 10분 내 50개</div>
+          <div class="complex-sub">병원 20분 내 8개</div>
+        </div>
+      </div>
+
+      <div class="complex-cost">
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <div>자기자본</div>
+            <strong>1억</strong>
+          </div>
+          <div class="cost-item">
+            <div>전세대출</div>
+            <strong>2.46억 @ 4%</strong>
+          </div>
+          <div class="cost-item">
+            <div>월 이자</div>
+            <strong>약 82만원</strong>
+          </div>
+          <div class="cost-item cost-total">
+            <div>2년 실질비용</div>
+            <strong>2,403만원</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-pick-card">
+      <div class="compare-title">💭 둘 중 뭐 고르지?</div>
+      <table class="pick-compare">
+        <tr>
+          <th></th>
+          <th>🥇 청솔공5 (금곡)</th>
+          <th>🥈 매화공1 (야탑)</th>
+        </tr>
+        <tr>
+          <td>전세가</td>
+          <td><strong>3.46억</strong></td>
+          <td><strong>3.47억</strong></td>
+        </tr>
+        <tr>
+          <td>지하철</td>
+          <td>✅ 미금역 10분</td>
+          <td>❌ 없음 (버스)</td>
+        </tr>
+        <tr>
+          <td>강남 통근</td>
+          <td>✅ 약 20분</td>
+          <td>⚠️ 30~40분</td>
+        </tr>
+        <tr>
+          <td>매매가</td>
+          <td>6.31억</td>
+          <td>10.48억 ⚠️</td>
+        </tr>
+        <tr>
+          <td>전세가율</td>
+          <td>✅ 55% (정상)</td>
+          <td>⚠️ 33% (과열)</td>
+        </tr>
+        <tr>
+          <td>세대수</td>
+          <td>474세대</td>
+          <td>562세대</td>
+        </tr>
+        <tr>
+          <td>재건축</td>
+          <td>⚠️ 진행 중</td>
+          <td>📌 기대 반영</td>
+        </tr>
+      </table>
+      <div class="compare-verdict">
+        <strong>🎯 추천: 청솔마을공무원5단지 (금곡동)</strong>
+        <p>미금역 신분당선 덕분에 강남 통근이 훨씬 쉬워유. 전세가율도 정상 범위(55%)라 깡통전세 리스크도 낮슈. 학군도 우수하고, 재건축 진행 중이라 장기 잠재력도 있슈.</p>
       </div>
     </div>
   </div>
 
-  <!-- 6. Detail Table -->
-  <div class="section hidden" id="tableSection">
-    <div class="section-title">상세 비교</div>
-    <div class="table-wrap">
-      <table id="detailTable"></table>
+  <!-- Tab 5: 월세 계산기 (기존) -->
+  <div class="tab-content" id="tab-calculator">
+    <div class="intro-card">
+      <h2>🧮 진짜월세 계산기</h2>
+      <p class="intro-desc">매물 여러 개를 직접 입력해서 실질 월비용을 비교해볼 수 있슈. 보증금 기회비용, 관리비, 교통비, 통근시간 비용, 세액공제까지 전부 계산해드려유.</p>
+      <div class="formula-card">
+        <div class="formula-line">
+          <span class="formula-label">실질 월비용</span>
+          <span class="formula-eq">= 월세 + (보증금 × 연이율 ÷ 12) + 관리비 + (교통비 편도 × 2 × 출근일수 ÷ 10,000)</span>
+        </div>
+        <div class="formula-line">
+          <span class="formula-label">통근시간 비용</span>
+          <span class="formula-eq">= 편도 통근시간 × 2 × 출근일수 ÷ 60 × 시급 ÷ 10,000</span>
+        </div>
+        <div class="formula-line">
+          <span class="formula-label">세액공제</span>
+          <span class="formula-eq">= min(월세 × 12, 1000만) × 공제율 ÷ 12 (총급여 7000만 이하, ~5500만 17%, ~7000만 15%)</span>
+        </div>
+        <div class="formula-line">
+          <span class="formula-label">총 비용</span>
+          <span class="formula-eq">= 실질 월비용 + 통근시간 비용 - 세액공제</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">공통 설정</div>
+      <div class="settings-card">
+        <div class="setting-item">
+          <label>연이율 (%)</label>
+          <input type="number" id="annualRate" value="3.5" step="0.1" min="0" max="20">
+        </div>
+        <div class="setting-item">
+          <label>월 출근일수 (일)</label>
+          <input type="number" id="workDays" value="22" step="1" min="1" max="31">
+        </div>
+        <div class="setting-item">
+          <label>연봉 (만원) <span style="color:var(--text-sub);font-size:11px;">시급·세액공제</span></label>
+          <input type="number" id="salary" value="" placeholder="예: 5000" min="0">
+        </div>
+        <div class="setting-item">
+          <label>시급 (원) <span style="color:var(--text-sub);font-size:11px;">직접 수정 가능</span></label>
+          <input type="number" id="hourlyWage" value="0" placeholder="0" min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">매물 목록</div>
+      <div class="property-list" id="propertyList"></div>
+      <button class="btn-add" id="btnAdd" style="margin-top: 12px;">+ 매물 추가</button>
+    </div>
+
+    <button class="btn-calc" id="btnCalc">비교 계산하기</button>
+
+    <div class="section hidden" id="resultSection">
+      <div class="section-title">비교 요약</div>
+      <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+
+    <div class="section hidden" id="chartSection">
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3>비용 구성 비교</h3>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>비용 vs 통근시간</h3>
+          <canvas id="scatterChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="section hidden" id="tableSection">
+      <div class="section-title">상세 비교</div>
+      <div class="table-wrap">
+        <table id="detailTable"></table>
+      </div>
     </div>
   </div>
 
-  <!-- 7. Footer -->
+  <!-- Footer -->
   <div class="footer">Powered by Delamain</div>
 
 </div>
@@ -498,8 +1642,117 @@ const COLORS = ['#3182F6', '#F04452', '#00C853', '#FF9100', '#AA00FF', '#00B8D4'
 let properties = [];
 let barChartInstance = null;
 let scatterChartInstance = null;
+let scenarioChartInstance = null;
 
-// --- Init ---
+// --- Tab Switching ---
+function initTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(`tab-${target}`).classList.add('active');
+
+      // Lazy render scenario chart on compare tab (delay to allow layout)
+      if (target === 'compare') {
+        requestAnimationFrame(() => {
+          if (!scenarioChartInstance) {
+            renderScenarioChart();
+          } else {
+            scenarioChartInstance.resize();
+          }
+        });
+      }
+
+      // Ensure calculator charts re-render on tab switch if data exists
+      if (target === 'calculator' && (barChartInstance || scatterChartInstance)) {
+        requestAnimationFrame(() => {
+          if (barChartInstance) barChartInstance.resize();
+          if (scatterChartInstance) scatterChartInstance.resize();
+        });
+      }
+    });
+  });
+}
+
+// --- Scenario Chart (Compare Tab) ---
+function renderScenarioChart() {
+  const ctx = document.getElementById('scenarioChart');
+  if (!ctx) return;
+
+  const labels = [
+    ['전세 3.4억', '(야탑 매화공1)'],
+    ['전세 3.9억', '(야탑 매화공2)'],
+    ['전세 4.5억', '(중급)'],
+    ['월세 150만', '(저렴)'],
+    ['전세 5억', '(프리미엄)'],
+    ['월세 180만', '(일반)'],
+    ['월세 200만', '(핵심)'],
+  ];
+  const values = [2403, 2775, 3265, 3545, 3675, 4265, 4745];
+  const bgColors = values.map((v, i) => {
+    if (i === 0) return '#00C853';
+    if (i === 1) return '#7BDB8F';
+    if (i === 2) return '#B0E4B8';
+    if (i <= 4) return '#FFD080';
+    return '#F0968A';
+  });
+
+  if (scenarioChartInstance) scenarioChartInstance.destroy();
+
+  scenarioChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '2년 실질비용 (만원)',
+        data: values,
+        backgroundColor: bgColors,
+        borderRadius: 8,
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw.toLocaleString()}만원`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5500,
+          ticks: {
+            color: '#6B7684',
+            stepSize: 1000,
+            callback: v => v.toLocaleString() + '만'
+          },
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          title: { display: true, text: '2년 실질비용 (만원)', color: '#6B7684' }
+        },
+        x: {
+          ticks: {
+            color: '#6B7684',
+            font: { size: 11 }
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// --- Calculator (existing logic) ---
 function init() {
   loadFromStorage();
   if (properties.length === 0) {
@@ -609,7 +1862,6 @@ function renderProperties() {
     list.appendChild(card);
   });
 
-  // Event delegation
   list.querySelectorAll('input').forEach(input => {
     input.addEventListener('input', (e) => {
       const id = parseFloat(e.target.dataset.id);
@@ -635,7 +1887,6 @@ function escHtml(s) {
   return d.innerHTML;
 }
 
-// --- Calculation ---
 function calculate() {
   const rate = parseFloat(document.getElementById('annualRate').value) || 3.5;
   const days = parseInt(document.getElementById('workDays').value) || 22;
@@ -649,19 +1900,18 @@ function calculate() {
     const transport = parseFloat(p.transport) || 0;
     const commute = parseFloat(p.commute) || 0;
 
-    const depositCost = deposit * (rate / 100) / 12;       // 만원
-    const transportCost = transport * 2 * days / 10000;     // 만원
+    const depositCost = deposit * (rate / 100) / 12;
+    const transportCost = transport * 2 * days / 10000;
     const totalCost = rent + depositCost + maintenance + transportCost;
-    const monthlyCommute = commute * 2 * days / 60;         // 시간
-    const commuteCost = monthlyCommute * hourly / 10000;    // 만원
+    const monthlyCommute = commute * 2 * days / 60;
+    const commuteCost = monthlyCommute * hourly / 10000;
 
-    // 월세 세액공제 (총급여 7000만원 이하)
     let taxCredit = 0;
     if (grossSalary > 0 && grossSalary <= 7000 && rent > 0) {
-      const annualRent = rent * 12;  // 만원
-      const eligible = Math.min(annualRent, 1000);  // 한도 1000만원
+      const annualRent = rent * 12;
+      const eligible = Math.min(annualRent, 1000);
       const creditRate = grossSalary <= 5500 ? 0.17 : 0.15;
-      taxCredit = eligible * creditRate / 12;  // 월 환산 만원
+      taxCredit = eligible * creditRate / 12;
     }
 
     const grandTotal = totalCost + commuteCost - taxCredit;
@@ -750,7 +2000,6 @@ function renderCharts(results, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
     datasets.push({ label: '세액공제', data: results.map(r => -r.taxCredit), backgroundColor: '#00C853' });
   }
 
-  // Stacked Bar
   if (barChartInstance) barChartInstance.destroy();
   barChartInstance = new Chart(document.getElementById('barChart'), {
     type: 'bar',
@@ -770,7 +2019,6 @@ function renderCharts(results, hasCommuteCost, hasTaxCredit, hasGrandTotal) {
     }
   });
 
-  // Scatter
   if (scatterChartInstance) scatterChartInstance.destroy();
   scatterChartInstance = new Chart(document.getElementById('scatterChart'), {
     type: 'scatter',
@@ -845,7 +2093,6 @@ function formatNum(n) {
   return Number(n).toLocaleString('ko-KR', { maximumFractionDigits: 2 });
 }
 
-// --- Storage ---
 function saveToStorage() {
   const data = {
     annualRate: document.getElementById('annualRate').value,
@@ -876,6 +2123,7 @@ function loadFromStorage() {
 }
 
 // Start
+initTabs();
 init();
 </script>
 </body>
