@@ -311,6 +311,13 @@
   }
   .map-head .reset:hover { background: var(--accent-bg); }
   .map-head.has-iso .reset { display: inline-block; }
+  .map-hint {
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--ink-4);
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
   .map-legend { display: flex; flex-wrap: wrap; gap: 4px; font-size: 11px; color: var(--ink-3); }
   .legend-item {
     display: inline-flex; align-items: center; gap: 5px;
@@ -403,6 +410,7 @@
           <button class="reset" id="reset-iso">전체 보기</button>
         </span>
       </div>
+      <div class="map-hint">💡 점·범례를 여러 개 클릭하면 다중 선택 — 빈 지도 누르면 전체 복원</div>
       <div id="map"></div>
     </div>
   </header>
@@ -864,7 +872,7 @@
     m.on('click', () => {
       const card = document.querySelector(`.opt input[value="${id}"]`);
       if (card) card.closest('.opt').click();
-      isolateMarker(m);
+      toggleMarker(m);
     });
   });
 
@@ -882,7 +890,7 @@
     m._id = id;
     allMarkers.push(m);
 
-    m.on('click', () => isolateMarker(m));
+    m.on('click', () => toggleMarker(m));
   });
 
   function highlightMarker(id, on){
@@ -890,67 +898,66 @@
     if (el) el.classList.toggle('selected', on);
   }
 
-  // === Isolation logic ===
-  let isoMarker = null;     // single marker isolated
-  let isoCategory = null;   // category filtered
+  // === Multi-select isolation ===
+  const selectedMarkers = new Set();   // 개별 마커 선택
+  const selectedCats = new Set();      // 카테고리 선택
+
+  function syncLegend(){
+    const hasCatFilter = selectedCats.size > 0;
+    document.querySelectorAll('#legend .legend-item').forEach(li => {
+      li.classList.toggle('muted', hasCatFilter && !selectedCats.has(li.dataset.cat));
+    });
+  }
 
   function applyVisibility(){
+    const hasFilter = selectedMarkers.size > 0 || selectedCats.size > 0;
     allMarkers.forEach(m => {
       const el = m.getElement();
       if (!el) return;
       let visible = true;
-      if (isoMarker && m !== isoMarker) visible = false;
-      if (isoCategory && m._cat !== isoCategory) visible = false;
+      if (hasFilter) {
+        visible = selectedMarkers.has(m) || selectedCats.has(m._cat);
+      }
       el.classList.toggle('dim', !visible);
     });
-    document.getElementById('map-head').classList.toggle('has-iso', !!(isoMarker || isoCategory));
+    document.getElementById('map-head').classList.toggle('has-iso', hasFilter);
   }
 
-  function isolateMarker(m){
-    if (isoMarker === m) {
-      isoMarker = null;
-    } else {
-      isoMarker = m;
-      isoCategory = null;
-      document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
-    }
+  function toggleMarker(m){
+    if (selectedMarkers.has(m)) selectedMarkers.delete(m);
+    else selectedMarkers.add(m);
     applyVisibility();
   }
 
-  function isolateCategory(cat){
-    if (isoCategory === cat) {
-      isoCategory = null;
-    } else {
-      isoCategory = cat;
-      isoMarker = null;
-    }
-    document.querySelectorAll('#legend .legend-item').forEach(li => {
-      li.classList.toggle('muted', isoCategory && li.dataset.cat !== isoCategory);
-    });
+  function toggleCategory(cat){
+    if (selectedCats.has(cat)) selectedCats.delete(cat);
+    else selectedCats.add(cat);
+    syncLegend();
     applyVisibility();
   }
 
-  // 범례 클릭 = 해당 카테고리만
+  function resetAll(){
+    selectedMarkers.clear();
+    selectedCats.clear();
+    syncLegend();
+    applyVisibility();
+  }
+
+  // 범례 클릭 = 카테고리 다중 토글
   document.querySelectorAll('#legend .legend-item').forEach(li => {
-    li.addEventListener('click', () => isolateCategory(li.dataset.cat));
+    li.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      toggleCategory(li.dataset.cat);
+    });
   });
 
   // 빈 지도 클릭 = 전체 복원
   map.on('click', () => {
-    if (isoMarker || isoCategory) {
-      isoMarker = null;
-      isoCategory = null;
-      document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
-      applyVisibility();
-    }
+    if (selectedMarkers.size || selectedCats.size) resetAll();
   });
 
   // "전체 보기" 버튼
-  document.getElementById('reset-iso').addEventListener('click', () => {
-    isoMarker = null; isoCategory = null;
-    document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
-    applyVisibility();
-  });
+  document.getElementById('reset-iso').addEventListener('click', resetAll);
 
   const NAMES = {
     'melia': 'Meliá Palma Bay',
