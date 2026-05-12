@@ -1072,6 +1072,66 @@
       <div class="group-head"><span class="pin warm">🏛</span>구도심 도보권 — 저녁 시내 식사 + 아침 산책</div>
       <div class="cards" data-group="palma-old">
 
+        <label class="opt" data-min="217000" data-max="345000">
+          <input type="radio" name="palma" value="fil-suites">
+          <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Fil Suites & Homes</div>
+            <div class="opt-meta">아파트형 부티크 · 시내 · 부엌 포함 객실</div>
+            <div class="opt-price-row"><span class="opt-price">22~35<span class="unit">만/박 ✓ 실측</span></span></div>
+            <div class="opt-tags">
+              <span class="tag rec">최강 가성비</span>
+              <span class="tag">아파트형</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/fil-suites-amp-homes.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            </div>
+          </div>
+        </label>
+
+        <label class="opt" data-min="254000" data-max="548000">
+          <input type="radio" name="palma" value="palladium">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/21/c4/f6/leonardo-43172-2931658-043919.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Hotel Palladium</div>
+            <div class="opt-meta">4성 · Pg. de Mallorca · Jaime III 인접 · 대성당 도보 10분</div>
+            <div class="opt-price-row"><span class="opt-price">25~55<span class="unit">만/박 ✓ 실측</span></span></div>
+            <div class="opt-tags">
+              <span class="tag rec">가성비 구도심</span>
+              <span class="tag">자전거 주차</span>
+              <span class="tag warn">객실 작음 후기</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/palladium.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+              <a class="book-link secondary" href="https://www.hotelpalladium.com/en/home/" target="_blank" rel="noopener">공식</a>
+            </div>
+          </div>
+        </label>
+
+        <label class="opt" data-min="259000" data-max="390000">
+          <input type="radio" name="palma" value="bordoy-continental">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/kimg/4e/90/ee8e680e7b168f3c.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Bordoy Continental Palma</div>
+            <div class="opt-meta">4성 · Santa Catalina 지구 · Jaime III 100m · 대성당 도보 10분</div>
+            <div class="opt-price-row"><span class="opt-price">26~39<span class="unit">만/박 ✓ 실측</span></span></div>
+            <div class="opt-tags">
+              <span class="tag rec">시내 가성비</span>
+              <span class="tag">52객실 컴팩트</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/continental-palma.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+              <a class="book-link secondary" href="https://www.bordoyhotels.com/en/hotel-continental-palma/" target="_blank" rel="noopener">공식</a>
+            </div>
+          </div>
+        </label>
+
         <label class="opt" data-min="314089" data-max="486751">
           <input type="radio" name="palma" value="brick-palma">
           <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/kimg/ef/79/96a7d198e84dc7c4.jpg?width=1200&height=630&crop=true')">
@@ -1735,6 +1795,9 @@
   const HOTELS = [
     // [id, name, group, lat, lng]
     // 팔마 구도심 (시내 도보권)
+    ['fil-suites',           'Fil Suites & Homes',      'palma', 39.5746, 2.6437],
+    ['palladium',            'Hotel Palladium',         'palma', 39.5709, 2.6471],
+    ['bordoy-continental',   'Bordoy Continental Palma','palma', 39.5694, 2.6364],
     ['brick-palma',          'Brick Palma',             'palma', 39.5709, 2.6537],
     ['catalonia-majorica',   'Catalonia Majórica',      'palma', 39.5639, 2.6263],
     ['hotel-saratoga',       'Hotel Saratoga',          'palma', 39.5727, 2.6494],
@@ -1921,6 +1984,9 @@
     'hotel-saratoga': 'Hotel Saratoga',
     'brick-palma': 'Brick Palma',
     'catalonia-majorica': 'Catalonia Majórica',
+    'fil-suites': 'Fil Suites',
+    'palladium': 'Hotel Palladium',
+    'bordoy-continental': 'Bordoy Continental',
     'aluasoul': 'AluaSoul (HB)',
     'capvermell': 'Cap Vermell',
     'canferrereta': 'Can Ferrereta',
