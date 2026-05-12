@@ -290,59 +290,223 @@
   /* Subtle helpers */
   .muted { color: var(--ink-4); }
 
-  /* === Sidebar / nav (mobile top, desktop left) === */
-  .sidebar {
-    position: sticky; top: 0;
+  /* === Mobile top bar (hamburger) === */
+  .mobile-bar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
     background: rgba(255,255,255,0.96);
     backdrop-filter: saturate(180%) blur(12px);
     -webkit-backdrop-filter: saturate(180%) blur(12px);
     border-bottom: 1px solid var(--line);
-    padding: 10px 16px;
-    z-index: 60;
-    display: flex; gap: 8px; align-items: center;
   }
-  .sidebar-brand {
+  .menu-btn {
+    background: none; border: none;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .menu-btn:hover { background: var(--surface); }
+  .menu-btn svg { width: 18px; height: 18px; }
+  .mobile-bar .mobile-title {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .mobile-bar .mobile-brand {
+    margin-left: auto;
     font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
-    margin-right: auto;
+    color: var(--ink-3);
   }
-  .sidebar nav { display: flex; gap: 6px; }
-  .nav-item {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 12px; border-radius: 999px;
-    font-size: 12.5px; font-weight: 700;
-    text-decoration: none; color: var(--ink-3);
-    background: var(--surface);
-    cursor: pointer; border: 1px solid transparent;
-    transition: background 0.15s, color 0.15s;
+
+  /* === Sidebar (off-canvas mobile, fixed PC) === */
+  .sidebar-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 199;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
   }
-  .nav-item:hover { background: var(--surface-2); }
-  .nav-item.active { background: var(--ink); color: #fff; }
-  .nav-item .nav-emoji { font-size: 14px; line-height: 1; }
-  .nav-item .nav-sub { display: none; font-size: 10.5px; opacity: 0.7; font-weight: 500; }
+  .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 280px; max-width: 85vw;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    padding: 24px 14px 20px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-brand {
+    font-size: 16px; font-weight: 800; letter-spacing: -0.025em;
+    padding: 4px 10px 18px;
+    color: var(--ink);
+  }
+
+  /* Tree nav */
+  .tree { display: flex; flex-direction: column; gap: 2px; }
+  .tree-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--ink-3); text-decoration: none;
+    cursor: pointer;
+  }
+  .tree-item:hover { background: var(--surface); color: var(--ink); }
+  .tree-item.active { background: var(--ink); color: #fff; }
+  .tree-item .ti-icon {
+    font-size: 15px; line-height: 1;
+    width: 18px; text-align: center; flex-shrink: 0;
+  }
+  .tree-group { margin-top: 6px; }
+  .tree-group .tree-head {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-4);
+    padding: 10px 12px 4px;
+  }
+  .tree-group .tree-children {
+    padding-left: 14px;
+    border-left: 1px dashed var(--line);
+    margin-left: 16px;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .tree-group .tree-children .tree-item {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 
   .view { display: none; }
   .view.active { display: block; }
 
   @media (min-width: 1000px) {
     body { display: grid; grid-template-columns: 240px 1fr; align-items: start; min-height: 100vh; }
+    .mobile-bar { display: none; }
+    .sidebar-backdrop { display: none; }
     .sidebar {
-      position: sticky; top: 0; height: 100vh;
-      flex-direction: column; align-items: stretch;
-      border-right: 1px solid var(--line);
-      border-bottom: none;
-      padding: 28px 18px;
-      backdrop-filter: none;
+      position: sticky; top: 0; bottom: auto;
+      height: 100vh; width: auto; max-width: none;
+      transform: translateX(0);
+      padding: 28px 14px;
     }
-    .sidebar-brand { margin: 0 8px 20px; font-size: 15px; }
-    .sidebar nav { flex-direction: column; gap: 4px; }
-    .nav-item {
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 13.5px;
-      flex-wrap: wrap;
-    }
-    .nav-item .nav-sub { display: block; flex-basis: 100%; padding-left: 22px; }
     .summary { left: 240px; }
+  }
+
+  /* === Home view: progress + info + todo === */
+  .progress-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 20px 0 24px;
+  }
+  .progress-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .progress-head .label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-4);
+  }
+  .progress-text {
+    font-size: 16px; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .progress-text #todo-done { color: var(--accent); }
+  .progress-text .sep { color: var(--ink-4); margin: 0 2px; }
+  .progress-bar {
+    height: 8px; border-radius: 999px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--ink));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .info-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .info-card h3 {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-4);
+    margin-bottom: 12px;
+  }
+  .info-row {
+    display: flex; gap: 14px;
+    padding: 8px 0;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .k { color: var(--ink-4); width: 70px; flex-shrink: 0; }
+  .info-row .v { color: var(--ink); font-weight: 600; flex: 1; }
+
+  .todo-list { display: flex; flex-direction: column; gap: 14px; }
+  .todo-group {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px 8px;
+  }
+  .todo-group-head {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--ink-2);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 4px;
+  }
+  .todo-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check {
+    width: 22px; height: 22px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    color: transparent;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .todo-item:hover .todo-check { border-color: var(--ink-4); }
+  .todo-item.done .todo-check {
+    background: var(--ink); border-color: var(--ink);
+    color: #fff;
+  }
+  .todo-body { flex: 1; min-width: 0; }
+  .todo-label {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .todo-item.done .todo-label {
+    text-decoration: line-through;
+    color: var(--ink-4);
+    text-decoration-thickness: 1.5px;
+  }
+  .todo-detail {
+    font-size: 12px; color: var(--ink-3);
+    margin-top: 3px;
   }
 
   /* Map */
@@ -442,25 +606,92 @@
 </head>
 <body>
 
-<aside class="sidebar">
+<!-- Mobile top bar (hidden on PC) -->
+<div class="mobile-bar">
+  <button class="menu-btn" id="menu-btn" aria-label="메뉴 열기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <span class="mobile-title" id="mobile-title">홈</span>
+  <span class="mobile-brand">🌙 신혼여행</span>
+</div>
+
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">🌙 신혼여행</div>
-  <nav>
-    <a class="nav-item active" data-view="mallorca" href="#mallorca">
-      <span class="nav-emoji">🏖</span>
-      <span>마요르카</span>
-      <span class="nav-sub">10/5–10/8 · 3박</span>
+  <nav class="tree">
+    <a class="tree-item" data-view="home" data-title="홈" href="#home">
+      <span class="ti-icon">🏠</span><span>홈</span>
     </a>
-    <a class="nav-item" data-view="barcelona" href="#barcelona">
-      <span class="nav-emoji">🏛</span>
-      <span>바르셀로나</span>
-      <span class="nav-sub">10/8–10/11 · 3박</span>
-    </a>
+
+    <div class="tree-group">
+      <div class="tree-head">숙박</div>
+      <div class="tree-children">
+        <a class="tree-item" data-view="mallorca" data-title="마요르카 숙소" href="#mallorca">
+          <span class="ti-icon">🏖</span><span>마요르카</span>
+        </a>
+        <a class="tree-item" data-view="barcelona" data-title="바르셀로나 숙소" href="#barcelona">
+          <span class="ti-icon">🏛</span><span>바르셀로나</span>
+        </a>
+      </div>
+    </div>
   </nav>
 </aside>
 
 <main class="main">
 
-<section id="view-mallorca" class="view active">
+<!-- ========== HOME VIEW ========== -->
+<section id="view-home" class="view active">
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Honeymoon · 2026.10.05 → 10.12 · 6 nights 8 days</div>
+    <h1>신혼여행<br>준비 현황</h1>
+    <p class="lede">마요르카 + 바르셀로나 · 2026년 10월 · 김덕수 · 오정윤</p>
+  </header>
+
+  <div class="progress-card">
+    <div class="progress-head">
+      <div class="label">전체 진행도</div>
+      <div class="progress-text"><span id="todo-done">0</span><span class="sep">/</span><span id="todo-total">12</span></div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>여행 기본 정보</h3>
+    <div class="info-row"><span class="k">기간</span><span class="v">2026.10.05 (월) – 10.12 (월) · 6박 8일</span></div>
+    <div class="info-row"><span class="k">인원</span><span class="v">2인 (김덕수 · 오정윤)</span></div>
+    <div class="info-row"><span class="k">코스</span><span class="v">인천 → 마요르카(3박) → 바르셀로나(3박) → 인천</span></div>
+    <div class="info-row"><span class="k">출국</span><span class="v">10/5 (월) 01:20 ICN · Qatar QR859</span></div>
+    <div class="info-row"><span class="k">귀국</span><span class="v">10/12 (월) 17:05 ICN · Qatar QR858</span></div>
+    <div class="info-row"><span class="k">도시간</span><span class="v">10/8 PMI 18:35 → BCN 19:35 · Vueling VY3915</span></div>
+  </div>
+
+  <section class="step">
+    <div class="step-head">
+      <div class="step-num">✓</div>
+      <div class="step-meta">
+        <div class="step-tag">TODO</div>
+        <div class="step-title">해야 할 일</div>
+        <div class="step-sub">항목 클릭으로 토글 · 진행 상태는 이 기기에 자동 저장</div>
+      </div>
+    </div>
+    <div id="todo-list" class="todo-list"></div>
+  </section>
+
+  <footer>
+    조사 기준일 2026-05-12 · 환율 €1≈₩1,500
+  </footer>
+</div>
+</section>
+
+<section id="view-mallorca" class="view">
 <div class="wrap">
 
   <header>
@@ -1149,7 +1380,7 @@
 </main>
 
 <!-- Sticky summary (mallorca) -->
-<div class="summary active" id="summary-mallorca">
+<div class="summary" id="summary-mallorca">
   <div class="summary-inner">
     <div class="progress">
       <div class="dot" id="d1"></div>
@@ -1593,25 +1824,122 @@
     document.getElementById('bcn-total-max').textContent = fmt(max * 3);
   }
 
+  // ===== TODO state (localStorage) =====
+  const TODOS = [
+    { id: 'flight', label: '항공권 예약', done: true, group: '✅ 예약 완료', detail: 'Qatar + Vueling 발권 (10/5~10/12)' },
+    { id: 'mallorca-stay', label: '마요르카 숙소 (팔마 1박 + 휴양 2박)', group: '🏨 숙소 예약', detail: '의사결정 도구에서 후보 비교 후 예약' },
+    { id: 'barcelona-stay', label: '바르셀로나 숙소 3박', group: '🏨 숙소 예약', detail: 'H10 계열 또는 Yurbban Trafalgar' },
+    { id: 'rental', label: '마요르카 렌터카 (10/5 18:00 ~ 10/8 16:00)', group: '🚗 이동' },
+    { id: 'sagrada', label: '사그라다 파밀리아 사전 티켓', group: '🎫 입장권', detail: '성수기 매진 빠름 — 도착 전 예매' },
+    { id: 'park-guell', label: '구엘 공원 사전 티켓', group: '🎫 입장권' },
+    { id: 'seat', label: '카타르 좌석 지정 (체크인 48h 전)', group: '✈️ 체크인 준비' },
+    { id: 'mileage', label: '카타르 Privilege Club 마일리지 등록', group: '✈️ 체크인 준비' },
+    { id: 'insurance', label: '여행자 보험 가입', group: '📋 서류·돈' },
+    { id: 'card', label: '해외결제 카드 발급/확인', group: '📋 서류·돈' },
+    { id: 'cash', label: '환전 (Euro 현금)', group: '📋 서류·돈' },
+    { id: 'packing', label: '짐싸기 체크리스트', group: '🎒 출발 전 준비' },
+  ];
+  const TODO_KEY = 'honeymoon-todo-v1';
+  function todoState(){
+    try { return JSON.parse(localStorage.getItem(TODO_KEY) || '{}'); }
+    catch { return {}; }
+  }
+  function saveTodoState(s){ localStorage.setItem(TODO_KEY, JSON.stringify(s)); }
+  function isDone(t, s){ return s[t.id] !== undefined ? s[t.id] : !!t.done; }
+
+  function renderTodos(){
+    const state = todoState();
+    const listEl = document.getElementById('todo-list');
+    if (!listEl) return;
+    const groups = {};
+    TODOS.forEach(t => {
+      (groups[t.group] = groups[t.group] || []).push(t);
+    });
+    listEl.innerHTML = '';
+    Object.entries(groups).forEach(([groupName, items]) => {
+      const g = document.createElement('div');
+      g.className = 'todo-group';
+      const head = document.createElement('div');
+      head.className = 'todo-group-head';
+      head.textContent = groupName;
+      g.appendChild(head);
+      items.forEach(t => {
+        const done = isDone(t, state);
+        const it = document.createElement('div');
+        it.className = 'todo-item' + (done ? ' done' : '');
+        it.innerHTML = `
+          <div class="todo-check">${done ? '✓' : ''}</div>
+          <div class="todo-body">
+            <div class="todo-label">${t.label}</div>
+            ${t.detail ? `<div class="todo-detail">${t.detail}</div>` : ''}
+          </div>`;
+        it.addEventListener('click', () => {
+          const s = todoState();
+          s[t.id] = !isDone(t, s);
+          saveTodoState(s);
+          renderTodos();
+        });
+        g.appendChild(it);
+      });
+      listEl.appendChild(g);
+    });
+    updateProgress();
+  }
+  function updateProgress(){
+    const state = todoState();
+    const done = TODOS.filter(t => isDone(t, state)).length;
+    const total = TODOS.length;
+    const doneEl = document.getElementById('todo-done');
+    const totalEl = document.getElementById('todo-total');
+    const fillEl = document.getElementById('progress-fill');
+    if (doneEl) doneEl.textContent = done;
+    if (totalEl) totalEl.textContent = total;
+    if (fillEl) fillEl.style.width = `${(done / total) * 100}%`;
+  }
+
   // ===== View routing =====
   function setView(v){
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
-    document.querySelectorAll('.summary').forEach(s => s.classList.toggle('active', s.id === 'summary-' + v));
-    // Leaflet 사이즈 재계산 (display:none → block 후 필요)
+    document.querySelectorAll('.tree-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
+
+    const isCityView = (v === 'mallorca' || v === 'barcelona');
+    document.querySelectorAll('.summary').forEach(s =>
+      s.classList.toggle('active', isCityView && s.id === 'summary-' + v));
+
+    // 모바일 헤더 제목
+    const titleEl = document.getElementById('mobile-title');
+    const activeNav = document.querySelector(`.tree-item[data-view="${v}"]`);
+    if (titleEl && activeNav) titleEl.textContent = activeNav.dataset.title || '';
+
+    // 사이드바 닫기 (모바일)
+    closeSidebar();
+
+    // Leaflet 사이즈 재계산
     setTimeout(() => {
-      if (v === 'mallorca') map.invalidateSize();
-      if (v === 'barcelona') mapBcn.invalidateSize();
-    }, 50);
+      try { if (v === 'mallorca') map.invalidateSize(); } catch(e) {}
+      try { if (v === 'barcelona') mapBcn.invalidateSize(); } catch(e) {}
+    }, 60);
+
     history.replaceState(null, '', '#' + v);
     window.scrollTo({top: 0, behavior: 'instant'});
   }
-  document.querySelectorAll('.nav-item').forEach(n => {
+  document.querySelectorAll('.tree-item').forEach(n => {
     n.addEventListener('click', e => { e.preventDefault(); setView(n.dataset.view); });
   });
-  // 초기 라우팅
-  const initial = location.hash.replace('#', '');
-  if (initial === 'barcelona' || initial === 'mallorca') setView(initial);
+
+  // ===== Sidebar toggle (mobile) =====
+  const sidebarEl = document.getElementById('sidebar');
+  const backdropEl = document.getElementById('sidebar-backdrop');
+  function openSidebar(){ sidebarEl.classList.add('open'); backdropEl.classList.add('open'); }
+  function closeSidebar(){ sidebarEl.classList.remove('open'); backdropEl.classList.remove('open'); }
+  document.getElementById('menu-btn')?.addEventListener('click', openSidebar);
+  backdropEl?.addEventListener('click', closeSidebar);
+
+  // 초기 진입
+  renderTodos();
+  const initial = location.hash.replace('#', '') || 'home';
+  if (['home', 'mallorca', 'barcelona'].includes(initial)) setView(initial);
+  else setView('home');
 </script>
 
 </body>
