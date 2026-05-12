@@ -17,7 +17,7 @@
     --warn: #ff6b6b;
     --gold: #f59f00;
     --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-    --shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 6px 20px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -27,7 +27,7 @@
     color: var(--text);
     line-height: 1.5;
     font-size: 15px;
-    padding-bottom: 200px;
+    padding-bottom: 220px;
   }
   .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
 
@@ -57,10 +57,9 @@
   .flight-card h3 { font-size: 14px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
   .flight-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
   .flight-row .date { font-weight: 700; min-width: 50px; color: var(--brand); }
-  .flight-row .arrow { color: var(--text-muted); }
 
   /* Step */
-  .step { margin: 28px 0 12px; }
+  .step { margin: 32px 0 12px; }
   .step-num {
     display: inline-flex; align-items: center; justify-content: center;
     width: 24px; height: 24px;
@@ -76,32 +75,72 @@
   }
   .step .step-sub { color: var(--text-sub); font-size: 13px; padding-left: 32px; margin-bottom: 16px; }
 
+  /* Group label */
+  .group-label {
+    display: flex; align-items: center; gap: 6px;
+    margin: 18px 0 10px;
+    font-size: 14px; font-weight: 700;
+    color: var(--text-sub);
+  }
+  .group-label .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--brand);
+  }
+  .group-label .dot.warm { background: #ff8c42; }
+  .group-label .dot.cool { background: #20c997; }
+
   /* Cards */
-  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .cards { display: flex; flex-direction: column; gap: 12px; }
   .opt {
     background: var(--card);
     border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 16px;
+    overflow: hidden;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.18s ease;
     position: relative;
+    display: block;
   }
-  .opt:hover { box-shadow: var(--shadow-hover); }
+  .opt:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
   .opt.selected {
     border-color: var(--brand);
-    background: var(--brand-bg);
+    box-shadow: 0 0 0 3px var(--brand-bg);
   }
   .opt input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
-  .opt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+
+  .opt-thumb {
+    width: 100%; height: 160px;
+    background-size: cover; background-position: center;
+    background-color: #f1f3f5;
+    position: relative;
+  }
+  .opt-thumb .photo-credit {
+    position: absolute; bottom: 4px; right: 6px;
+    font-size: 9px; color: rgba(255,255,255,0.85);
+    background: rgba(0,0,0,0.4);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .opt-thumb .check {
+    position: absolute; top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    background: var(--brand); color: #fff;
+    border-radius: 50%;
+    display: none;
+    align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .opt.selected .opt-thumb .check { display: flex; }
+
+  .opt-body { padding: 14px 16px 16px; }
+  .opt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
   .opt-name { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
   .opt-price {
-    font-weight: 700; font-size: 15px;
+    font-weight: 700; font-size: 14px;
     color: var(--text); white-space: nowrap;
   }
-  .opt-price .unit { color: var(--text-muted); font-weight: 500; font-size: 12px; margin-left: 2px; }
-  .opt-meta { color: var(--text-sub); font-size: 13px; margin-bottom: 6px; }
-  .opt-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .opt-price .unit { color: var(--text-muted); font-weight: 500; font-size: 11px; margin-left: 2px; }
+  .opt-meta { color: var(--text-sub); font-size: 13px; margin-bottom: 8px; }
+  .opt-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
   .tag {
     font-size: 11px; padding: 2px 8px; border-radius: 999px;
     background: #f1f3f5; color: var(--text-sub);
@@ -109,6 +148,22 @@
   .tag.rec { background: #fff3bf; color: #5c3c00; font-weight: 700; }
   .tag.warn { background: #ffe3e3; color: #c92a2a; }
   .tag.gold { background: #fff8db; color: #846200; }
+  .tag.romance { background: #ffe0ec; color: #c2255c; }
+  .tag.luxury { background: #ede0ff; color: #6f42c1; }
+
+  .opt-actions {
+    display: flex; gap: 8px; align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .book-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 600;
+    color: var(--brand); text-decoration: none;
+    padding: 6px 0;
+  }
+  .book-link:hover { text-decoration: underline; }
+  .book-link.secondary { color: var(--text-sub); }
 
   /* Summary (sticky bottom) */
   .summary {
@@ -139,7 +194,7 @@
 
   /* Notes */
   .notes {
-    margin-top: 24px;
+    margin-top: 28px;
     background: #fff;
     border-radius: 14px;
     padding: 18px;
@@ -155,6 +210,10 @@
   footer {
     text-align: center; padding: 24px 16px; color: var(--text-muted); font-size: 12px;
   }
+
+  @media (min-width: 600px) {
+    .opt-thumb { height: 200px; }
+  }
 </style>
 </head>
 <body>
@@ -163,7 +222,7 @@
   <header>
     <span class="badge-trip">10/5 (월) → 10/8 (목) · 마요르카 3박</span>
     <h1>🌙 마요르카 신혼여행<br>숙소 결정 도구</h1>
-    <p class="sub">팔마 공항 1박 + 남쪽 2박 — 카드를 선택하면 합계가 자동 계산돼요</p>
+    <p class="sub">팔마 공항 1박 + 마요르카 휴양 2박 — 카드를 선택하면 합계가 자동 계산돼요</p>
   </header>
 
   <div class="flight-card">
@@ -172,127 +231,304 @@
     <div class="flight-row"><span class="date">10/8</span> <b>PMI 18:35</b> → BCN 19:35 (Vueling)</div>
   </div>
 
-  <!-- Step 1 -->
+  <!-- Step 1: 팔마 1박 -->
   <section class="step">
     <h2><span class="step-num">1</span> 팔마 공항 근처 1박</h2>
-    <p class="step-sub">10/5 (월) 19:30~20:00 체크인 — 잠만 자고 다음날 남쪽 이동</p>
+    <p class="step-sub">10/5 (월) 19:30~20:00 체크인 · 잠만 자고 다음날 이동</p>
 
     <div class="cards" data-group="palma">
 
       <label class="opt" data-min="120000" data-max="180000">
         <input type="radio" name="palma" value="melia">
-        <div class="opt-head">
-          <div class="opt-name">Meliá Palma Bay</div>
-          <div class="opt-price">12~18<span class="unit">만/박</span></div>
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">팔마 시내 분위기</div>
         </div>
-        <div class="opt-meta">4성 · 팔마 시내 베이뷰 · 공항 차 15분</div>
-        <div class="opt-tags">
-          <span class="tag rec">⭐ 추천</span>
-          <span class="tag">시내 분위기</span>
-          <span class="tag">공항버스 정류장 앞</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Meliá Palma Bay</div>
+            <div class="opt-price">12~18<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">4성 · 팔마 시내 베이뷰 · 공항 차 15분</div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 추천</span>
+            <span class="tag">시내 분위기</span>
+            <span class="tag">공항버스 정류장 앞</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/melia-palma-bay.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://www.melia.com/en/hotels/spain/palma-de-mallorca/melia-palma-bay/" target="_blank" rel="noopener">공식 사이트</a>
+          </div>
         </div>
       </label>
 
       <label class="opt" data-min="80000" data-max="130000">
         <input type="radio" name="palma" value="amic-pastilla">
-        <div class="opt-head">
-          <div class="opt-name">Hotel Amic Can Pastilla</div>
-          <div class="opt-price">8~13<span class="unit">만/박</span></div>
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">팔마 인근</div>
         </div>
-        <div class="opt-meta">4성 · Can Pastilla · 공항 차 5분</div>
-        <div class="opt-tags">
-          <span class="tag rec">⭐ 가성비</span>
-          <span class="tag">진짜 공항 근처</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Hotel Amic Can Pastilla</div>
+            <div class="opt-price">8~13<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">4성 · Can Pastilla · 공항 차 5분</div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 가성비</span>
+            <span class="tag">진짜 공항 근처</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/amic-can-pastilla.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+          </div>
         </div>
       </label>
 
       <label class="opt" data-min="100000" data-max="150000">
         <input type="radio" name="palma" value="amic-mira">
-        <div class="opt-head">
-          <div class="opt-name">Hotel Amic Miraflores</div>
-          <div class="opt-price">10~15<span class="unit">만/박</span></div>
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">팔마 해변 인근</div>
         </div>
-        <div class="opt-meta">4성 · Playa de Palma · 공항 차 5분</div>
-        <div class="opt-tags">
-          <span class="tag">해변 도보 1분</span>
-          <span class="tag">야외 풀</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Hotel Amic Miraflores</div>
+            <div class="opt-price">10~15<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">4성 · Playa de Palma · 공항 차 5분</div>
+          <div class="opt-tags">
+            <span class="tag">해변 도보 1분</span>
+            <span class="tag">야외 풀</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/amic-miraflores.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+          </div>
         </div>
       </label>
 
       <label class="opt" data-min="100000" data-max="160000">
         <input type="radio" name="palma" value="hm-balanguera">
-        <div class="opt-head">
-          <div class="opt-name">HM Balanguera Beach</div>
-          <div class="opt-price">10~16<span class="unit">만/박</span></div>
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">팔마 해변</div>
         </div>
-        <div class="opt-meta">4성 · Playa de Palma · 공항 차 1분</div>
-        <div class="opt-tags">
-          <span class="tag">공항 최근접</span>
-          <span class="tag">해변 인접</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">HM Balanguera Beach</div>
+            <div class="opt-price">10~16<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">4성 · Playa de Palma · 공항 차 1분</div>
+          <div class="opt-tags">
+            <span class="tag">공항 최근접</span>
+            <span class="tag">해변 인접</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/hm-balanguera-beach.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+          </div>
         </div>
       </label>
 
       <label class="opt" data-min="300000" data-max="400000">
         <input type="radio" name="palma" value="puresalt">
-        <div class="opt-head">
-          <div class="opt-name">Pure Salt Garonda</div>
-          <div class="opt-price">30~40<span class="unit">만/박</span></div>
+        <div class="opt-thumb" style="background-image: url('https://static-resources-elementor.mirai.com/wp-content/uploads/sites/1544/garonda-events-hero-02-w700.webp')">
+          <div class="check">✓</div>
+          <div class="photo-credit">호텔 공식</div>
         </div>
-        <div class="opt-meta">5성 어덜트 온리 · Playa de Palma · 공항 차 5분</div>
-        <div class="opt-tags">
-          <span class="tag warn">컨셉 비매칭</span>
-          <span class="tag">잠만 자기엔 비쌈</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Pure Salt Garonda</div>
+            <div class="opt-price">30~40<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">5성 어덜트 온리 · Playa de Palma · 공항 차 5분</div>
+          <div class="opt-tags">
+            <span class="tag warn">컨셉 비매칭</span>
+            <span class="tag">잠만 자기엔 비쌈</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/pure-salt-garonda.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://www.puresaltgaronda.com/en/" target="_blank" rel="noopener">공식 사이트</a>
+          </div>
         </div>
       </label>
 
     </div>
   </section>
 
-  <!-- Step 2 -->
+  <!-- Step 2: 휴양 2박 (남쪽 vs 북서쪽) -->
   <section class="step">
-    <h2><span class="step-num">2</span> 남쪽 휴양 2박</h2>
-    <p class="step-sub">10/6 (화) ~ 10/7 (수) — 평지 1시간 운전 / 가격은 1박 기준</p>
+    <h2><span class="step-num">2</span> 마요르카 휴양 2박</h2>
+    <p class="step-sub">10/6 (화) ~ 10/7 (수) · 가격은 1박 기준 · 둘 중 한 카드만 선택</p>
 
+    <div class="group-label"><span class="dot warm"></span>🏖 남쪽 휴양 (평지·비치 리조트)</div>
     <div class="cards" data-group="south">
 
-      <label class="opt" data-min="450000" data-max="600000" data-nights="2">
-        <input type="radio" name="south" value="aluasoul">
-        <div class="opt-head">
-          <div class="opt-name">AluaSoul Mallorca Resort</div>
-          <div class="opt-price">45~60<span class="unit">만/박 (HB)</span></div>
+      <label class="opt" data-min="450000" data-max="600000">
+        <input type="radio" name="nights2" value="aluasoul">
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/23/Cala_D%27Or_Mitte.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">Cala d'Or 분위기</div>
         </div>
-        <div class="opt-meta">4성 어덜트 온리 · Cala d'Or · 프라이빗 비치</div>
-        <div class="opt-tags">
-          <span class="tag rec">⭐ 가성비·휴양 베스트</span>
-          <span class="tag">하프보드 포함</span>
-          <span class="tag">10월 연중 최저가</span>
-        </div>
-      </label>
-
-      <label class="opt" data-min="500000" data-max="800000" data-nights="2">
-        <input type="radio" name="south" value="capvermell">
-        <div class="opt-head">
-          <div class="opt-name">Cap Vermell Grand Hotel</div>
-          <div class="opt-price">50~80<span class="unit">만/박</span></div>
-        </div>
-        <div class="opt-meta">5성 · Capdepera · 옛 파크하얏트 · 미슐랭 2스타</div>
-        <div class="opt-tags">
-          <span class="tag gold">15% 프로모 (5/31까지)</span>
-          <span class="tag">대형 리조트</span>
-          <span class="tag">먹방 좋음</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">AluaSoul Mallorca Resort</div>
+            <div class="opt-price">45~60<span class="unit">만/박 (HB)</span></div>
+          </div>
+          <div class="opt-meta">4성 어덜트 온리 · Cala d'Or · 프라이빗 비치</div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 가성비·휴양 베스트</span>
+            <span class="tag">하프보드 포함</span>
+            <span class="tag">10월 연중 최저가</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/aluasoul-mallorca-resort.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://www.hyatt.com/en-US/hotel/spain/aluasoul-mallorca-resort/asmal" target="_blank" rel="noopener">Hyatt 공식</a>
+          </div>
         </div>
       </label>
 
-      <label class="opt" data-min="700000" data-max="900000" data-nights="2">
-        <input type="radio" name="south" value="canferrereta">
-        <div class="opt-head">
-          <div class="opt-name">Can Ferrereta</div>
-          <div class="opt-price">70~90<span class="unit">만/박</span></div>
+      <label class="opt" data-min="500000" data-max="800000">
+        <input type="radio" name="nights2" value="capvermell">
+        <div class="opt-thumb" style="background-image: url('https://framerusercontent.com/assets/E0QGocw5XBSBp13c7LMZbNggqTs.jpeg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">호텔 공식</div>
         </div>
-        <div class="opt-meta">5성 어덜트 온리 부티크 · Santanyí · 스파</div>
-        <div class="opt-tags">
-          <span class="tag">감성 끝판왕</span>
-          <span class="tag">Small Luxury Hotels</span>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Cap Vermell Grand Hotel</div>
+            <div class="opt-price">50~80<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">5성 · Capdepera · 옛 파크하얏트 · 미슐랭 2스타</div>
+          <div class="opt-tags">
+            <span class="tag gold">15% 프로모 (5/31까지)</span>
+            <span class="tag luxury">대형 리조트</span>
+            <span class="tag">먹방</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://capvermellgrandhotel.com/en/" target="_blank" rel="noopener">공식 (15% 프로모) →</a>
+            <a class="book-link secondary" href="https://www.booking.com/hotel/es/cap-vermell-grand-hotel-mallorca.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="700000" data-max="900000">
+        <input type="radio" name="nights2" value="canferrereta">
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Santanyi1.jpg/1280px-Santanyi1.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">Santanyí 마을</div>
+        </div>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Can Ferrereta</div>
+            <div class="opt-price">70~90<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">5성 어덜트 온리 부티크 · Santanyí · 스파</div>
+          <div class="opt-tags">
+            <span class="tag romance">감성 끝판왕</span>
+            <span class="tag luxury">Small Luxury Hotels</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/can-ferrereta.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://canferrereta.com/en/" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+    </div>
+
+    <div class="group-label"><span class="dot cool"></span>🏔 북서쪽 트라문타나 소도시 (산악·골목 감성)</div>
+    <div class="cards" data-group="northwest">
+
+      <label class="opt" data-min="280000" data-max="400000">
+        <input type="radio" name="nights2" value="finca-cas-sant">
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Vall_de_Soller.jpg/1280px-Vall_de_Soller.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">Sóller 계곡</div>
+        </div>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Finca Ca's Sant 🍊</div>
+            <div class="opt-price">28~40<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">핀카 부티크 · Sóller 시내 도보권 · 750년 패밀리 농장 · 오렌지나무 700그루</div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 와이프 픽</span>
+            <span class="tag romance">감성·가성비</span>
+            <span class="tag">수영장 2개</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://cas-sant.com/en/" target="_blank" rel="noopener">공식 (다이렉트가 최저) →</a>
+            <a class="book-link secondary" href="https://www.booking.com/hotel/es/finca-cas-sant.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="200000" data-max="280000">
+        <input type="radio" name="nights2" value="es-petit-valldemossa">
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/76/Valldemossa_2003.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">Valldemossa 마을</div>
+        </div>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Es Petit Hotel de Valldemossa</div>
+            <div class="opt-price">20~28<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">3성 부티크 · Valldemossa 시내 한복판 · 8개 객실</div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 가성비 최강</span>
+            <span class="tag romance">소도시 감성</span>
+            <span class="tag">쇼팽의 마을</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/es-petit-de-valldemossa.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://espetitdevalldemossa.com/en/" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="210000" data-max="500000">
+        <input type="radio" name="nights2" value="es-moli">
+        <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Deia_%28part_of%29_majorca_spain_arp.jpg/1280px-Deia_%28part_of%29_majorca_spain_arp.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">Deià 절벽 마을</div>
+        </div>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Hotel Es Molí</div>
+            <div class="opt-price">21~50<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">4성 부티크 · Deià 언덕 17세기 맨션 · 시·산 파노라마 뷰 · 무료 Cala Muleta 셔틀</div>
+          <div class="opt-tags">
+            <span class="tag romance">예술가의 마을</span>
+            <span class="tag">바다·산 동시</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/es-moli-deia.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 예약 →</a>
+            <a class="book-link secondary" href="https://esmoli.com/en/" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="800000" data-max="1200000">
+        <input type="radio" name="nights2" value="belmond">
+        <div class="opt-thumb" style="background-image: url('https://img.belmond.com/f_auto/t_2580x1299/photos/lrs/lrs-ext01.jpg')">
+          <div class="check">✓</div>
+          <div class="photo-credit">호텔 공식</div>
+        </div>
+        <div class="opt-body">
+          <div class="opt-head">
+            <div class="opt-name">Belmond La Residencia</div>
+            <div class="opt-price">80~120<span class="unit">만/박</span></div>
+          </div>
+          <div class="opt-meta">5성 럭셔리 · Deià · 트라문타나 산골 절경 · LVMH 그룹</div>
+          <div class="opt-tags">
+            <span class="tag luxury">최고급</span>
+            <span class="tag warn">예산 초과 가능</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.belmond.com/hotels/europe/mallorca/deia/belmond-la-residencia/" target="_blank" rel="noopener">Belmond 공식 →</a>
+            <a class="book-link secondary" href="https://www.booking.com/hotel/es/laresidencia.html?checkin=2026-10-06&checkout=2026-10-08&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴</a>
+          </div>
         </div>
       </label>
 
@@ -302,18 +538,20 @@
   <div class="notes">
     <h4>📌 참고 사항</h4>
     <ul>
-      <li><b>도시세 별도</b>: 4성 미만 €1/인/박, 5성 €4.4/인/박. 2인 3박 기준 약 ₩25,000~50,000</li>
+      <li><b>도시세 별도</b>: 4성 미만 €1/인/박, 5성 €4.4/인/박. 2인 3박 약 ₩25,000~50,000</li>
       <li><b>Cap Vermell</b>: 공식 사이트에서 5/31까지 예약 시 8/16~10/31 숙박 <b>15% 할인</b></li>
-      <li><b>AluaSoul 하프보드</b>: 1일 2식 뷔페 포함, 음료/술 별도. 룸only 대비 +약 10만/박</li>
-      <li>10월은 마요르카 <b>숄더 시즌</b> — 6월 성수기 대비 30~50% 저렴</li>
-      <li>정확한 단가는 부킹닷컴 또는 호텔 공식 사이트에서 10/5 / 10/6~10/8 날짜로 직접 확인 권장</li>
+      <li><b>Finca Ca's Sant</b>: 공식 사이트가 부킹닷컴보다 저렴하다고 안내됨</li>
+      <li><b>북서쪽 운전</b>: 트라문타나 산길은 둘째날 낮에 이동하면 안전 (PMI→Sóller 35분, →Valldemossa 30분, →Deià 45분)</li>
+      <li><b>10월</b>은 마요르카 <b>숄더 시즌</b> — 6월 성수기 대비 30~50% 저렴</li>
+      <li>가격은 시세 추정치 — 정확한 단가는 부킹 링크에서 실제 날짜로 확인</li>
       <li>환불 가능 옵션 우선 → 날짜 변경 가능성 대비</li>
     </ul>
   </div>
 
   <footer>
     조사 기준일: 2026-05-12 · 환율 €1≈₩1,500 / $1≈₩1,400<br>
-    출처: KAYAK · Tripadvisor · Expedia · 호텔 공식 사이트
+    출처: KAYAK · Tripadvisor · Expedia · 호텔 공식 사이트<br>
+    도시 사진: Wikimedia Commons (CC BY-SA)
   </footer>
 
 </div>
@@ -325,11 +563,11 @@
       <div class="sum-empty" id="sum-empty">위에서 두 가지를 선택해 주세요 ☝️</div>
       <div id="sum-rows" style="display:none">
         <div class="sum-row">
-          <span>팔마 1박 (<span id="palma-name">-</span>)</span>
+          <span>팔마 1박 · <span id="palma-name">-</span></span>
           <span class="v" id="palma-price">-</span>
         </div>
         <div class="sum-row">
-          <span>남쪽 2박 (<span id="south-name">-</span>)</span>
+          <span>휴양 2박 · <span id="south-name">-</span></span>
           <span class="v" id="south-price">-</span>
         </div>
         <div class="sum-total">
@@ -351,14 +589,21 @@
     'aluasoul': 'AluaSoul (HB)',
     'capvermell': 'Cap Vermell',
     'canferrereta': 'Can Ferrereta',
+    'finca-cas-sant': 'Finca Ca\'s Sant',
+    'es-petit-valldemossa': 'Es Petit Valldemossa',
+    'es-moli': 'Es Molí Deià',
+    'belmond': 'Belmond La Residencia',
   };
 
   const opts = document.querySelectorAll('.opt');
   opts.forEach(o => {
-    o.addEventListener('click', () => {
+    o.addEventListener('click', (e) => {
+      // 링크 클릭은 카드 선택 막지 말고 통과
+      if (e.target.closest('a')) return;
+      e.preventDefault();
       const input = o.querySelector('input');
-      input.checked = true;
       const group = input.name;
+      input.checked = true;
       document.querySelectorAll('.opt input[name="'+group+'"]').forEach(i => {
         i.closest('.opt').classList.remove('selected');
       });
@@ -368,12 +613,19 @@
   });
 
   function fmt(n){
-    return Math.round(n / 10000); // 만원 단위
+    return Math.round(n / 10000); // 만원
+  }
+
+  // 가격 데이터: data-min/data-max는 1박 기준 → 2박 그룹은 ×2
+  function getRange(card, multiplier){
+    const min = +card.dataset.min * multiplier;
+    const max = +card.dataset.max * multiplier;
+    return { min, max };
   }
 
   function update(){
     const palma = document.querySelector('.opt input[name="palma"]:checked');
-    const south = document.querySelector('.opt input[name="south"]:checked');
+    const south = document.querySelector('.opt input[name="nights2"]:checked');
 
     if (!palma || !south) {
       document.getElementById('sum-empty').style.display = '';
@@ -386,15 +638,15 @@
 
     const pCard = palma.closest('.opt');
     const sCard = south.closest('.opt');
-    const pMin = +pCard.dataset.min, pMax = +pCard.dataset.max;
-    const sMin = +sCard.dataset.min, sMax = +sCard.dataset.max; // already 2-night sums
-    const totalMin = pMin + sMin;
-    const totalMax = pMax + sMax;
+    const p = getRange(pCard, 1);   // 1박
+    const s = getRange(sCard, 2);   // 2박
+    const totalMin = p.min + s.min;
+    const totalMax = p.max + s.max;
 
     document.getElementById('palma-name').textContent = NAMES[palma.value];
     document.getElementById('south-name').textContent = NAMES[south.value];
-    document.getElementById('palma-price').textContent = `${fmt(pMin)}~${fmt(pMax)}만`;
-    document.getElementById('south-price').textContent = `${fmt(sMin)}~${fmt(sMax)}만`;
+    document.getElementById('palma-price').textContent = `${fmt(p.min)}~${fmt(p.max)}만`;
+    document.getElementById('south-price').textContent = `${fmt(s.min)}~${fmt(s.max)}만`;
     document.getElementById('total-min').textContent = fmt(totalMin);
     document.getElementById('total-max').textContent = fmt(totalMax);
   }
