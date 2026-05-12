@@ -303,8 +303,23 @@
     font-size: 12px; color: var(--ink-3);
   }
   .map-head .title { font-weight: 700; color: var(--ink); font-size: 13px; letter-spacing: -0.01em; }
-  .map-legend { display: flex; gap: 12px; font-size: 11px; color: var(--ink-3); }
-  .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+  .map-head .reset {
+    font-size: 11px; font-weight: 600;
+    color: var(--accent); cursor: pointer;
+    background: none; border: none; padding: 4px 8px;
+    border-radius: 6px; display: none;
+  }
+  .map-head .reset:hover { background: var(--accent-bg); }
+  .map-head.has-iso .reset { display: inline-block; }
+  .map-legend { display: flex; flex-wrap: wrap; gap: 4px; font-size: 11px; color: var(--ink-3); }
+  .legend-item {
+    display: inline-flex; align-items: center; gap: 5px;
+    cursor: pointer; padding: 4px 8px; border-radius: 999px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .legend-item:hover { background: var(--surface-2); }
+  .legend-item.muted { opacity: 0.35; }
   .legend-dot {
     width: 8px; height: 8px; border-radius: 50%;
     display: inline-block;
@@ -313,6 +328,7 @@
   .legend-dot.south { background: #ff8c42; }
   .legend-dot.nw { background: #2dd4bf; }
   .legend-dot.airport { background: #0f1115; }
+  .legend-dot.poi { background: #f59e0b; }
   #map { height: 320px; width: 100%; }
   @media (min-width: 600px) { #map { height: 380px; } }
   /* Custom marker style */
@@ -340,6 +356,22 @@
     white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
   }
+  .poi-marker {
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    background: #fff;
+    border: 1.5px solid #f59e0b;
+    color: #b45309;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 700;
+  }
+  .poi-marker:hover { transform: scale(1.15); }
+
+  /* Isolation: dim non-active markers */
+  .leaflet-marker-icon.dim { opacity: 0.18 !important; transition: opacity 0.2s; }
   /* Leaflet 기본 attribution 작게 */
   .leaflet-control-attribution { font-size: 9px; }
 </style>
@@ -358,13 +390,17 @@
     </div>
 
     <div class="map-wrap">
-      <div class="map-head">
-        <span class="title">🗺 후보 숙소 위치</span>
-        <span class="map-legend">
-          <span class="legend-item"><span class="legend-dot airport"></span>공항</span>
-          <span class="legend-item"><span class="legend-dot palma"></span>팔마</span>
-          <span class="legend-item"><span class="legend-dot south"></span>남쪽</span>
-          <span class="legend-item"><span class="legend-dot nw"></span>북서쪽</span>
+      <div class="map-head" id="map-head">
+        <span class="title">🗺 후보 숙소 + 관광지</span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span class="map-legend" id="legend">
+            <span class="legend-item" data-cat="airport"><span class="legend-dot airport"></span>공항</span>
+            <span class="legend-item" data-cat="palma"><span class="legend-dot palma"></span>팔마</span>
+            <span class="legend-item" data-cat="south"><span class="legend-dot south"></span>남쪽</span>
+            <span class="legend-item" data-cat="nw"><span class="legend-dot nw"></span>북서쪽</span>
+            <span class="legend-item" data-cat="poi"><span class="legend-dot poi"></span>관광</span>
+          </span>
+          <button class="reset" id="reset-iso">전체 보기</button>
         </span>
       </div>
       <div id="map"></div>
@@ -772,39 +808,138 @@
     maxZoom: 18,
   }).addTo(map);
 
+  // 관광지 POI
+  const POIS = [
+    ['calo-des-moro',  'Caló des Moro · 남쪽 핵심 해변',     39.3216, 3.1382],
+    ['palma-cathedral','La Seu · 팔마 대성당',              39.5663, 2.6477],
+    ['cap-formentor',  'Cap de Formentor · 북쪽 절경 등대',   39.9583, 3.2163],
+    ['cuevas-drach',   "Cuevas del Drach · 드라크 동굴",       39.5380, 3.3308],
+    ['sa-calobra',     'Sa Calobra · 산악 드라이브 코스',      39.8550, 2.8016],
+    ['valldemossa',    'Real Cartuja · 발데모사 카르투지오',   39.7091, 2.6219],
+    ['port-de-soller', 'Port de Sóller · 목조 트램 종점',     39.7960, 2.6951],
+    ['es-trenc',       'Es Trenc · 천연 모래 해변',           39.3486, 2.9899],
+  ];
+
   // 공항 마커
-  L.marker([39.5517, 2.7388], {
+  const airportMarker = L.marker([39.5517, 2.7388], {
     icon: L.divIcon({
-      className: '',
+      className: 'mk mk-airport',
       html: '<div class="airport-marker">✈ PMI</div>',
       iconSize: [60, 18],
       iconAnchor: [30, 9],
     }),
   }).bindTooltip('Palma Airport (PMI)', {direction: 'top'}).addTo(map);
+  airportMarker._cat = 'airport';
+
+  // 모든 마커 인덱스
+  const allMarkers = [airportMarker];
+  const markerById = {};
 
   // 호텔 마커
-  const markerById = {};
   HOTELS.forEach(([id, name, group, lat, lng]) => {
     const m = L.marker([lat, lng], {
       icon: L.divIcon({
-        className: '',
+        className: 'mk mk-hotel mk-' + group,
         html: `<div class="hotel-marker ${group}" data-id="${id}"></div>`,
         iconSize: [16, 16],
         iconAnchor: [8, 8],
       }),
     }).bindTooltip(name, {direction: 'top'}).addTo(map);
+    m._cat = group;
+    m._id = id;
     markerById[id] = m;
+    allMarkers.push(m);
 
     m.on('click', () => {
       const card = document.querySelector(`.opt input[value="${id}"]`);
       if (card) card.closest('.opt').click();
+      isolateMarker(m);
     });
+  });
+
+  // POI 마커
+  POIS.forEach(([id, name, lat, lng]) => {
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: 'mk mk-poi',
+        html: `<div class="poi-marker">★</div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+      }),
+    }).bindTooltip(name, {direction: 'top'}).addTo(map);
+    m._cat = 'poi';
+    m._id = id;
+    allMarkers.push(m);
+
+    m.on('click', () => isolateMarker(m));
   });
 
   function highlightMarker(id, on){
     const el = markerById[id]?.getElement()?.querySelector('.hotel-marker');
     if (el) el.classList.toggle('selected', on);
   }
+
+  // === Isolation logic ===
+  let isoMarker = null;     // single marker isolated
+  let isoCategory = null;   // category filtered
+
+  function applyVisibility(){
+    allMarkers.forEach(m => {
+      const el = m.getElement();
+      if (!el) return;
+      let visible = true;
+      if (isoMarker && m !== isoMarker) visible = false;
+      if (isoCategory && m._cat !== isoCategory) visible = false;
+      el.classList.toggle('dim', !visible);
+    });
+    document.getElementById('map-head').classList.toggle('has-iso', !!(isoMarker || isoCategory));
+  }
+
+  function isolateMarker(m){
+    if (isoMarker === m) {
+      isoMarker = null;
+    } else {
+      isoMarker = m;
+      isoCategory = null;
+      document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
+    }
+    applyVisibility();
+  }
+
+  function isolateCategory(cat){
+    if (isoCategory === cat) {
+      isoCategory = null;
+    } else {
+      isoCategory = cat;
+      isoMarker = null;
+    }
+    document.querySelectorAll('#legend .legend-item').forEach(li => {
+      li.classList.toggle('muted', isoCategory && li.dataset.cat !== isoCategory);
+    });
+    applyVisibility();
+  }
+
+  // 범례 클릭 = 해당 카테고리만
+  document.querySelectorAll('#legend .legend-item').forEach(li => {
+    li.addEventListener('click', () => isolateCategory(li.dataset.cat));
+  });
+
+  // 빈 지도 클릭 = 전체 복원
+  map.on('click', () => {
+    if (isoMarker || isoCategory) {
+      isoMarker = null;
+      isoCategory = null;
+      document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
+      applyVisibility();
+    }
+  });
+
+  // "전체 보기" 버튼
+  document.getElementById('reset-iso').addEventListener('click', () => {
+    isoMarker = null; isoCategory = null;
+    document.querySelectorAll('#legend .legend-item').forEach(li => li.classList.remove('muted'));
+    applyVisibility();
+  });
 
   const NAMES = {
     'melia': 'Meliá Palma Bay',
