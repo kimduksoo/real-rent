@@ -246,7 +246,9 @@
     border-top: 1px solid var(--line);
     padding: 14px 16px 18px;
     z-index: 50;
+    display: none;
   }
+  .summary.active { display: block; }
   .summary-inner { max-width: 760px; margin: 0 auto; }
   .sum-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -287,6 +289,61 @@
 
   /* Subtle helpers */
   .muted { color: var(--ink-4); }
+
+  /* === Sidebar / nav (mobile top, desktop left) === */
+  .sidebar {
+    position: sticky; top: 0;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    z-index: 60;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .sidebar-brand {
+    font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
+    margin-right: auto;
+  }
+  .sidebar nav { display: flex; gap: 6px; }
+  .nav-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 700;
+    text-decoration: none; color: var(--ink-3);
+    background: var(--surface);
+    cursor: pointer; border: 1px solid transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-item:hover { background: var(--surface-2); }
+  .nav-item.active { background: var(--ink); color: #fff; }
+  .nav-item .nav-emoji { font-size: 14px; line-height: 1; }
+  .nav-item .nav-sub { display: none; font-size: 10.5px; opacity: 0.7; font-weight: 500; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  @media (min-width: 1000px) {
+    body { display: grid; grid-template-columns: 240px 1fr; align-items: start; min-height: 100vh; }
+    .sidebar {
+      position: sticky; top: 0; height: 100vh;
+      flex-direction: column; align-items: stretch;
+      border-right: 1px solid var(--line);
+      border-bottom: none;
+      padding: 28px 18px;
+      backdrop-filter: none;
+    }
+    .sidebar-brand { margin: 0 8px 20px; font-size: 15px; }
+    .sidebar nav { flex-direction: column; gap: 4px; }
+    .nav-item {
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13.5px;
+      flex-wrap: wrap;
+    }
+    .nav-item .nav-sub { display: block; flex-basis: 100%; padding-left: 22px; }
+    .summary { left: 240px; }
+  }
 
   /* Map */
   .map-wrap {
@@ -385,6 +442,25 @@
 </head>
 <body>
 
+<aside class="sidebar">
+  <div class="sidebar-brand">🌙 신혼여행</div>
+  <nav>
+    <a class="nav-item active" data-view="mallorca" href="#mallorca">
+      <span class="nav-emoji">🏖</span>
+      <span>마요르카</span>
+      <span class="nav-sub">10/5–10/8 · 3박</span>
+    </a>
+    <a class="nav-item" data-view="barcelona" href="#barcelona">
+      <span class="nav-emoji">🏛</span>
+      <span>바르셀로나</span>
+      <span class="nav-sub">10/8–10/11 · 3박</span>
+    </a>
+  </nav>
+</aside>
+
+<main class="main">
+
+<section id="view-mallorca" class="view active">
 <div class="wrap">
 
   <header>
@@ -883,9 +959,197 @@
   </footer>
 
 </div>
+</section>
 
-<!-- Sticky summary -->
-<div class="summary">
+<!-- ========== BARCELONA VIEW ========== -->
+<section id="view-barcelona" class="view">
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Barcelona · 2026.10.08–10.11 · 3 nights</div>
+    <h1>바르셀로나 신혼여행<br>숙소 의사결정</h1>
+    <p class="lede">시내 호텔 1곳 3박. 카드를 골라 시세·예약 링크를 한 번에 보세요.</p>
+    <div class="flight">
+      <div class="flight-row"><span class="date">10/8</span> PMI 18:35 → <b>BCN 19:35</b> · Vueling</div>
+      <div class="flight-row"><span class="date">10/11</span> <b>BCN 16:35</b> → DOH → ICN 10/12 17:05 · Qatar</div>
+    </div>
+
+    <div class="map-wrap">
+      <div class="map-head" id="map-head-bcn">
+        <span class="title">🗺 바르셀로나 호텔 + 가우디·구도심 POI</span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span class="map-legend" id="legend-bcn">
+            <span class="legend-item" data-cat="hotel"><span class="legend-dot palma"></span>호텔</span>
+            <span class="legend-item" data-cat="gaudi"><span class="legend-dot south"></span>가우디</span>
+            <span class="legend-item" data-cat="culture"><span class="legend-dot nw"></span>구도심·문화</span>
+            <span class="legend-item" data-cat="view"><span class="legend-dot poi"></span>전망·기타</span>
+          </span>
+          <button class="reset" id="reset-iso-bcn">전체 보기</button>
+        </span>
+      </div>
+      <div class="map-hint">💡 점·범례를 여러 개 클릭하면 다중 선택</div>
+      <div id="map-bcn" style="height:320px; width:100%"></div>
+    </div>
+  </header>
+
+  <section class="step">
+    <div class="step-head">
+      <div class="step-num">01</div>
+      <div class="step-meta">
+        <div class="step-tag">Step 1 of 1</div>
+        <div class="step-title">시내 호텔 3박</div>
+        <div class="step-sub">에이샴플레·구도심 도보권 · 가격은 1박 기준</div>
+      </div>
+    </div>
+
+    <div class="cards" data-group="bcn">
+
+      <label class="opt" data-min="130000" data-max="210000">
+        <input type="radio" name="bcn" value="h10-universitat">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/05/55/8f/ice-91265-4762940_3XL-566699.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">H10 Universitat</div>
+          <div class="opt-meta">4성 · Ronda Universitat · 카탈루냐 광장 도보 5분</div>
+          <div class="opt-price-row"><span class="opt-price">13~21<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 가성비 최강</span>
+            <span class="tag">시내 한복판</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/h10-universitat.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            <a class="book-link secondary" href="https://www.h10hotels.com/en/barcelona-hotels/h10-universitat" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="160000" data-max="240000">
+        <input type="radio" name="bcn" value="h10-catalunya">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/91/ae/4e/ice-91266-4744842_3XL-520987.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">H10 Catalunya Plaza (Boutique)</div>
+          <div class="opt-meta">4성 부티크 · Pl. Catalunya 광장 정면 · 19세기 건물</div>
+          <div class="opt-price-row"><span class="opt-price">16~24<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag rec">광장 정면</span>
+            <span class="tag">감성 부티크</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/h10-catalunya-plaza.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            <a class="book-link secondary" href="https://www.h10hotels.com/en/barcelona-hotels/h10-catalunya-plaza" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="160000" data-max="250000">
+        <input type="radio" name="bcn" value="h10-urquinaona">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/2f/84/7a/expedia_group-550372-170094045-731269.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">H10 Urquinaona Plaza</div>
+          <div class="opt-meta">4성 · Pl. Urquinaona · 카탈루냐 광장 도보 · 루프탑 풀</div>
+          <div class="opt-price-row"><span class="opt-price">16~25<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag">루프탑 plunge pool</span>
+            <span class="tag">조용한 입지</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/h10-urquinaona-plaza.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            <a class="book-link secondary" href="https://www.h10hotels.com/en/barcelona-hotels/h10-urquinaona-plaza" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="170000" data-max="340000">
+        <input type="radio" name="bcn" value="h10-casanova">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/24/be/ed/ice-163026-4bb756-246827.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">H10 Casanova</div>
+          <div class="opt-meta">4성 · Gran Via · 루프탑 + 자쿠지 + 터키식 스팀</div>
+          <div class="opt-price-row"><span class="opt-price">17~34<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag">루프탑 + 자쿠지</span>
+            <span class="tag">스파 시설</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/h10-casanova.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            <a class="book-link secondary" href="https://www.h10hotels.com/en/barcelona-hotels/h10-casanova" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="200000" data-max="310000">
+        <input type="radio" name="bcn" value="h10-metropolitan">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/49/c1/ad/ice-123027-65962418_3XL-221295.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">H10 Metropolitan</div>
+          <div class="opt-meta">4성 · Rambla de Catalunya · 카탈루냐 광장 도보 2분</div>
+          <div class="opt-price-row"><span class="opt-price">20~31<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag rec">⭐ 블로거 픽</span>
+            <span class="tag">옥상 풀+테라스</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.h10hotels.com/en/barcelona-hotels/h10-metropolitan" target="_blank" rel="noopener">공식 (직예약 할인) →</a>
+            <a class="book-link secondary" href="https://www.booking.com/hotel/es/h10-metropolitan.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴</a>
+          </div>
+        </div>
+      </label>
+
+      <label class="opt" data-min="300000" data-max="450000">
+        <input type="radio" name="bcn" value="yurbban">
+        <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/f7/d5/d5/expedia_group-2214075-6b45a9-534406.jpg?width=1200&height=630&crop=true')">
+          <span class="check-pill">선택됨</span>
+        </div>
+        <div class="opt-body">
+          <div class="opt-name">Yurbban Trafalgar</div>
+          <div class="opt-meta">4성 부티크 · 360° 루프탑 풀 · 미슐랭 가이드 등재</div>
+          <div class="opt-price-row"><span class="opt-price">30~45<span class="unit">만/박</span></span></div>
+          <div class="opt-tags">
+            <span class="tag acc">신혼여행 특화</span>
+            <span class="tag">와인·치즈 happy hour</span>
+            <span class="tag">커플 평점 9.7</span>
+          </div>
+          <div class="opt-actions">
+            <a class="book-link" href="https://www.booking.com/hotel/es/yurbban-trafalgar.html?checkin=2026-10-08&checkout=2026-10-11&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            <a class="book-link secondary" href="https://trafalgar.yurbban.com/" target="_blank" rel="noopener">공식</a>
+          </div>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <div class="notes">
+    <h4>참고</h4>
+    <ul>
+      <li><b>H10 계열</b>: 공식 사이트 직접 예약 시 프로모션 적용으로 부킹닷컴보다 저렴할 수 있음</li>
+      <li><b>위치 우선순위</b>: 카탈루냐 광장 / 람블라스 / 그라시아 거리 도보권이 베스트</li>
+      <li><b>사전 예약 필수</b>: 사그라다 파밀리아 + 구엘 공원 + 카사 바트요/밀라 — 성수기 매진 빠름</li>
+      <li><b>시내세</b>: 4성 €3.5/인/박, 5성 €5/인/박 별도 (2인 3박 약 ₩30,000~45,000)</li>
+    </ul>
+  </div>
+
+  <footer>
+    조사 기준일 2026-05-12 · 환율 €1≈₩1,500 / $1≈₩1,400<br>
+    출처 KAYAK · Tripadvisor · 호텔 공식
+  </footer>
+
+</div>
+</section>
+
+</main>
+
+<!-- Sticky summary (mallorca) -->
+<div class="summary active" id="summary-mallorca">
   <div class="summary-inner">
     <div class="progress">
       <div class="dot" id="d1"></div>
@@ -904,6 +1168,23 @@
       <div class="sum-total">
         <span class="label">3박 합계</span>
         <span class="total"><span id="total-min">-</span>~<span id="total-max">-</span><span class="unit">만원</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky summary (barcelona) -->
+<div class="summary" id="summary-barcelona">
+  <div class="summary-inner">
+    <div id="bcn-sum-empty" class="sum-empty">호텔을 선택해 주세요</div>
+    <div id="bcn-sum-rows" style="display:none">
+      <div class="sum-row">
+        <span><span class="muted">바르셀로나 3박</span> <span id="bcn-name">-</span></span>
+        <span class="v" id="bcn-price-each">-</span>
+      </div>
+      <div class="sum-total">
+        <span class="label">3박 합계</span>
+        <span class="total"><span id="bcn-total-min">-</span>~<span id="bcn-total-max">-</span><span class="unit">만원</span></span>
       </div>
     </div>
   </div>
@@ -1161,6 +1442,176 @@
     document.getElementById('total-min').textContent = fmt(pMin + sMin);
     document.getElementById('total-max').textContent = fmt(pMax + sMax);
   }
+
+  // ===== Barcelona =====
+  const BCN_NAMES = {
+    'h10-universitat':  'H10 Universitat',
+    'h10-catalunya':    'H10 Catalunya Plaza',
+    'h10-urquinaona':   'H10 Urquinaona Plaza',
+    'h10-casanova':     'H10 Casanova',
+    'h10-metropolitan': 'H10 Metropolitan',
+    'yurbban':          'Yurbban Trafalgar',
+  };
+  const BCN_HOTELS = [
+    ['h10-universitat',  'H10 Universitat',           41.3865, 2.1648],
+    ['h10-catalunya',    'H10 Catalunya Plaza',       41.3868, 2.1693],
+    ['h10-urquinaona',   'H10 Urquinaona Plaza',      41.3911, 2.1734],
+    ['h10-casanova',     'H10 Casanova',              41.3863, 2.1591],
+    ['h10-metropolitan', 'H10 Metropolitan',          41.3873, 2.1681],
+    ['yurbban',          'Yurbban Trafalgar',         41.3895, 2.1772],
+  ];
+  const BCN_POIS = [
+    // 가우디
+    ['sagrada',     'Sagrada Família · 가우디 미완성 성당',         'gaudi',   41.4036, 2.1744],
+    ['park-guell',  'Park Güell · 구엘 공원',                       'gaudi',   41.4145, 2.1527],
+    ['casa-batllo', 'Casa Batlló · 가우디 부서진 가면 외관',        'gaudi',   41.3917, 2.1649],
+    ['casa-mila',   'Casa Milà (La Pedrera) · 가우디',              'gaudi',   41.3954, 2.1619],
+    ['casa-vicens', 'Casa Vicens · 가우디 첫 작품',                 'gaudi',   41.4034, 2.1502],
+    // 구도심·문화
+    ['rambla',      'La Rambla · 람블라스 거리',                    'culture', 41.3818, 2.1735],
+    ['boqueria',    'Mercat de la Boqueria · 시장',                 'culture', 41.3818, 2.1718],
+    ['gothic',      'Catedral · 고딕지구 대성당',                   'culture', 41.3839, 2.1764],
+    ['picasso',     'Museu Picasso · 피카소 미술관',                'culture', 41.3851, 2.1813],
+    ['placa-cat',   'Plaça Catalunya · 카탈루냐 광장',              'culture', 41.3870, 2.1701],
+    // 전망·기타
+    ['bunkers',     'Bunkers del Carmel · 360 전망대',              'view',    41.4180, 2.1592],
+    ['barceloneta', 'Barceloneta · 시내 해변',                       'view',    41.3784, 2.1922],
+    ['magic-fount', 'Magic Fountain · 몬주익 분수쇼',                'view',    41.3712, 2.1517],
+  ];
+
+  const mapBcn = L.map('map-bcn', { zoomControl: true, scrollWheelZoom: false })
+    .setView([41.395, 2.17], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    subdomains: 'abcd', maxZoom: 18,
+  }).addTo(mapBcn);
+
+  const bcnMarkers = [];
+  const bcnMarkerById = {};
+
+  BCN_HOTELS.forEach(([id, name, lat, lng]) => {
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: 'mk mk-hotel mk-palma',
+        html: `<div class="hotel-marker palma" data-id="${id}"></div>`,
+        iconSize: [16, 16], iconAnchor: [8, 8],
+      }),
+    }).bindTooltip(name, {direction: 'top'}).addTo(mapBcn);
+    m._cat = 'hotel'; m._id = id;
+    bcnMarkers.push(m); bcnMarkerById[id] = m;
+    m.on('click', () => {
+      const card = document.querySelector(`.opt input[value="${id}"]`);
+      if (card) card.closest('.opt').click();
+      toggleMarkerBcn(m);
+    });
+  });
+
+  BCN_POIS.forEach(([id, name, cat, lat, lng]) => {
+    const colorClass = cat === 'gaudi' ? 'south' : (cat === 'culture' ? 'nw' : 'palma');
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: 'mk mk-poi',
+        html: cat === 'view'
+          ? `<div class="poi-marker">★</div>`
+          : `<div class="hotel-marker ${colorClass}"></div>`,
+        iconSize: cat === 'view' ? [22,22] : [16,16],
+        iconAnchor: cat === 'view' ? [11,11] : [8,8],
+      }),
+    }).bindTooltip(name, {direction: 'top'}).addTo(mapBcn);
+    m._cat = cat; m._id = id;
+    bcnMarkers.push(m);
+    m.on('click', () => toggleMarkerBcn(m));
+  });
+
+  // BCN isolation (별도 인스턴스)
+  const bcnSelMarkers = new Set();
+  const bcnSelCats = new Set();
+  function bcnApplyVis(){
+    const hasFilter = bcnSelMarkers.size || bcnSelCats.size;
+    bcnMarkers.forEach(m => {
+      const el = m.getElement();
+      if (!el) return;
+      let visible = true;
+      if (hasFilter) visible = bcnSelMarkers.has(m) || bcnSelCats.has(m._cat);
+      el.classList.toggle('dim', !visible);
+    });
+    document.getElementById('map-head-bcn').classList.toggle('has-iso', !!hasFilter);
+  }
+  function toggleMarkerBcn(m){
+    if (bcnSelMarkers.has(m)) bcnSelMarkers.delete(m); else bcnSelMarkers.add(m);
+    bcnApplyVis();
+  }
+  function bcnSyncLegend(){
+    document.querySelectorAll('#legend-bcn .legend-item').forEach(li => {
+      li.classList.toggle('muted', bcnSelCats.size && !bcnSelCats.has(li.dataset.cat));
+    });
+  }
+  function bcnToggleCat(c){
+    if (bcnSelCats.has(c)) bcnSelCats.delete(c); else bcnSelCats.add(c);
+    bcnSyncLegend(); bcnApplyVis();
+  }
+  function bcnReset(){ bcnSelMarkers.clear(); bcnSelCats.clear(); bcnSyncLegend(); bcnApplyVis(); }
+  document.querySelectorAll('#legend-bcn .legend-item').forEach(li => {
+    li.addEventListener('click', e => { e.stopPropagation(); bcnToggleCat(li.dataset.cat); });
+  });
+  mapBcn.on('click', () => { if (bcnSelMarkers.size || bcnSelCats.size) bcnReset(); });
+  document.getElementById('reset-iso-bcn').addEventListener('click', bcnReset);
+
+  // BCN 호텔 카드 선택 (자체 핸들러)
+  document.querySelectorAll('.opt input[name="bcn"]').forEach(input => {
+    const card = input.closest('.opt');
+    card.addEventListener('click', e => {
+      if (e.target.closest('a')) return;
+      e.preventDefault();
+      document.querySelectorAll('.opt input[name="bcn"]').forEach(i => {
+        i.closest('.opt').classList.remove('selected');
+        const mk = bcnMarkerById[i.value]?.getElement()?.querySelector('.hotel-marker');
+        if (mk) mk.classList.remove('selected');
+      });
+      input.checked = true;
+      card.classList.add('selected');
+      const mk = bcnMarkerById[input.value]?.getElement()?.querySelector('.hotel-marker');
+      if (mk) mk.classList.add('selected');
+      bcnUpdate();
+    });
+  });
+
+  function bcnUpdate(){
+    const checked = document.querySelector('.opt input[name="bcn"]:checked');
+    if (!checked){
+      document.getElementById('bcn-sum-empty').style.display = '';
+      document.getElementById('bcn-sum-rows').style.display = 'none';
+      return;
+    }
+    document.getElementById('bcn-sum-empty').style.display = 'none';
+    document.getElementById('bcn-sum-rows').style.display = '';
+    const card = checked.closest('.opt');
+    const min = +card.dataset.min, max = +card.dataset.max;
+    document.getElementById('bcn-name').textContent = BCN_NAMES[checked.value];
+    document.getElementById('bcn-price-each').textContent = `${fmt(min)}~${fmt(max)}만/박`;
+    document.getElementById('bcn-total-min').textContent = fmt(min * 3);
+    document.getElementById('bcn-total-max').textContent = fmt(max * 3);
+  }
+
+  // ===== View routing =====
+  function setView(v){
+    document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
+    document.querySelectorAll('.summary').forEach(s => s.classList.toggle('active', s.id === 'summary-' + v));
+    // Leaflet 사이즈 재계산 (display:none → block 후 필요)
+    setTimeout(() => {
+      if (v === 'mallorca') map.invalidateSize();
+      if (v === 'barcelona') mapBcn.invalidateSize();
+    }, 50);
+    history.replaceState(null, '', '#' + v);
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.addEventListener('click', e => { e.preventDefault(); setView(n.dataset.view); });
+  });
+  // 초기 라우팅
+  const initial = location.hash.replace('#', '');
+  if (initial === 'barcelona' || initial === 'mallorca') setView(initial);
 </script>
 
 </body>
