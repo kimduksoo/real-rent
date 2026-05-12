@@ -715,10 +715,10 @@
   .legend-dot.poi { background: #f59e0b; }
   #map { height: 320px; width: 100%; }
   @media (min-width: 600px) { #map { height: 380px; } }
-  /* Isolate Leaflet internal z-indexes so it never escapes its container */
+  /* Isolate Leaflet internal z-indexes so it never escapes its container.
+     isolation alone is enough — don't override leaflet pane z-indexes
+     (those control marker/tooltip/popup stacking inside the map). */
   .map-wrap, .leaflet-container { isolation: isolate; }
-  .leaflet-control { z-index: 1 !important; }
-  .leaflet-pane { z-index: auto !important; }
   /* Custom marker style */
   .hotel-marker {
     width: 12px; height: 12px;
