@@ -421,12 +421,87 @@
       <div class="step-num">01</div>
       <div class="step-meta">
         <div class="step-tag">Step 1 of 2</div>
-        <div class="step-title">팔마 공항 근처 1박</div>
-        <div class="step-sub">10/5 (월) 19:30~20:00 체크인 · 잠만 자고 다음날 이동</div>
+        <div class="step-title">팔마 1박</div>
+        <div class="step-sub">10/5 (월) 19:30~20:00 체크인 · 두 컨셉 중 하나 선택</div>
       </div>
     </div>
 
-    <div class="cards" data-group="palma">
+    <div class="group">
+      <div class="group-head"><span class="pin warm">🏛</span>구도심 도보권 — 저녁 시내 식사 + 아침 산책</div>
+      <div class="cards" data-group="palma-old">
+
+        <label class="opt" data-min="230000" data-max="350000">
+          <input type="radio" name="palma" value="hotel-cort">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/03/25/93/expedia_group-2001732-188095295-232141.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Hotel Cort</div>
+            <div class="opt-meta">4성 · Plaça Cort 광장 · 대성당 도보 5분 · 옥상풀</div>
+            <div class="opt-price-row">
+              <span class="opt-price">23~35<span class="unit">만/박</span></span>
+            </div>
+            <div class="opt-tags">
+              <span class="tag rec">시내 한복판</span>
+              <span class="tag">조식 포함</span>
+              <span class="tag">평점 9.2</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/cort.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            </div>
+          </div>
+        </label>
+
+        <label class="opt" data-min="280000" data-max="450000">
+          <input type="radio" name="palma" value="posada">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/61/2b/26/expedia_group-750592-130646905-699123.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Boutique Hotel Posada Terra Santa</div>
+            <div class="opt-meta">4성 부티크 · 대성당 인근 · Tripadvisor #3</div>
+            <div class="opt-price-row">
+              <span class="opt-price">28~45<span class="unit">만/박</span></span>
+            </div>
+            <div class="opt-tags">
+              <span class="tag rec">감성 부티크</span>
+              <span class="tag">조용한 골목</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/posada-terra-santa.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            </div>
+          </div>
+        </label>
+
+        <label class="opt" data-min="300000" data-max="500000">
+          <input type="radio" name="palma" value="calatrava">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/98/be/a1/expedia_group-691911-c2b40f60-980145.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Boutique Hotel Calatrava</div>
+            <div class="opt-meta">5성 어덜트온리 · Parc de la Mar · 대성당 350m · 무료 스파</div>
+            <div class="opt-price-row">
+              <span class="opt-price">30~50<span class="unit">만/박</span></span>
+            </div>
+            <div class="opt-tags">
+              <span class="tag acc">5성 부티크</span>
+              <span class="tag">바다·구도심뷰</span>
+              <span class="tag">스파 포함</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/boutique-calatrava.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+              <a class="book-link secondary" href="https://www.calatravahotel.com/" target="_blank" rel="noopener">공식</a>
+            </div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-head"><span class="pin cool">✈</span>공항 근처 — 잠만 자고 떠나기</div>
+      <div class="cards" data-group="palma">
 
       <label class="opt" data-min="120000" data-max="180000">
         <input type="radio" name="palma" value="melia">
@@ -536,6 +611,7 @@
         </div>
       </label>
 
+      </div>
     </div>
   </section>
 
@@ -792,6 +868,11 @@
   // ===== Map =====
   const HOTELS = [
     // [id, name, group, lat, lng]
+    // 팔마 구도심 (시내 도보권)
+    ['hotel-cort',           'Hotel Cort',              'palma', 39.5713, 2.6502],
+    ['posada',               'Posada Terra Santa',      'palma', 39.5680, 2.6489],
+    ['calatrava',            'Boutique Hotel Calatrava','palma', 39.5663, 2.6517],
+    // 팔마 공항 근처
     ['melia',                'Meliá Palma Bay',         'palma', 39.5635, 2.6342],
     ['amic-pastilla',        'Amic Can Pastilla',       'palma', 39.5340, 2.7345],
     ['amic-mira',            'Amic Miraflores',         'palma', 39.5260, 2.7470],
@@ -971,6 +1052,9 @@
     'amic-mira': 'Amic Miraflores',
     'hm-balanguera': 'HM Balanguera Beach',
     'puresalt': 'Pure Salt Garonda',
+    'hotel-cort': 'Hotel Cort',
+    'posada': 'Posada Terra Santa',
+    'calatrava': 'Boutique Hotel Calatrava',
     'aluasoul': 'AluaSoul (HB)',
     'capvermell': 'Cap Vermell',
     'canferrereta': 'Can Ferrereta',
