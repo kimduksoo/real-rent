@@ -336,7 +336,7 @@
   .sidebar-backdrop {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 199;
+    z-index: 9998;
     opacity: 0; pointer-events: none;
     transition: opacity 0.2s;
   }
@@ -350,7 +350,7 @@
     border-right: 1px solid var(--line);
     box-shadow: 0 0 24px rgba(0,0,0,0.06);
     padding: 18px 10px 16px;
-    z-index: 200;
+    z-index: 9999;
     transform: translateX(-100%);
     transition: transform 0.22s ease;
     overflow-y: auto;
@@ -622,6 +622,10 @@
   .legend-dot.poi { background: #f59e0b; }
   #map { height: 320px; width: 100%; }
   @media (min-width: 600px) { #map { height: 380px; } }
+  /* Isolate Leaflet internal z-indexes so it never escapes its container */
+  .map-wrap, .leaflet-container { isolation: isolate; }
+  .leaflet-control { z-index: 1 !important; }
+  .leaflet-pane { z-index: auto !important; }
   /* Custom marker style */
   .hotel-marker {
     width: 12px; height: 12px;
