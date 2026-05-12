@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마요르카 신혼여행 숙소 의사결정</title>
+<style>
+  :root {
+    --brand: #3182f6;
+    --brand-bg: #e8f3ff;
+    --bg: #f7f8fa;
+    --card: #fff;
+    --text: #191f28;
+    --text-sub: #4e5968;
+    --text-muted: #8b95a1;
+    --border: #e5e8eb;
+    --warn: #ff6b6b;
+    --gold: #f59f00;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 15px;
+    padding-bottom: 200px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+  /* Header */
+  header { padding: 24px 0 8px; }
+  .badge-trip {
+    display: inline-block;
+    background: var(--brand-bg);
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 26px; letter-spacing: -0.5px; line-height: 1.3; margin-bottom: 6px; }
+  .sub { color: var(--text-sub); font-size: 14px; }
+
+  /* Flight info */
+  .flight-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+  }
+  .flight-card h3 { font-size: 14px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+  .flight-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
+  .flight-row .date { font-weight: 700; min-width: 50px; color: var(--brand); }
+  .flight-row .arrow { color: var(--text-muted); }
+
+  /* Step */
+  .step { margin: 28px 0 12px; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: var(--brand); color: #fff;
+    border-radius: 50%;
+    font-size: 12px; font-weight: 700;
+    margin-right: 8px;
+  }
+  .step h2 {
+    font-size: 18px; letter-spacing: -0.3px;
+    display: flex; align-items: center;
+    margin-bottom: 4px;
+  }
+  .step .step-sub { color: var(--text-sub); font-size: 13px; padding-left: 32px; margin-bottom: 16px; }
+
+  /* Cards */
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .opt:hover { box-shadow: var(--shadow-hover); }
+  .opt.selected {
+    border-color: var(--brand);
+    background: var(--brand-bg);
+  }
+  .opt input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+  .opt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+  .opt-name { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .opt-price {
+    font-weight: 700; font-size: 15px;
+    color: var(--text); white-space: nowrap;
+  }
+  .opt-price .unit { color: var(--text-muted); font-weight: 500; font-size: 12px; margin-left: 2px; }
+  .opt-meta { color: var(--text-sub); font-size: 13px; margin-bottom: 6px; }
+  .opt-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    background: #f1f3f5; color: var(--text-sub);
+  }
+  .tag.rec { background: #fff3bf; color: #5c3c00; font-weight: 700; }
+  .tag.warn { background: #ffe3e3; color: #c92a2a; }
+  .tag.gold { background: #fff8db; color: #846200; }
+
+  /* Summary (sticky bottom) */
+  .summary {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    padding: 14px 16px 18px;
+    z-index: 50;
+  }
+  .summary-inner { max-width: 720px; margin: 0 auto; }
+  .sum-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-sub); padding: 2px 0; }
+  .sum-row .v { color: var(--text); font-weight: 600; }
+  .sum-total {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .sum-total .label { font-size: 13px; color: var(--text-sub); }
+  .sum-total .total {
+    font-size: 24px; font-weight: 800; color: var(--brand);
+    letter-spacing: -0.5px;
+  }
+  .sum-total .total .unit { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+  .sum-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 8px 0; }
+
+  /* Notes */
+  .notes {
+    margin-top: 24px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .notes h4 { font-size: 14px; color: var(--text); margin-bottom: 8px; }
+  .notes ul { padding-left: 18px; }
+  .notes li { margin: 4px 0; }
+  .notes b { color: var(--text); }
+
+  footer {
+    text-align: center; padding: 24px 16px; color: var(--text-muted); font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="badge-trip">10/5 (월) → 10/8 (목) · 마요르카 3박</span>
+    <h1>🌙 마요르카 신혼여행<br>숙소 결정 도구</h1>
+    <p class="sub">팔마 공항 1박 + 남쪽 2박 — 카드를 선택하면 합계가 자동 계산돼요</p>
+  </header>
+
+  <div class="flight-card">
+    <h3>✈️ 비행 일정</h3>
+    <div class="flight-row"><span class="date">10/5</span> ICN 01:20 → DOH → MAD → <b>PMI 17:10</b></div>
+    <div class="flight-row"><span class="date">10/8</span> <b>PMI 18:35</b> → BCN 19:35 (Vueling)</div>
+  </div>
+
+  <!-- Step 1 -->
+  <section class="step">
+    <h2><span class="step-num">1</span> 팔마 공항 근처 1박</h2>
+    <p class="step-sub">10/5 (월) 19:30~20:00 체크인 — 잠만 자고 다음날 남쪽 이동</p>
+
+    <div class="cards" data-group="palma">
+
+      <label class="opt" data-min="120000" data-max="180000">
+        <input type="radio" name="palma" value="melia">
+        <div class="opt-head">
+          <div class="opt-name">Meliá Palma Bay</div>
+          <div class="opt-price">12~18<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">4성 · 팔마 시내 베이뷰 · 공항 차 15분</div>
+        <div class="opt-tags">
+          <span class="tag rec">⭐ 추천</span>
+          <span class="tag">시내 분위기</span>
+          <span class="tag">공항버스 정류장 앞</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="80000" data-max="130000">
+        <input type="radio" name="palma" value="amic-pastilla">
+        <div class="opt-head">
+          <div class="opt-name">Hotel Amic Can Pastilla</div>
+          <div class="opt-price">8~13<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">4성 · Can Pastilla · 공항 차 5분</div>
+        <div class="opt-tags">
+          <span class="tag rec">⭐ 가성비</span>
+          <span class="tag">진짜 공항 근처</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="100000" data-max="150000">
+        <input type="radio" name="palma" value="amic-mira">
+        <div class="opt-head">
+          <div class="opt-name">Hotel Amic Miraflores</div>
+          <div class="opt-price">10~15<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">4성 · Playa de Palma · 공항 차 5분</div>
+        <div class="opt-tags">
+          <span class="tag">해변 도보 1분</span>
+          <span class="tag">야외 풀</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="100000" data-max="160000">
+        <input type="radio" name="palma" value="hm-balanguera">
+        <div class="opt-head">
+          <div class="opt-name">HM Balanguera Beach</div>
+          <div class="opt-price">10~16<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">4성 · Playa de Palma · 공항 차 1분</div>
+        <div class="opt-tags">
+          <span class="tag">공항 최근접</span>
+          <span class="tag">해변 인접</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="300000" data-max="400000">
+        <input type="radio" name="palma" value="puresalt">
+        <div class="opt-head">
+          <div class="opt-name">Pure Salt Garonda</div>
+          <div class="opt-price">30~40<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">5성 어덜트 온리 · Playa de Palma · 공항 차 5분</div>
+        <div class="opt-tags">
+          <span class="tag warn">컨셉 비매칭</span>
+          <span class="tag">잠만 자기엔 비쌈</span>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <!-- Step 2 -->
+  <section class="step">
+    <h2><span class="step-num">2</span> 남쪽 휴양 2박</h2>
+    <p class="step-sub">10/6 (화) ~ 10/7 (수) — 평지 1시간 운전 / 가격은 1박 기준</p>
+
+    <div class="cards" data-group="south">
+
+      <label class="opt" data-min="450000" data-max="600000" data-nights="2">
+        <input type="radio" name="south" value="aluasoul">
+        <div class="opt-head">
+          <div class="opt-name">AluaSoul Mallorca Resort</div>
+          <div class="opt-price">45~60<span class="unit">만/박 (HB)</span></div>
+        </div>
+        <div class="opt-meta">4성 어덜트 온리 · Cala d'Or · 프라이빗 비치</div>
+        <div class="opt-tags">
+          <span class="tag rec">⭐ 가성비·휴양 베스트</span>
+          <span class="tag">하프보드 포함</span>
+          <span class="tag">10월 연중 최저가</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="500000" data-max="800000" data-nights="2">
+        <input type="radio" name="south" value="capvermell">
+        <div class="opt-head">
+          <div class="opt-name">Cap Vermell Grand Hotel</div>
+          <div class="opt-price">50~80<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">5성 · Capdepera · 옛 파크하얏트 · 미슐랭 2스타</div>
+        <div class="opt-tags">
+          <span class="tag gold">15% 프로모 (5/31까지)</span>
+          <span class="tag">대형 리조트</span>
+          <span class="tag">먹방 좋음</span>
+        </div>
+      </label>
+
+      <label class="opt" data-min="700000" data-max="900000" data-nights="2">
+        <input type="radio" name="south" value="canferrereta">
+        <div class="opt-head">
+          <div class="opt-name">Can Ferrereta</div>
+          <div class="opt-price">70~90<span class="unit">만/박</span></div>
+        </div>
+        <div class="opt-meta">5성 어덜트 온리 부티크 · Santanyí · 스파</div>
+        <div class="opt-tags">
+          <span class="tag">감성 끝판왕</span>
+          <span class="tag">Small Luxury Hotels</span>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <div class="notes">
+    <h4>📌 참고 사항</h4>
+    <ul>
+      <li><b>도시세 별도</b>: 4성 미만 €1/인/박, 5성 €4.4/인/박. 2인 3박 기준 약 ₩25,000~50,000</li>
+      <li><b>Cap Vermell</b>: 공식 사이트에서 5/31까지 예약 시 8/16~10/31 숙박 <b>15% 할인</b></li>
+      <li><b>AluaSoul 하프보드</b>: 1일 2식 뷔페 포함, 음료/술 별도. 룸only 대비 +약 10만/박</li>
+      <li>10월은 마요르카 <b>숄더 시즌</b> — 6월 성수기 대비 30~50% 저렴</li>
+      <li>정확한 단가는 부킹닷컴 또는 호텔 공식 사이트에서 10/5 / 10/6~10/8 날짜로 직접 확인 권장</li>
+      <li>환불 가능 옵션 우선 → 날짜 변경 가능성 대비</li>
+    </ul>
+  </div>
+
+  <footer>
+    조사 기준일: 2026-05-12 · 환율 €1≈₩1,500 / $1≈₩1,400<br>
+    출처: KAYAK · Tripadvisor · Expedia · 호텔 공식 사이트
+  </footer>
+
+</div>
+
+<!-- Sticky summary -->
+<div class="summary">
+  <div class="summary-inner">
+    <div id="sum-detail">
+      <div class="sum-empty" id="sum-empty">위에서 두 가지를 선택해 주세요 ☝️</div>
+      <div id="sum-rows" style="display:none">
+        <div class="sum-row">
+          <span>팔마 1박 (<span id="palma-name">-</span>)</span>
+          <span class="v" id="palma-price">-</span>
+        </div>
+        <div class="sum-row">
+          <span>남쪽 2박 (<span id="south-name">-</span>)</span>
+          <span class="v" id="south-price">-</span>
+        </div>
+        <div class="sum-total">
+          <span class="label">마요르카 3박 합계</span>
+          <span class="total"><span id="total-min">-</span>~<span id="total-max">-</span><span class="unit"> 만원</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const NAMES = {
+    'melia': 'Meliá Palma Bay',
+    'amic-pastilla': 'Amic Can Pastilla',
+    'amic-mira': 'Amic Miraflores',
+    'hm-balanguera': 'HM Balanguera Beach',
+    'puresalt': 'Pure Salt Garonda',
+    'aluasoul': 'AluaSoul (HB)',
+    'capvermell': 'Cap Vermell',
+    'canferrereta': 'Can Ferrereta',
+  };
+
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => {
+    o.addEventListener('click', () => {
+      const input = o.querySelector('input');
+      input.checked = true;
+      const group = input.name;
+      document.querySelectorAll('.opt input[name="'+group+'"]').forEach(i => {
+        i.closest('.opt').classList.remove('selected');
+      });
+      o.classList.add('selected');
+      update();
+    });
+  });
+
+  function fmt(n){
+    return Math.round(n / 10000); // 만원 단위
+  }
+
+  function update(){
+    const palma = document.querySelector('.opt input[name="palma"]:checked');
+    const south = document.querySelector('.opt input[name="south"]:checked');
+
+    if (!palma || !south) {
+      document.getElementById('sum-empty').style.display = '';
+      document.getElementById('sum-rows').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('sum-empty').style.display = 'none';
+    document.getElementById('sum-rows').style.display = '';
+
+    const pCard = palma.closest('.opt');
+    const sCard = south.closest('.opt');
+    const pMin = +pCard.dataset.min, pMax = +pCard.dataset.max;
+    const sMin = +sCard.dataset.min, sMax = +sCard.dataset.max; // already 2-night sums
+    const totalMin = pMin + sMin;
+    const totalMax = pMax + sMax;
+
+    document.getElementById('palma-name').textContent = NAMES[palma.value];
+    document.getElementById('south-name').textContent = NAMES[south.value];
+    document.getElementById('palma-price').textContent = `${fmt(pMin)}~${fmt(pMax)}만`;
+    document.getElementById('south-price').textContent = `${fmt(sMin)}~${fmt(sMax)}만`;
+    document.getElementById('total-min').textContent = fmt(totalMin);
+    document.getElementById('total-max').textContent = fmt(totalMax);
+  }
+</script>
+
+</body>
+</html>
