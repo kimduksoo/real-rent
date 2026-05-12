@@ -430,6 +430,52 @@
       <div class="group-head"><span class="pin warm">🏛</span>구도심 도보권 — 저녁 시내 식사 + 아침 산책</div>
       <div class="cards" data-group="palma-old">
 
+        <label class="opt" data-min="160000" data-max="250000">
+          <input type="radio" name="palma" value="hotel-saratoga">
+          <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/21/cd/b3/expedia_group-80796-c4b793-607467.jpg?width=1200&height=630&crop=true')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Hotel Saratoga</div>
+            <div class="opt-meta">4성 · 시내 중심 · 대성당 도보 5분 · 옥상풀</div>
+            <div class="opt-price-row">
+              <span class="opt-price">16~25<span class="unit">만/박</span></span>
+            </div>
+            <div class="opt-tags">
+              <span class="tag rec">⭐ 가성비 구도심</span>
+              <span class="tag">옥상풀+바</span>
+              <span class="tag">Jaime III 쇼핑가</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/saratoga.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+              <a class="book-link secondary" href="https://www.hotelsaratoga.com/en/" target="_blank" rel="noopener">공식</a>
+            </div>
+          </div>
+        </label>
+
+        <label class="opt" data-min="180000" data-max="280000">
+          <input type="radio" name="palma" value="hotel-born">
+          <div class="opt-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Kathedrale_von_Palma.jpg/1280px-Kathedrale_von_Palma.jpg')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Hotel Born</div>
+            <div class="opt-meta">4성 · 16세기 후작 궁전 호텔 · 대성당 도보 10분 · 안뜰 조식</div>
+            <div class="opt-price-row">
+              <span class="opt-price">18~28<span class="unit">만/박</span></span>
+            </div>
+            <div class="opt-tags">
+              <span class="tag rec">⭐ 역사 가성비</span>
+              <span class="tag">36객실 부티크</span>
+              <span class="tag">공식 5% 할인</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.hotelborn.com/en/" target="_blank" rel="noopener">공식 (5% 할인) →</a>
+              <a class="book-link secondary" href="https://www.booking.com/hotel/es/born.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴</a>
+            </div>
+          </div>
+        </label>
+
         <label class="opt" data-min="230000" data-max="350000">
           <input type="radio" name="palma" value="hotel-cort">
           <div class="opt-thumb" style="background-image: url('https://content.r9cdn.net/rimg/himg/03/25/93/expedia_group-2001732-188095295-232141.jpg?width=1200&height=630&crop=true')">
@@ -869,6 +915,8 @@
   const HOTELS = [
     // [id, name, group, lat, lng]
     // 팔마 구도심 (시내 도보권)
+    ['hotel-saratoga',       'Hotel Saratoga',          'palma', 39.5727, 2.6494],
+    ['hotel-born',           'Hotel Born',              'palma', 39.5723, 2.6481],
     ['hotel-cort',           'Hotel Cort',              'palma', 39.5713, 2.6502],
     ['posada',               'Posada Terra Santa',      'palma', 39.5680, 2.6489],
     ['calatrava',            'Boutique Hotel Calatrava','palma', 39.5663, 2.6517],
@@ -1055,6 +1103,8 @@
     'hotel-cort': 'Hotel Cort',
     'posada': 'Posada Terra Santa',
     'calatrava': 'Boutique Hotel Calatrava',
+    'hotel-born': 'Hotel Born',
+    'hotel-saratoga': 'Hotel Saratoga',
     'aluasoul': 'AluaSoul (HB)',
     'capvermell': 'Cap Vermell',
     'canferrereta': 'Can Ferrereta',
