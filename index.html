@@ -881,8 +881,8 @@
 
   <div class="cost-summary">
     <div class="label">예상 총 비용 (2인 기준)</div>
-    <div class="amount" id="cost-total">630~960<span class="unit">만원</span></div>
-    <div class="sub">항공권 발권 완료 · 나머지 항목은 미정</div>
+    <div class="amount" id="cost-total">-</div>
+    <div class="sub">항공권 ₩330만 확정 · 나머지 항목은 미정 (범위 표시)</div>
     <div class="breakdown" id="cost-breakdown"></div>
   </div>
 
@@ -2236,7 +2236,7 @@
     {
       group: '교통',
       items: [
-        { label: '항공권 (Qatar + Vueling, 2인)', min: 2800000, max: 3800000, status: 'confirmed', note: '발권 완료' },
+        { label: '항공권 (Qatar + Vueling, 2인)', min: 3300000, max: 3300000, status: 'confirmed', note: '결제 확정 ₩330만' },
         { label: '마요르카 렌터카 3일',            min: 200000,  max: 400000,  status: 'planned' },
         { label: '공항 교통·시내 메트로·택시',     min: 100000,  max: 200000,  status: 'planned' },
       ]
@@ -2301,6 +2301,9 @@
         const statusHtml = it.status === 'confirmed'
           ? '<span class="cost-status confirmed">확정</span>'
           : '<span class="cost-status planned">미정</span>';
+        const amt = (it.min === it.max)
+          ? `${fmtMoney(it.min)}`
+          : `${fmtMoney(it.min)}~${fmtMoney(it.max)}`;
         return `
           <div class="cost-item">
             <div class="cost-item-body">
@@ -2310,15 +2313,16 @@
               </div>
               ${it.note ? `<div class="cost-item-note">${it.note}</div>` : ''}
             </div>
-            <div class="cost-item-amount">${fmtMoney(it.min)}~${fmtMoney(it.max)}<span class="unit">원</span></div>
+            <div class="cost-item-amount">${amt}<span class="unit">원</span></div>
           </div>
         `;
       }).join('');
 
+      const gSum = (gMin === gMax) ? `${fmtMoney(gMin)}` : `${fmtMoney(gMin)}~${fmtMoney(gMax)}`;
       gEl.innerHTML = `
         <div class="cost-group-head">
           <span class="cost-group-title">${g.group}</span>
-          <span class="cost-group-sum">${fmtMoney(gMin)}~${fmtMoney(gMax)}원</span>
+          <span class="cost-group-sum">${gSum}원</span>
         </div>
         ${itemsHtml}
       `;
@@ -2328,11 +2332,14 @@
 
       const row = document.createElement('div');
       row.className = 'row';
-      row.innerHTML = `<span>${g.group}</span><b>${fmtMoney(gMin)}~${fmtMoney(gMax)}</b>`;
+      row.innerHTML = `<span>${g.group}</span><b>${gSum}</b>`;
       breakdownEl.appendChild(row);
     });
 
-    totalEl.innerHTML = `${fmtMoney(totalMin)}~${fmtMoney(totalMax)}<span class="unit">원</span>`;
+    const totalAmt = (totalMin === totalMax)
+      ? `${fmtMoney(totalMin)}`
+      : `${fmtMoney(totalMin)}~${fmtMoney(totalMax)}`;
+    totalEl.innerHTML = `${totalAmt}<span class="unit">만원</span>`;
   }
   renderBudget();
 
