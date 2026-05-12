@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>마요르카 신혼여행 숙소 의사결정</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   :root {
     --ink: #0f1115;
@@ -286,6 +287,61 @@
 
   /* Subtle helpers */
   .muted { color: var(--ink-4); }
+
+  /* Map */
+  .map-wrap {
+    margin: 24px 0 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .map-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-3);
+  }
+  .map-head .title { font-weight: 700; color: var(--ink); font-size: 13px; letter-spacing: -0.01em; }
+  .map-legend { display: flex; gap: 12px; font-size: 11px; color: var(--ink-3); }
+  .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+  }
+  .legend-dot.palma { background: #6b7280; }
+  .legend-dot.south { background: #ff8c42; }
+  .legend-dot.nw { background: #2dd4bf; }
+  .legend-dot.airport { background: #0f1115; }
+  #map { height: 320px; width: 100%; }
+  @media (min-width: 600px) { #map { height: 380px; } }
+  /* Custom marker style */
+  .hotel-marker {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .hotel-marker.selected {
+    width: 20px; height: 20px;
+    border: 3px solid var(--ink);
+    box-shadow: 0 0 0 4px rgba(15,17,21,0.15), 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+  .hotel-marker.palma { background: #6b7280; }
+  .hotel-marker.south { background: #ff8c42; }
+  .hotel-marker.nw { background: #2dd4bf; }
+  .airport-marker {
+    background: #0f1115; color: #fff;
+    border-radius: 4px; padding: 2px 6px;
+    font-size: 11px; font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  /* Leaflet 기본 attribution 작게 */
+  .leaflet-control-attribution { font-size: 9px; }
 </style>
 </head>
 <body>
@@ -299,6 +355,19 @@
     <div class="flight">
       <div class="flight-row"><span class="date">10/5</span> <span>ICN 01:20</span> <span class="arrow">→</span> DOH <span class="arrow">→</span> MAD <span class="arrow">→</span> <b>PMI 17:10</b></div>
       <div class="flight-row"><span class="date">10/8</span> <b>PMI 18:35</b> <span class="arrow">→</span> BCN 19:35 <span class="muted">(Vueling)</span></div>
+    </div>
+
+    <div class="map-wrap">
+      <div class="map-head">
+        <span class="title">🗺 후보 숙소 위치</span>
+        <span class="map-legend">
+          <span class="legend-item"><span class="legend-dot airport"></span>공항</span>
+          <span class="legend-item"><span class="legend-dot palma"></span>팔마</span>
+          <span class="legend-item"><span class="legend-dot south"></span>남쪽</span>
+          <span class="legend-item"><span class="legend-dot nw"></span>북서쪽</span>
+        </span>
+      </div>
+      <div id="map"></div>
     </div>
   </header>
 
@@ -674,7 +743,69 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+  // ===== Map =====
+  const HOTELS = [
+    // [id, name, group, lat, lng]
+    ['melia',                'Meliá Palma Bay',         'palma', 39.5635, 2.6342],
+    ['amic-pastilla',        'Amic Can Pastilla',       'palma', 39.5340, 2.7345],
+    ['amic-mira',            'Amic Miraflores',         'palma', 39.5260, 2.7470],
+    ['hm-balanguera',        'HM Balanguera Beach',     'palma', 39.5167, 2.7574],
+    ['puresalt',             'Pure Salt Garonda',       'palma', 39.5145, 2.7596],
+    ['aluasoul',             'AluaSoul Mallorca',       'south', 39.3697, 3.2367],
+    ['capvermell',           'Cap Vermell Grand Hotel', 'south', 39.7037, 3.4540],
+    ['canferrereta',         'Can Ferrereta',           'south', 39.3548, 3.1188],
+    ['finca-cas-sant',       "Finca Ca's Sant",         'nw',    39.7666, 2.7178],
+    ['son-viscos',           'Agroturismo Son Viscos',  'nw',    39.7174, 2.6260],
+    ['es-petit-valldemossa', 'Es Petit Valldemossa',    'nw',    39.7115, 2.6235],
+    ['es-moli',              'Hotel Es Molí',           'nw',    39.7458, 2.6485],
+    ['belmond',              'Belmond La Residencia',   'nw',    39.7475, 2.6520],
+  ];
+
+  const map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true })
+    .setView([39.6, 2.95], 9);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 18,
+  }).addTo(map);
+
+  // 공항 마커
+  L.marker([39.5517, 2.7388], {
+    icon: L.divIcon({
+      className: '',
+      html: '<div class="airport-marker">✈ PMI</div>',
+      iconSize: [60, 18],
+      iconAnchor: [30, 9],
+    }),
+  }).bindTooltip('Palma Airport (PMI)', {direction: 'top'}).addTo(map);
+
+  // 호텔 마커
+  const markerById = {};
+  HOTELS.forEach(([id, name, group, lat, lng]) => {
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: '',
+        html: `<div class="hotel-marker ${group}" data-id="${id}"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      }),
+    }).bindTooltip(name, {direction: 'top'}).addTo(map);
+    markerById[id] = m;
+
+    m.on('click', () => {
+      const card = document.querySelector(`.opt input[value="${id}"]`);
+      if (card) card.closest('.opt').click();
+    });
+  });
+
+  function highlightMarker(id, on){
+    const el = markerById[id]?.getElement()?.querySelector('.hotel-marker');
+    if (el) el.classList.toggle('selected', on);
+  }
+
   const NAMES = {
     'melia': 'Meliá Palma Bay',
     'amic-pastilla': 'Amic Can Pastilla',
@@ -697,11 +828,14 @@
       e.preventDefault();
       const input = o.querySelector('input');
       const group = input.name;
-      input.checked = true;
+      // unselect siblings (and unhighlight their markers)
       document.querySelectorAll('.opt input[name="'+group+'"]').forEach(i => {
         i.closest('.opt').classList.remove('selected');
+        highlightMarker(i.value, false);
       });
+      input.checked = true;
       o.classList.add('selected');
+      highlightMarker(input.value, true);
       update();
     });
   });
