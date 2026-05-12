@@ -572,6 +572,99 @@
     margin-top: 12px;
   }
 
+  /* === Budget === */
+  .cost-summary {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin: 24px 0 28px;
+  }
+  .cost-summary .label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .cost-summary .amount {
+    font-size: 30px; font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 6px;
+  }
+  .cost-summary .amount .unit { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6); margin-left: 4px; }
+  .cost-summary .sub {
+    font-size: 12px; color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+  }
+  .cost-summary .breakdown {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 14px;
+  }
+  .cost-summary .breakdown .row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: rgba(255,255,255,0.8);
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-summary .breakdown .row b { color: #fff; }
+
+  .cost-group {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 18px 14px;
+    margin-bottom: 14px;
+  }
+  .cost-group-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 6px;
+  }
+  .cost-group-title {
+    font-size: 14px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .cost-group-sum {
+    font-size: 12.5px; font-weight: 700;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-item {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .cost-item:last-child { border-bottom: none; }
+  .cost-item-body { flex: 1; min-width: 0; }
+  .cost-item-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .cost-status {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .cost-status.confirmed { background: var(--success-bg, #ecfdf5); color: var(--success, #10b981); }
+  .cost-status.planned { background: var(--surface-2); color: var(--ink-4); }
+  .cost-item-note {
+    font-size: 12px; color: var(--ink-3);
+    margin-top: 3px;
+  }
+  .cost-item-amount {
+    font-size: 13.5px; font-weight: 700; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .cost-item-amount .unit { font-size: 11px; color: var(--ink-4); font-weight: 500; }
+
   /* Map */
   .map-wrap {
     margin: 24px 0 0;
@@ -715,6 +808,15 @@
         </a>
       </div>
     </div>
+
+    <div class="tree-group">
+      <div class="tree-head">계획</div>
+      <div class="tree-children">
+        <a class="tree-item" data-view="budget" data-title="비용" href="#budget">
+          <span>비용</span>
+        </a>
+      </div>
+    </div>
   </nav>
 </aside>
 
@@ -768,6 +870,42 @@
 </section>
 
 <!-- ========== FLIGHT VIEW ========== -->
+<!-- ========== BUDGET VIEW ========== -->
+<section id="view-budget" class="view">
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Budget · 2인 6박 8일 · 예상</div>
+    <h1>예상 비용</h1>
+    <p class="lede">2026년 10월 환율 €1≈₩1,500 기준 · 의사결정 도구의 실제 숙소 가격으로 갱신 예정</p>
+  </header>
+
+  <div class="cost-summary">
+    <div class="label">예상 총 비용 (2인 기준)</div>
+    <div class="amount" id="cost-total">630~960<span class="unit">만원</span></div>
+    <div class="sub">항공권 발권 완료 · 나머지 항목은 미정</div>
+    <div class="breakdown" id="cost-breakdown"></div>
+  </div>
+
+  <div id="cost-groups"></div>
+
+  <div class="notes">
+    <h4>참고</h4>
+    <ul>
+      <li><b>항공권은 발권 완료</b>(Qatar + Vueling). 정확 금액은 결제 영수증 기준으로 갱신 가능</li>
+      <li><b>숙박 범위가 가장 큼</b> — 마요르카 컨셉(휴양 vs 산악마을)·바르셀로나 호텔 등급에 따라 ±400만 변동</li>
+      <li><b>식비</b>: 1인 1식 €15~25 기준. 미슐랭/파인다이닝 1~2회 포함 시 +20~40만</li>
+      <li><b>관광 입장권</b>은 사그라다 €33~45, 카사 바트요 €33~39, 카사 밀라 €28, 구엘 공원 €18 (1인)</li>
+      <li><b>도시세</b>는 호텔 등급별 €1~4.4/인/박. 카운터에서 별도 결제 (카드 가능)</li>
+      <li><b>여행자 보험</b>은 카드사 무료 보험 또는 별도 가입 (KB·삼성 등 비교)</li>
+    </ul>
+  </div>
+
+  <footer>
+    환율 가정 €1≈₩1,500 · 갱신 2026-05-12
+  </footer>
+</div>
+</section>
+
 <section id="view-flight" class="view">
 <div class="wrap">
   <header>
@@ -2093,6 +2231,111 @@
     if (fillEl) fillEl.style.width = `${(done / total) * 100}%`;
   }
 
+  // ===== Budget =====
+  const COSTS = [
+    {
+      group: '교통',
+      items: [
+        { label: '항공권 (Qatar + Vueling, 2인)', min: 2800000, max: 3800000, status: 'confirmed', note: '발권 완료' },
+        { label: '마요르카 렌터카 3일',            min: 200000,  max: 400000,  status: 'planned' },
+        { label: '공항 교통·시내 메트로·택시',     min: 100000,  max: 200000,  status: 'planned' },
+      ]
+    },
+    {
+      group: '숙박',
+      items: [
+        { label: '마요르카 3박 (팔마 1박 + 휴양 2박)', min: 1050000, max: 1750000, status: 'planned' },
+        { label: '바르셀로나 3박',                     min: 400000,  max: 900000,  status: 'planned' },
+        { label: '도시세 (마요르카 + 바르셀로나)',     min: 50000,   max: 100000,  status: 'planned' },
+      ]
+    },
+    {
+      group: '식비',
+      items: [
+        { label: '아침·점심·저녁 (2인 × 7일)',  min: 700000, max: 1400000, status: 'planned', note: '일평균 €70~120' },
+        { label: '카페·간식·디저트',           min: 100000, max: 200000,  status: 'planned' },
+      ]
+    },
+    {
+      group: '관광·티켓',
+      items: [
+        { label: '사그라다 파밀리아 (2인)',     min: 90000,  max: 130000, status: 'planned', note: '€33~45/인' },
+        { label: '구엘 공원 (2인)',             min: 30000,  max: 50000,  status: 'planned', note: '€18/인' },
+        { label: '카사 바트요 / 카사 밀라',     min: 100000, max: 180000, status: 'planned' },
+        { label: '기타 투어·액티비티',          min: 100000, max: 300000, status: 'planned' },
+      ]
+    },
+    {
+      group: '기타',
+      items: [
+        { label: '여행자 보험 (2인)',           min: 80000,  max: 150000, status: 'planned' },
+        { label: '환전·해외카드 수수료',        min: 50000,  max: 150000, status: 'planned' },
+        { label: '쇼핑·기념품·선물',            min: 300000, max: 1000000, status: 'planned' },
+      ]
+    },
+  ];
+
+  function fmtMan(n){ return Math.round(n / 10000); }
+  function fmtMoney(n){
+    const m = Math.round(n / 10000);
+    return m.toLocaleString('ko-KR') + '만';
+  }
+
+  function renderBudget(){
+    const groupsEl = document.getElementById('cost-groups');
+    const totalEl = document.getElementById('cost-total');
+    const breakdownEl = document.getElementById('cost-breakdown');
+    if (!groupsEl || !totalEl || !breakdownEl) return;
+
+    let totalMin = 0, totalMax = 0;
+    groupsEl.innerHTML = '';
+    breakdownEl.innerHTML = '';
+
+    COSTS.forEach(g => {
+      let gMin = 0, gMax = 0;
+      const gEl = document.createElement('div');
+      gEl.className = 'cost-group';
+
+      const itemsHtml = g.items.map(it => {
+        gMin += it.min; gMax += it.max;
+        const statusHtml = it.status === 'confirmed'
+          ? '<span class="cost-status confirmed">확정</span>'
+          : '<span class="cost-status planned">미정</span>';
+        return `
+          <div class="cost-item">
+            <div class="cost-item-body">
+              <div class="cost-item-label">
+                <span>${it.label}</span>
+                ${statusHtml}
+              </div>
+              ${it.note ? `<div class="cost-item-note">${it.note}</div>` : ''}
+            </div>
+            <div class="cost-item-amount">${fmtMoney(it.min)}~${fmtMoney(it.max)}<span class="unit">원</span></div>
+          </div>
+        `;
+      }).join('');
+
+      gEl.innerHTML = `
+        <div class="cost-group-head">
+          <span class="cost-group-title">${g.group}</span>
+          <span class="cost-group-sum">${fmtMoney(gMin)}~${fmtMoney(gMax)}원</span>
+        </div>
+        ${itemsHtml}
+      `;
+      groupsEl.appendChild(gEl);
+
+      totalMin += gMin; totalMax += gMax;
+
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<span>${g.group}</span><b>${fmtMoney(gMin)}~${fmtMoney(gMax)}</b>`;
+      breakdownEl.appendChild(row);
+    });
+
+    totalEl.innerHTML = `${fmtMoney(totalMin)}~${fmtMoney(totalMax)}<span class="unit">원</span>`;
+  }
+  renderBudget();
+
   // ===== View routing =====
   function setView(v){
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
@@ -2134,7 +2377,7 @@
   // 초기 진입
   renderTodos();
   const initial = location.hash.replace('#', '') || 'home';
-  if (['home', 'flight', 'mallorca', 'barcelona'].includes(initial)) setView(initial);
+  if (['home', 'flight', 'mallorca', 'barcelona', 'budget'].includes(initial)) setView(initial);
   else setView('home');
 </script>
 
