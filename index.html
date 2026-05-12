@@ -319,6 +319,18 @@
     font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
     color: var(--ink-3);
   }
+  .tree-item .ti-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    font-size: 10.5px; font-weight: 700;
+    border-radius: 4px;
+    background: var(--surface-2);
+    color: var(--ink-4);
+    flex-shrink: 0;
+  }
+  .tree-item.active .ti-num {
+    background: rgba(255,255,255,0.15); color: #fff;
+  }
 
   /* === Sidebar (off-canvas mobile, fixed PC) === */
   .sidebar-backdrop {
@@ -509,6 +521,56 @@
     margin-top: 3px;
   }
 
+  /* Flight cards */
+  .flight-stack { display: flex; flex-direction: column; gap: 0; }
+  .leg-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .leg-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .leg-route {
+    font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .leg-route .arrow { color: var(--ink-4); margin: 0 6px; font-weight: 500; }
+  .leg-meta {
+    font-size: 12px; font-weight: 600; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .leg-foot {
+    font-size: 12.5px; color: var(--ink-3);
+    border-top: 1px solid var(--line-2);
+    padding-top: 8px;
+    margin-top: 6px;
+  }
+  .layover {
+    font-size: 11.5px; color: var(--ink-4);
+    padding: 8px 18px;
+    position: relative;
+  }
+  .layover::before {
+    content: '';
+    position: absolute;
+    left: 28px; top: 0; bottom: 0;
+    width: 1px;
+    border-left: 1px dashed var(--line);
+  }
+  .hint-row {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12.5px; color: var(--ink-3);
+    margin-top: 12px;
+  }
+
   /* Map */
   .map-wrap {
     margin: 24px 0 0;
@@ -616,26 +678,35 @@
     </svg>
   </button>
   <span class="mobile-title" id="mobile-title">홈</span>
-  <span class="mobile-brand">🌙 신혼여행</span>
+  <span class="mobile-brand">신혼여행</span>
 </div>
 
 <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">🌙 신혼여행</div>
+  <div class="sidebar-brand">신혼여행</div>
   <nav class="tree">
     <a class="tree-item" data-view="home" data-title="홈" href="#home">
-      <span class="ti-icon">🏠</span><span>홈</span>
+      <span>홈</span>
     </a>
+
+    <div class="tree-group">
+      <div class="tree-head">교통</div>
+      <div class="tree-children">
+        <a class="tree-item" data-view="flight" data-title="항공편" href="#flight">
+          <span>항공편</span>
+        </a>
+      </div>
+    </div>
 
     <div class="tree-group">
       <div class="tree-head">숙박</div>
       <div class="tree-children">
         <a class="tree-item" data-view="mallorca" data-title="마요르카 숙소" href="#mallorca">
-          <span class="ti-icon">🏖</span><span>마요르카</span>
+          <span>마요르카</span>
         </a>
         <a class="tree-item" data-view="barcelona" data-title="바르셀로나 숙소" href="#barcelona">
-          <span class="ti-icon">🏛</span><span>바르셀로나</span>
+          <span>바르셀로나</span>
         </a>
       </div>
     </div>
@@ -687,6 +758,126 @@
 
   <footer>
     조사 기준일 2026-05-12 · 환율 €1≈₩1,500
+  </footer>
+</div>
+</section>
+
+<!-- ========== FLIGHT VIEW ========== -->
+<section id="view-flight" class="view">
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Flights · Qatar Airways + Vueling · 발권 완료</div>
+    <h1>항공편</h1>
+    <p class="lede">총 3개 구간 · 2인 (김덕수 · 오정윤) · 이코노미</p>
+  </header>
+
+  <div class="info-card">
+    <h3>예약 개요</h3>
+    <div class="info-row"><span class="k">발신 이메일</span><span class="v">nabi0407@naver.com</span></div>
+    <div class="info-row"><span class="k">연락처</span><span class="v">+82-010-3003-0257</span></div>
+    <div class="info-row"><span class="k">Mr. Kim</span><span class="v">E-티켓 157-2135648553</span></div>
+    <div class="info-row"><span class="k">Mrs. Oh</span><span class="v">E-티켓 157-2135648555</span></div>
+  </div>
+
+  <section class="step">
+    <div class="step-head">
+      <div class="step-num">01</div>
+      <div class="step-meta">
+        <div class="step-tag">10/5 (월) · 출국</div>
+        <div class="step-title">서울 → 팔마 데 마요르카</div>
+        <div class="step-sub">총 21시간 · 도하·마드리드 2회 환승</div>
+      </div>
+    </div>
+    <div class="flight-stack">
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>ICN</b> 01:20 <span class="arrow">→</span> <b>DOH</b> 05:50</div>
+          <div class="leg-meta">QR 859 · A350-1000 · 10h 30m</div>
+        </div>
+        <div class="leg-foot">인천 T1 · 카타르항공 · 위탁 25kg/인</div>
+      </div>
+      <div class="layover">환승 2h 5m · 도하 하마드 국제공항</div>
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>DOH</b> 07:55 <span class="arrow">→</span> <b>MAD</b> 14:15</div>
+          <div class="leg-meta">QR 149 · B787-9 · 7h 20m</div>
+        </div>
+        <div class="leg-foot">마드리드 바라하스 T4S · 카타르항공</div>
+      </div>
+      <div class="layover">환승 1h 30m · MAD T4S → T4 (공항 내 셔틀)</div>
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>MAD</b> 15:45 <span class="arrow">→</span> <b>PMI</b> 17:10</div>
+          <div class="leg-meta">QR 6550 · A320 · 1h 25m</div>
+        </div>
+        <div class="leg-foot">마드리드 T4 → 팔마 데 마요르카 · 운항: Iberia</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <div class="step-num">02</div>
+      <div class="step-meta">
+        <div class="step-tag">10/8 (목) · 도시간</div>
+        <div class="step-title">팔마 데 마요르카 → 바르셀로나</div>
+        <div class="step-sub">단일 구간 · 1시간</div>
+      </div>
+    </div>
+    <div class="flight-stack">
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>PMI</b> 18:35 <span class="arrow">→</span> <b>BCN</b> 19:35</div>
+          <div class="leg-meta">VY 3915 · A321 · 1h 0m</div>
+        </div>
+        <div class="leg-foot">팔마 데 마요르카 → 바르셀로나 T1 · Vueling · 위탁 25kg/인</div>
+      </div>
+    </div>
+    <div class="hint-row">출국일이라 마요르카 오후 4시까지 자유 · 16:00~17:00 PMI 공항 도착 권장</div>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <div class="step-num">03</div>
+      <div class="step-meta">
+        <div class="step-tag">10/11 (일) → 10/12 (월) · 귀국</div>
+        <div class="step-title">바르셀로나 → 서울</div>
+        <div class="step-sub">총 19시간 · 도하 1회 환승</div>
+      </div>
+    </div>
+    <div class="flight-stack">
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>BCN</b> 16:35 <span class="arrow">→</span> <b>DOH</b> 23:35</div>
+          <div class="leg-meta">QR 146 · B787-9 · 6h 0m</div>
+        </div>
+        <div class="leg-foot">바르셀로나 → 도하 · 카타르항공 · 위탁 30kg/인</div>
+      </div>
+      <div class="layover">환승 2h 45m · 도하</div>
+      <div class="leg-card">
+        <div class="leg-head">
+          <div class="leg-route"><b>DOH</b> 02:20 <span class="arrow">→</span> <b>ICN</b> 17:05</div>
+          <div class="leg-meta">QR 858 · A350-1000 · 8h 45m</div>
+        </div>
+        <div class="leg-foot">도하 → 인천 T1 (10/12 도착)</div>
+      </div>
+    </div>
+    <div class="hint-row">바르셀로나 출국일(10/11) 오전 자유 · BCN 공항 14:00 도착 권장</div>
+  </section>
+
+  <div class="notes">
+    <h4>체크리스트</h4>
+    <ul>
+      <li>카타르 <b>Privilege Club</b> 마일리지 적립 번호 등록</li>
+      <li><b>좌석 지정</b>: 카타르 웹체크인 48시간 전부터 가능 (커플 좌석)</li>
+      <li>Vueling: 사전 좌석/수하물 추가 결제 여부 결정</li>
+      <li>마드리드 <b>T4S → T4 환승</b> 동선 확인 (공항 내 셔틀, 1h 30m 여유)</li>
+      <li>수하물 한도 점검 (QR 25/30kg, VY 25kg) — 귀국 짐 늘 것 고려</li>
+    </ul>
+  </div>
+
+  <footer>
+    발권 완료 · 변경/취소 시 카타르 한국 지사: 02-3708-9100
   </footer>
 </div>
 </section>
@@ -1938,7 +2129,7 @@
   // 초기 진입
   renderTodos();
   const initial = location.hash.replace('#', '') || 'home';
-  if (['home', 'mallorca', 'barcelona'].includes(initial)) setView(initial);
+  if (['home', 'flight', 'mallorca', 'barcelona'].includes(initial)) setView(initial);
   else setView('home');
 </script>
 
