@@ -882,7 +882,7 @@
   <div class="cost-summary">
     <div class="label">예상 총 비용 (2인 기준)</div>
     <div class="amount" id="cost-total">-</div>
-    <div class="sub">항공권 ₩330만 확정 · 나머지 항목은 미정 (범위 표시)</div>
+    <div class="sub">항공권 ₩3,493,191 확정 (26-04-25) · 나머지 항목은 미정</div>
     <div class="breakdown" id="cost-breakdown"></div>
   </div>
 
@@ -2351,7 +2351,7 @@
     {
       group: '교통',
       items: [
-        { label: '항공권 (Qatar + Vueling, 2인)', min: 3300000, max: 3300000, status: 'confirmed', note: '결제 확정 ₩330만' },
+        { label: '항공권 (Qatar + Vueling, 2인)', min: 3493191, max: 3493191, status: 'confirmed', note: '결제 ₩3,493,191 · 26-04-25 무신사 현대카드 일시불' },
         { label: '마요르카 렌터카 3일',            min: 200000,  max: 400000,  status: 'planned' },
         { label: '공항 교통·시내 메트로·택시',     min: 100000,  max: 200000,  status: 'planned' },
       ]
@@ -2392,8 +2392,12 @@
 
   function fmtMan(n){ return Math.round(n / 10000); }
   function fmtMoney(n){
-    const m = Math.round(n / 10000);
-    return m.toLocaleString('ko-KR') + '만';
+    const man = Math.floor(n / 10000);
+    const rem = n - man * 10000;
+    const cheon = Math.round(rem / 1000);
+    if (cheon >= 10) return (man + 1).toLocaleString('ko-KR') + '만';
+    if (cheon === 0) return man.toLocaleString('ko-KR') + '만';
+    return man.toLocaleString('ko-KR') + '만 ' + cheon + '천';
   }
 
   function renderBudget(){
