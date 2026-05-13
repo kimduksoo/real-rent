@@ -1065,13 +1065,33 @@
       <div class="step-meta">
         <div class="step-tag">Step 1 of 2</div>
         <div class="step-title">팔마 1박</div>
-        <div class="step-sub">10/5 (월) 19:30~20:00 체크인 · 구도심 도보권 · 2곳 후보</div>
+        <div class="step-sub">10/5 (월) 19:30~20:00 체크인 · 구도심 도보권 · 3곳 후보 (가성비 + 부티크 + 궁전)</div>
       </div>
     </div>
 
     <div class="group">
       <div class="group-head"><span class="pin warm">🏛</span>구도심 도보권 — 저녁 시내 식사 + 아침 산책</div>
       <div class="cards" data-group="palma-old">
+
+
+        <label class="opt" data-min="217000" data-max="345000">
+          <input type="radio" name="palma" value="fil-suites">
+          <div class="opt-thumb" style="background-image: url('https://q-xx.bstatic.com/xdata/images/hotel/608x352/71977210.webp?k=aacff3205905eea1d6a2476133668c864695461e97253e722700df9b6c644c81&o=')">
+            <span class="check-pill">선택됨</span>
+          </div>
+          <div class="opt-body">
+            <div class="opt-name">Fil Suites & Homes</div>
+            <div class="opt-meta">아파트형 부티크 · 시내 · 부엌 포함 객실 · "잠만 자기" 컨셉에 적합</div>
+            <div class="opt-price-row"><span class="opt-price">22~35<span class="unit">만/박 ✓ 실측</span></span></div>
+            <div class="opt-tags">
+              <span class="tag rec">⭐ 와이프 ₩20만대 픽</span>
+              <span class="tag">시내 아파트</span>
+            </div>
+            <div class="opt-actions">
+              <a class="book-link" href="https://www.booking.com/hotel/es/fil-suites-amp-homes.html?checkin=2026-10-05&checkout=2026-10-06&group_adults=2&selected_currency=KRW" target="_blank" rel="noopener">부킹닷컴 →</a>
+            </div>
+          </div>
+        </label>
 
         <label class="opt" data-min="314089" data-max="486751">
           <input type="radio" name="palma" value="brick-palma">
@@ -1841,6 +1861,7 @@
   const HOTELS = [
     // [id, name, group, lat, lng]
     // 팔마 구도심 (시내 도보권)
+    ['fil-suites',           'Fil Suites & Homes',      'palma', 39.5746, 2.6437],
     ['brick-palma',          'Brick Palma',             'palma', 39.5709, 2.6537],
     ['hotel-born',           'Hotel Born',              'palma', 39.5723, 2.6481],
     ['aluasoul',             'AluaSoul Mallorca',       'south', 39.3697, 3.2367],
@@ -2018,6 +2039,7 @@
 
   const NAMES = {
     'hotel-born': 'Hotel Born',
+    'fil-suites': 'Fil Suites',
     'brick-palma': 'Brick Palma',
     'aluasoul': 'AluaSoul (HB)',
     'capvermell': 'Cap Vermell',
