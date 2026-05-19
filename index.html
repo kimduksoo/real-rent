@@ -124,6 +124,8 @@
   .cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
   @media (min-width: 600px) {
     .cards { grid-template-columns: 1fr 1fr; }
+    /* 단일 카드 그룹은 풀 너비 */
+    .cards:not(:has(> .opt:nth-child(2))) { grid-template-columns: 1fr; }
   }
 
   .opt {
