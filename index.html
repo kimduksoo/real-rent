@@ -397,6 +397,16 @@
     font-size: 12.5px;
     padding: 6px 12px;
   }
+  .tree-subhead {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-4);
+    padding: 6px 12px 4px;
+    margin-top: 4px;
+  }
+  .tree-item-sub {
+    padding-left: 22px !important;
+  }
 
   .view { display: none; }
   .view.active { display: block; }
@@ -907,8 +917,12 @@
     <div class="tree-group">
       <div class="tree-head">계획</div>
       <div class="tree-children">
-        <a class="tree-item" data-view="itinerary" data-title="일정" href="#itinerary">
-          <span>일정 (1일 단위)</span>
+        <div class="tree-subhead">일정 · 마요르카</div>
+        <a class="tree-item tree-item-sub" data-view="itin-d1" data-title="D1 · 10/5 (월)" href="#itin-d1">
+          <span>D1 · 10/5 (월)</span>
+        </a>
+        <a class="tree-item tree-item-sub" data-view="itin-d2" data-title="D2 · 10/6 (화)" href="#itin-d2">
+          <span>D2 · 10/6 (화)</span>
         </a>
         <a class="tree-item" data-view="budget" data-title="비용" href="#budget">
           <span>비용</span>
@@ -967,13 +981,13 @@
 </div>
 </section>
 
-<!-- ========== ITINERARY VIEW ========== -->
-<section id="view-itinerary" class="view">
+<!-- ========== ITINERARY VIEW · DAY 1 ========== -->
+<section id="view-itin-d1" class="view">
 <div class="wrap">
   <header>
-    <div class="eyebrow">Itinerary · 6박 8일 · 1일 단위 타임라인</div>
-    <h1>일정</h1>
-    <p class="lede">시간 블록 + 지도 동선. 매 저녁 디너 2시간 여유 확보 원칙.</p>
+    <div class="eyebrow">Itinerary · 마요르카 · D1 of 8</div>
+    <h1>D1 · 10/5 (월) — 도착</h1>
+    <p class="lede">23시간 비행 후 도착. 매 저녁 디너 2시간 여유 확보 원칙.</p>
   </header>
 
   <!-- DAY 1 -->
@@ -1081,6 +1095,19 @@
       </ul>
     </div>
   </section>
+
+  <footer>다음: D2 · 10/6 (화) · 남쪽 비치 + 소예르 이동</footer>
+</div>
+</section>
+
+<!-- ========== ITINERARY VIEW · DAY 2 ========== -->
+<section id="view-itin-d2" class="view">
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Itinerary · 마요르카 · D2 of 8</div>
+    <h1>D2 · 10/6 (화) — 남쪽 비치 + 소예르</h1>
+    <p class="lede">팔마 → Caló del Moro → 소예르 이동. 총 운전 약 3시간.</p>
+  </header>
 
   <!-- DAY 2 -->
   <section class="day">
@@ -2809,17 +2836,19 @@
   // 초기 진입
   renderTodos();
   const initial = location.hash.replace('#', '') || 'home';
-  if (['home', 'flight', 'mallorca', 'barcelona', 'budget', 'itinerary'].includes(initial)) setView(initial);
+  const validViews = ['home', 'flight', 'mallorca', 'barcelona', 'budget', 'itin-d1', 'itin-d2'];
+  if (validViews.includes(initial)) setView(initial);
   else setView('home');
 
-  // 일정 탭 진입 시 지도 invalidateSize (display:none → block 후 사이즈 재계산)
-  const itineraryNav = document.querySelector('.tree-item[data-view="itinerary"]');
-  itineraryNav?.addEventListener('click', () => {
-    setTimeout(() => { mapD1.invalidateSize(); mapD2.invalidateSize(); }, 50);
+  // 일정 탭 진입 시 해당 view의 지도 invalidateSize
+  document.querySelector('.tree-item[data-view="itin-d1"]')?.addEventListener('click', () => {
+    setTimeout(() => mapD1.invalidateSize(), 50);
   });
-  if (initial === 'itinerary') {
-    setTimeout(() => { mapD1.invalidateSize(); mapD2.invalidateSize(); }, 100);
-  }
+  document.querySelector('.tree-item[data-view="itin-d2"]')?.addEventListener('click', () => {
+    setTimeout(() => mapD2.invalidateSize(), 50);
+  });
+  if (initial === 'itin-d1') setTimeout(() => mapD1.invalidateSize(), 100);
+  if (initial === 'itin-d2') setTimeout(() => mapD2.invalidateSize(), 100);
 </script>
 
 </body>
