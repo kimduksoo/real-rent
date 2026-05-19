@@ -713,6 +713,7 @@
   .legend-dot.palma { background: #6b7280; }
   .legend-dot.wife { background: #1f6feb; }
   .legend-dot.friend { background: #f59e0b; }
+  .legend-dot.poi { background: #fff; border: 1.5px solid #f59e0b; box-shadow: inset 0 0 0 1px #b45309; }
   .legend-dot.south { background: #ff8c42; }
   .legend-dot.nw { background: #2dd4bf; }
   .legend-dot.airport { background: #0f1115; }
@@ -1048,6 +1049,7 @@
         <span style="display:flex; align-items:center; gap:8px;">
           <span class="map-legend" id="legend">
             <span class="legend-item" data-cat="airport"><span class="legend-dot airport"></span>공항</span>
+            <span class="legend-item" data-cat="poi"><span class="legend-dot poi"></span>★ 관광 (와이프 1순위)</span>
             <span class="legend-item" data-cat="palma"><span class="legend-dot palma"></span>팔마 1박</span>
             <span class="legend-item" data-cat="wife"><span class="legend-dot wife"></span>와이프 픽</span>
             <span class="legend-item" data-cat="friend"><span class="legend-dot friend"></span>친구 픽</span>
@@ -1758,6 +1760,12 @@
     maxZoom: 18,
   }).addTo(map);
 
+  // 와이프 우선순위 1: 소도시 마을 (발데모사·데이아)
+  const POIS = [
+    ['valldemossa', 'Valldemossa · 산골 소도시 (와이프 우선순위 1)', 39.7091, 2.6219],
+    ['deia',        'Deià · 예술가의 산골 마을 (와이프 우선순위 1)', 39.7458, 2.6498],
+  ];
+
   // 공항 마커
   const airportMarker = L.marker([39.5517, 2.7388], {
     icon: L.divIcon({
@@ -1793,6 +1801,22 @@
       if (card) card.closest('.opt').click();
       toggleMarker(m);
     });
+  });
+
+  // POI 마커 (관광지)
+  POIS.forEach(([id, name, lat, lng]) => {
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        className: 'mk mk-poi',
+        html: `<div class="poi-marker">★</div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+      }),
+    }).bindTooltip(name, {direction: 'top'}).addTo(map);
+    m._cat = 'poi';
+    m._id = id;
+    allMarkers.push(m);
+    m.on('click', () => toggleMarker(m));
   });
 
   function highlightMarker(id, on){
