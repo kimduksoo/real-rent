@@ -836,7 +836,7 @@
   <div class="progress-card">
     <div class="progress-head">
       <div class="label">전체 진행도</div>
-      <div class="progress-text"><span id="todo-done">0</span><span class="sep">/</span><span id="todo-total">12</span></div>
+      <div class="progress-text"><span id="todo-done">0</span><span class="sep">/</span><span id="todo-total">15</span></div>
     </div>
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill"></div>
@@ -1964,7 +1964,10 @@
   // ===== TODO state (localStorage) =====
   const TODOS = [
     { id: 'flight', label: '항공권 예약', done: true, group: '✅ 예약 완료', detail: 'Qatar + Vueling 발권 (10/5~10/12)' },
-    { id: 'mallorca-stay', label: '마요르카 숙소 (팔마 1박 + 휴양 2박)', group: '🏨 숙소 예약', detail: '의사결정 도구에서 후보 비교 후 예약' },
+    { id: 'mallorca-concept', label: '마요르카 동선 컨셉 결정', done: true, group: '✅ 예약 완료', detail: '팔마 1박 + 휴양 한 곳 2박 (와이프 결정 2026-05-19)' },
+    { id: 'mallorca-rest', label: '마요르카 휴양 숙소 결정 (Sa Tanqueta vs Finca Serena)', group: '🏨 숙소 예약', detail: '와이프 픽 2곳 비교 — 도구의 Step 2 참조' },
+    { id: 'mallorca-palma', label: '마요르카 팔마 1박 결정 (Fil Suites / Brick / Hotel Born)', group: '🏨 숙소 예약', detail: '구도심 도보권 3곳 후보' },
+    { id: 'mallorca-book', label: '마요르카 숙소 예약 (3박)', group: '🏨 숙소 예약', detail: '결정 후 부킹닷컴 또는 공식 사이트' },
     { id: 'barcelona-stay', label: '바르셀로나 숙소 3박', group: '🏨 숙소 예약', detail: 'H10 계열 또는 Yurbban Trafalgar' },
     { id: 'rental', label: '마요르카 렌터카 (10/5 18:00 ~ 10/8 16:00)', group: '🚗 이동' },
     { id: 'sagrada', label: '사그라다 파밀리아 사전 티켓', group: '🎫 입장권', detail: '성수기 매진 빠름 — 도착 전 예매' },
