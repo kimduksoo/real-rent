@@ -711,10 +711,11 @@
     display: inline-block;
   }
   .legend-dot.palma { background: #6b7280; }
+  .legend-dot.wife { background: #1f6feb; }
+  .legend-dot.friend { background: #f59e0b; }
   .legend-dot.south { background: #ff8c42; }
   .legend-dot.nw { background: #2dd4bf; }
   .legend-dot.airport { background: #0f1115; }
-  .legend-dot.poi { background: #f59e0b; }
   #map { height: 320px; width: 100%; }
   @media (min-width: 600px) { #map { height: 380px; } }
   /* Isolate Leaflet internal z-indexes so it never escapes its container.
@@ -737,6 +738,8 @@
     z-index: 1000;
   }
   .hotel-marker.palma { background: #6b7280; }
+  .hotel-marker.wife { background: #1f6feb; }
+  .hotel-marker.friend { background: #f59e0b; }
   .hotel-marker.south { background: #ff8c42; }
   .hotel-marker.nw { background: #2dd4bf; }
   .airport-marker {
@@ -1041,14 +1044,13 @@
 
     <div class="map-wrap">
       <div class="map-head" id="map-head">
-        <span class="title">🗺 후보 숙소 + 관광지</span>
+        <span class="title">🗺 후보 숙소 (테마별)</span>
         <span style="display:flex; align-items:center; gap:8px;">
           <span class="map-legend" id="legend">
             <span class="legend-item" data-cat="airport"><span class="legend-dot airport"></span>공항</span>
-            <span class="legend-item" data-cat="palma"><span class="legend-dot palma"></span>팔마</span>
-            <span class="legend-item" data-cat="south"><span class="legend-dot south"></span>남쪽</span>
-            <span class="legend-item" data-cat="nw"><span class="legend-dot nw"></span>북서쪽</span>
-            <span class="legend-item" data-cat="poi"><span class="legend-dot poi"></span>관광</span>
+            <span class="legend-item" data-cat="palma"><span class="legend-dot palma"></span>팔마 1박</span>
+            <span class="legend-item" data-cat="wife"><span class="legend-dot wife"></span>와이프 픽</span>
+            <span class="legend-item" data-cat="friend"><span class="legend-dot friend"></span>친구 픽</span>
           </span>
           <button class="reset" id="reset-iso">전체 보기</button>
         </span>
@@ -1731,17 +1733,20 @@
   const HOTELS = [
     // [id, name, group, lat, lng]
     // 팔마 구도심 (시내 도보권)
-    ['fil-suites',           'Fil Suites & Homes',      'palma', 39.5746, 2.6437],
-    ['brick-palma',          'Brick Palma',             'palma', 39.5709, 2.6537],
-    ['hotel-born',           'Hotel Born',              'palma', 39.5723, 2.6481],
-    ['posada-terra-santa',   'Posada Terra Santa',      'palma', 39.5713, 2.6505],
-    ['finca-serena',         'Finca Serena Mallorca',   'south', 39.5712, 3.0214],
-    ['sa-tanqueta',          'Sa Tanqueta de Fornalutx','nw',    39.7820, 2.7457],
-    ['can-ferrereta',        'Hotel Can Ferrereta',     'south', 39.3540, 3.1300],
-    ['font-santa',           'Hotel Font Santa',        'south', 39.3402, 2.9745],
-    ['valldemossa-hotel',    'Valldemossa Hotel',       'nw',    39.7053, 2.6275],
-    ['es-petit-vall',        'Es Petit Valldemossa',    'nw',    39.7094, 2.6233],
-    ['es-raco-arta',         "Es Raco d'Arta",          'south', 39.7080, 3.3490],
+    // 팔마 1박 후보 (4곳)
+    ['fil-suites',           'Fil Suites & Homes',      'palma',  39.5746, 2.6437],
+    ['brick-palma',          'Brick Palma',             'palma',  39.5709, 2.6537],
+    ['hotel-born',           'Hotel Born',              'palma',  39.5723, 2.6481],
+    ['posada-terra-santa',   'Posada Terra Santa',      'palma',  39.5713, 2.6505],
+    // 와이프 픽 휴양 (2곳)
+    ['sa-tanqueta',          'Sa Tanqueta de Fornalutx','wife',   39.7820, 2.7457],
+    ['finca-serena',         'Finca Serena Mallorca',   'wife',   39.5712, 3.0214],
+    // 친구 (채혀니) 픽 휴양 (5곳)
+    ['can-ferrereta',        'Hotel Can Ferrereta',     'friend', 39.3540, 3.1300],
+    ['font-santa',           'Fontsanta Hotel',         'friend', 39.3402, 2.9745],
+    ['valldemossa-hotel',    'Valldemossa Hotel',       'friend', 39.7053, 2.6275],
+    ['es-petit-vall',        'Es Petit Valldemossa',    'friend', 39.7094, 2.6233],
+    ['es-raco-arta',         "Es Raco d'Arta",          'friend', 39.7080, 3.3490],
   ];
 
   const map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true })
@@ -1752,35 +1757,6 @@
     subdomains: 'abcd',
     maxZoom: 18,
   }).addTo(map);
-
-  // 관광지 POI
-  const POIS = [
-    // 예술가 마을 / 소도시
-    ['deia-village',   'Deià · 예술가의 마을 (그레이브스·미로)', 39.7458, 2.6498],
-    ['fornalutx',      'Fornalutx · 스페인 최고 예쁜 마을 선정',  39.7732, 2.7269],
-    ['valldemossa',    'Real Cartuja · 발데모사 (쇼팽의 마을)',  39.7091, 2.6219],
-    ['pollenca',       'Pollença · 예술 마을 + Calvari 365계단', 39.8769, 3.0153],
-    ['alcudia',        'Alcúdia · 중세 성벽 도시',              39.8527, 3.1166],
-    ['port-de-soller', 'Port de Sóller · 목조 트램 종점',       39.7960, 2.6951],
-    // 해변
-    ['calo-des-moro',  'Caló des Moro · 남쪽 비밀 해변 (와이프 픽)', 39.3216, 3.1382],
-    ['cala-llombards', 'Cala Llombards · Caló 옆 한적한 해변',   39.3247, 3.1239],
-    ['cala-mondrago',  'Cala Mondragó · 자연공원 해변',         39.3528, 3.1851],
-    ['cala-pi',        'Cala Pi · 좁은 협곡 사이 절경 해변',      39.3603, 2.8423],
-    ['es-trenc',       'Es Trenc · 카리브 같은 천연 해변',       39.3486, 2.9899],
-    ['playa-formentor','Playa de Formentor · 명품 해변',        39.9213, 3.1304],
-    ['playa-muro',     'Playa de Muro · 북쪽 긴 모래사장',       39.8089, 3.1306],
-    ['cala-deia',      'Cala Deià · 예술가들이 사랑한 해변',     39.7561, 2.6287],
-    ['cala-tuent',     'Cala Tuent · 트라문타나 숨은 해변',     39.8567, 2.7967],
-    ['cala-agulla',    'Cala Agulla · 동쪽 인기 해변 (캡 베르멜 인근)', 39.7437, 3.4775],
-    // 자연·드라이브
-    ['cap-formentor',  'Cap de Formentor · 북쪽 절경 등대',      39.9583, 3.2163],
-    ['sa-calobra',     'Sa Calobra · 산악 드라이브',            39.8550, 2.8016],
-    ['cuevas-drach',   "Cuevas del Drach · 드라크 동굴",         39.5380, 3.3308],
-    // 미술관
-    ['miro-museum',    'Fundació Joan Miró · 미로 미술관 (팔마)', 39.5571, 2.6010],
-    ['palma-cathedral','La Seu · 팔마 대성당',                  39.5663, 2.6477],
-  ];
 
   // 공항 마커
   const airportMarker = L.marker([39.5517, 2.7388], {
@@ -1817,23 +1793,6 @@
       if (card) card.closest('.opt').click();
       toggleMarker(m);
     });
-  });
-
-  // POI 마커
-  POIS.forEach(([id, name, lat, lng]) => {
-    const m = L.marker([lat, lng], {
-      icon: L.divIcon({
-        className: 'mk mk-poi',
-        html: `<div class="poi-marker">★</div>`,
-        iconSize: [22, 22],
-        iconAnchor: [11, 11],
-      }),
-    }).bindTooltip(name, {direction: 'top'}).addTo(map);
-    m._cat = 'poi';
-    m._id = id;
-    allMarkers.push(m);
-
-    m.on('click', () => toggleMarker(m));
   });
 
   function highlightMarker(id, on){
