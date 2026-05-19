@@ -397,17 +397,6 @@
     font-size: 12.5px;
     padding: 6px 12px;
   }
-  .tree-subhead {
-    font-size: 10.5px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--ink-4);
-    padding: 6px 12px 4px;
-    margin-top: 4px;
-  }
-  .tree-item-sub {
-    padding-left: 22px !important;
-  }
-
   .view { display: none; }
   .view.active { display: block; }
 
@@ -917,21 +906,26 @@
     </div>
 
     <div class="tree-group">
-      <div class="tree-head">계획</div>
+      <div class="tree-head">일정 · 마요르카</div>
       <div class="tree-children">
-        <div class="tree-subhead">일정 · 마요르카</div>
-        <a class="tree-item tree-item-sub" data-view="itin-d1" data-title="Day 1 · 10/5 (월)" href="#itin-d1">
+        <a class="tree-item" data-view="itin-d1" data-title="Day 1 · 10/5 (월)" href="#itin-d1">
           <span>Day 1 · 10/5 (월)</span>
         </a>
-        <a class="tree-item tree-item-sub" data-view="itin-d2" data-title="Day 2 · 10/6 (화)" href="#itin-d2">
+        <a class="tree-item" data-view="itin-d2" data-title="Day 2 · 10/6 (화)" href="#itin-d2">
           <span>Day 2 · 10/6 (화)</span>
         </a>
-        <a class="tree-item tree-item-sub" data-view="itin-d3" data-title="Day 3 · 10/7 (수)" href="#itin-d3">
+        <a class="tree-item" data-view="itin-d3" data-title="Day 3 · 10/7 (수)" href="#itin-d3">
           <span>Day 3 · 10/7 (수)</span>
         </a>
-        <a class="tree-item tree-item-sub" data-view="itin-d4" data-title="Day 4 · 10/8 (목)" href="#itin-d4">
-          <span>Day 4 · 10/8 (목) · BCN 이동</span>
+        <a class="tree-item" data-view="itin-d4" data-title="Day 4 · 10/8 (목)" href="#itin-d4">
+          <span>Day 4 · 10/8 (목)</span>
         </a>
+      </div>
+    </div>
+
+    <div class="tree-group">
+      <div class="tree-head">계획</div>
+      <div class="tree-children">
         <a class="tree-item" data-view="budget" data-title="비용" href="#budget">
           <span>비용</span>
         </a>
