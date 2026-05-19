@@ -593,10 +593,12 @@
     margin-bottom: 18px;
   }
   .day-num {
-    font-size: 48px; font-weight: 800;
-    color: var(--line); letter-spacing: -0.04em;
+    font-size: 28px; font-weight: 800;
+    color: var(--ink-4); letter-spacing: -0.02em;
     line-height: 1; flex-shrink: 0;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    padding-top: 4px;
   }
   .day-meta { flex: 1; min-width: 0; }
   .day-tag {
@@ -643,11 +645,11 @@
   table.timeline .hl-warm td { background: #fff8e1; }
 
   /* itinerary 지도 */
-  #map-d1, #map-d2, #map-d3 {
+  #map-d1, #map-d2, #map-d3, #map-d4 {
     height: 380px; width: 100%;
   }
   @media (min-width: 600px) {
-    #map-d1, #map-d2, #map-d3 { height: 460px; }
+    #map-d1, #map-d2, #map-d3, #map-d4 { height: 460px; }
   }
   /* 거리·시간 라벨 박스 (구글 맵 스타일) */
   .route-label {
@@ -918,14 +920,17 @@
       <div class="tree-head">계획</div>
       <div class="tree-children">
         <div class="tree-subhead">일정 · 마요르카</div>
-        <a class="tree-item tree-item-sub" data-view="itin-d1" data-title="D1 · 10/5 (월)" href="#itin-d1">
-          <span>D1 · 10/5 (월)</span>
+        <a class="tree-item tree-item-sub" data-view="itin-d1" data-title="Day 1 · 10/5 (월)" href="#itin-d1">
+          <span>Day 1 · 10/5 (월)</span>
         </a>
-        <a class="tree-item tree-item-sub" data-view="itin-d2" data-title="D2 · 10/6 (화)" href="#itin-d2">
-          <span>D2 · 10/6 (화)</span>
+        <a class="tree-item tree-item-sub" data-view="itin-d2" data-title="Day 2 · 10/6 (화)" href="#itin-d2">
+          <span>Day 2 · 10/6 (화)</span>
         </a>
-        <a class="tree-item tree-item-sub" data-view="itin-d3" data-title="D3 · 10/7 (수)" href="#itin-d3">
-          <span>D3 · 10/7 (수)</span>
+        <a class="tree-item tree-item-sub" data-view="itin-d3" data-title="Day 3 · 10/7 (수)" href="#itin-d3">
+          <span>Day 3 · 10/7 (수)</span>
+        </a>
+        <a class="tree-item tree-item-sub" data-view="itin-d4" data-title="Day 4 · 10/8 (목)" href="#itin-d4">
+          <span>Day 4 · 10/8 (목) · BCN 이동</span>
         </a>
         <a class="tree-item" data-view="budget" data-title="비용" href="#budget">
           <span>비용</span>
@@ -988,15 +993,15 @@
 <section id="view-itin-d1" class="view">
 <div class="wrap">
   <header>
-    <div class="eyebrow">Itinerary · 마요르카 · D1 of 8</div>
-    <h1>D1 · 10/5 (월) — 도착</h1>
+    <div class="eyebrow">Itinerary · 마요르카 · Day 1 of 8</div>
+    <h1>Day 1 · 10/5 (월) — 도착</h1>
     <p class="lede">23시간 비행 후 도착. 매 저녁 디너 2시간 여유 확보 원칙.</p>
   </header>
 
   <!-- DAY 1 -->
   <section class="day">
     <div class="day-head">
-      <div class="day-num">D1</div>
+      <div class="day-num">Day 1</div>
       <div class="day-meta">
         <div class="day-tag">10/5 (월) · 도착 · 팔마 1박</div>
         <div class="day-title">서울 → 마요르카 도착 · 팔마 구도심 휴식</div>
@@ -1099,7 +1104,7 @@
     </div>
   </section>
 
-  <footer>다음: D2 · 10/6 (화) · 남쪽 비치 + 소예르 이동</footer>
+  <footer>다음: Day 2 · 10/6 (화) · 남쪽 비치 + 소예르 이동</footer>
 </div>
 </section>
 
@@ -1107,15 +1112,15 @@
 <section id="view-itin-d2" class="view">
 <div class="wrap">
   <header>
-    <div class="eyebrow">Itinerary · 마요르카 · D2 of 8</div>
-    <h1>D2 · 10/6 (화) — 남쪽 비치 + 소예르</h1>
+    <div class="eyebrow">Itinerary · 마요르카 · Day 2 of 8</div>
+    <h1>Day 2 · 10/6 (화) — 남쪽 비치 + 소예르</h1>
     <p class="lede">팔마 → Caló del Moro → 소예르 이동. 총 운전 약 3시간.</p>
   </header>
 
   <!-- DAY 2 -->
   <section class="day">
     <div class="day-head">
-      <div class="day-num">D2</div>
+      <div class="day-num">Day 2</div>
       <div class="day-meta">
         <div class="day-tag">10/6 (화) · 남쪽 비치 + 소예르 이동</div>
         <div class="day-title">팔마 조식 → Caló del Moro 바다 놀이 → 소예르 체크인 · 디너</div>
@@ -1212,7 +1217,7 @@
     </div>
   </section>
 
-  <footer>다음: D3 · 10/7 (수) · 데이아 · 발데모사</footer>
+  <footer>다음: Day 3 · 10/7 (수) · 데이아 · 발데모사</footer>
 </div>
 </section>
 
@@ -1220,14 +1225,14 @@
 <section id="view-itin-d3" class="view">
 <div class="wrap">
   <header>
-    <div class="eyebrow">Itinerary · 마요르카 · D3 of 8</div>
-    <h1>D3 · 10/7 (수) — 데이아 · 발데모사</h1>
+    <div class="eyebrow">Itinerary · 마요르카 · Day 3 of 8</div>
+    <h1>Day 3 · 10/7 (수) — 데이아 · 발데모사</h1>
     <p class="lede">소예르 조식 → 데이아 구경·점심 → 발데모사 체크인 → 디너. Ma-10 산악도로 짧은 구간 (각 20분).</p>
   </header>
 
   <section class="day">
     <div class="day-head">
-      <div class="day-num">D3</div>
+      <div class="day-num">Day 3</div>
       <div class="day-meta">
         <div class="day-tag">10/7 (수) · 트라문타나 산마을 풀데이</div>
         <div class="day-title">소예르 → 데이아 → 발데모사 (와이프 우선순위 1순위 풀 코스)</div>
@@ -1330,7 +1335,156 @@
     </div>
   </section>
 
-  <footer>다음: D4 · 10/8 (목) · 발데모사 → PMI 공항 → BCN</footer>
+  <footer>다음: Day 4 · 10/8 (목) · 발데모사 → PMI 공항 → BCN</footer>
+</div>
+</section>
+
+<!-- ========== ITINERARY VIEW · DAY 4 ========== -->
+<section id="view-itin-d4" class="view">
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Itinerary · 마요르카→BCN · Day 4 of 8</div>
+    <h1>Day 4 · 10/8 (목) — 발데모사 → PMI → BCN</h1>
+    <p class="lede">발데모사 아침 여유 → 점심 → 35분 운전 → PMI 렌트카 반납 → 18:35 VY 3915 → BCN 19:35 도착.</p>
+  </header>
+
+  <section class="day">
+    <div class="day-head">
+      <div class="day-num">Day 4</div>
+      <div class="day-meta">
+        <div class="day-tag">10/8 (목) · 도시간 이동일</div>
+        <div class="day-title">발데모사 마지막 산책 → PMI → 바르셀로나 도착</div>
+        <div class="day-sub">마요르카 마지막 날. 짐 옮김 + 비행 + 시내 이동으로 저녁 디너는 짧게.</div>
+      </div>
+    </div>
+
+    <div class="timeline-card">
+      <table class="timeline">
+        <thead>
+          <tr><th>시각</th><th>활동</th><th>이동·소요</th><th>메모</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="t">08:30~09:30</td>
+            <td>발데모사 호텔 조식</td>
+            <td class="muted">—</td>
+            <td>마요르카 마지막 조식 여유 있게</td>
+          </tr>
+          <tr>
+            <td class="t">09:30~11:30</td>
+            <td>발데모사 마지막 산책 · 카페 · 기념품</td>
+            <td class="muted">2시간 도보</td>
+            <td>Real Cartuja 못 본 부분 또는 골목</td>
+          </tr>
+          <tr>
+            <td class="t">11:30~12:00</td>
+            <td>호텔 체크아웃 · 짐 차에 싣기</td>
+            <td class="muted">30분</td>
+            <td>발렛에서 차 회수</td>
+          </tr>
+          <tr>
+            <td class="t">12:00~13:30</td>
+            <td>점심 (발데모사 또는 가는 길)</td>
+            <td class="muted">1시간 30분</td>
+            <td>발데모사 마지막 식사 또는 Palma 외곽 식당</td>
+          </tr>
+          <tr class="hl-blue">
+            <td class="t">13:30~14:10</td>
+            <td><b>발데모사 → PMI 공항</b></td>
+            <td class="muted"><b>약 30km · 35분</b> (Ma-1 평지)</td>
+            <td>지도 동선 ①</td>
+          </tr>
+          <tr>
+            <td class="t">14:10~16:00</td>
+            <td>공항 카페·휴식 또는 면세점</td>
+            <td class="muted">1시간 50분</td>
+            <td>여유 시간 — 마요르카 기념품 (꿀·올리브유 등)</td>
+          </tr>
+          <tr>
+            <td class="t">16:00</td>
+            <td>렌트카 반납</td>
+            <td class="muted">15분 (셔틀 5분 + 도보)</td>
+            <td>마요르카 렌트카 종료</td>
+          </tr>
+          <tr>
+            <td class="t">16:15~17:00</td>
+            <td>Vueling 체크인 · 짐 부치기</td>
+            <td class="muted">45분</td>
+            <td>VY 카운터 보통 2시간 전 오픈</td>
+          </tr>
+          <tr>
+            <td class="t">17:00~17:30</td>
+            <td>보안 검색 · 게이트 이동</td>
+            <td class="muted">30분</td>
+            <td>EU 국내선이라 출국심사 없음</td>
+          </tr>
+          <tr>
+            <td class="t">17:30~18:35</td>
+            <td>게이트 대기</td>
+            <td class="muted">1시간</td>
+            <td>가벼운 간식 OK</td>
+          </tr>
+          <tr class="hl">
+            <td class="t">18:35~19:35</td>
+            <td><b>VY 3915 · PMI → BCN</b></td>
+            <td class="muted">1시간 비행 (A321)</td>
+            <td>위탁 25kg/인</td>
+          </tr>
+          <tr class="hl-blue">
+            <td class="t">19:35~20:30</td>
+            <td>BCN T1 입국·짐 찾기</td>
+            <td class="muted">45분</td>
+            <td>EU 내라 빠름</td>
+          </tr>
+          <tr class="hl-blue">
+            <td class="t">20:30~21:00</td>
+            <td><b>BCN 공항 → 호텔</b></td>
+            <td class="muted">택시 25분 (€35~) 또는 Aerobus 35분 (€7.25/인)</td>
+            <td>호텔 미정 — 시내 이동</td>
+          </tr>
+          <tr>
+            <td class="t">21:00~21:30</td>
+            <td>BCN 호텔 체크인 · 짐 풀기</td>
+            <td class="muted">30분</td>
+            <td>—</td>
+          </tr>
+          <tr class="hl-warm">
+            <td class="t">21:30~23:00</td>
+            <td><b>가벼운 디너 (호텔 도보권)</b></td>
+            <td class="muted">1시간 30분</td>
+            <td>늦은 시간이라 짧게 — 호텔 룸서비스 또는 도보 5분 식당</td>
+          </tr>
+          <tr>
+            <td class="t">23:30</td>
+            <td>취침</td>
+            <td class="muted">—</td>
+            <td>다음날 BCN 풀데이 시작</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="map-wrap">
+      <div class="map-head" id="map-head-d4">
+        <span class="title">Day 4 동선 — 발데모사 → PMI (비행 후 BCN)</span>
+      </div>
+      <div id="map-d4"></div>
+    </div>
+
+    <div class="notes">
+      <h4>Day 4 메모 · 시간 체크</h4>
+      <ul>
+        <li><b>렌트카 반납 16:00 + 비행기 18:35</b> = 2시간 35분 여유. 마지노선 안전 (Vueling EU 국내선 2시간 전 도착 권장).</li>
+        <li><b>발데모사 호텔 체크아웃</b> 보통 11:00~12:00. 짐 챙기고 점심 → PMI 출발 13:30이 안전. 늦체크아웃 12시까지 협의 가능한지 호텔에 사전 확인.</li>
+        <li><b>BCN 도착 19:35 + 시내 이동 1시간</b> → 호텔 체크인 약 21:00. 디너는 짧게 (도보권 또는 룸서비스).</li>
+        <li><b>매일 디너 2시간 원칙</b>이 D4에만 깨짐 — 도시간 이동일이라 어쩔 수 없음. D5부터 BCN 풀 디너 재개.</li>
+        <li><b>택시 vs Aerobus</b>: 짐 많으면 택시(€35~) 가성비. Aerobus는 €7.25/인이지만 짐 캐리어 큰 거 부담.</li>
+        <li><b>마요르카 기념품 시간</b>: 공항 도착 후 1.5시간 여유 활용 (꿀·올리브유·도자기 등).</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>다음: Day 5 · 10/9 (금) · 바르셀로나 풀데이 (사그라다 등) — 별도 진행 예정</footer>
 </div>
 </section>
 
@@ -3040,10 +3194,66 @@
     }),
   }).addTo(mapD3);
 
+  // ===== Itinerary Day 4 지도 =====
+  // 발데모사 → PMI (비행 후 BCN은 별도)
+  const D4_VALL = [39.7091, 2.6219];
+  const D4_PMI = [39.5517, 2.7388];
+
+  const mapD4 = L.map('map-d4', { zoomControl: true, scrollWheelZoom: false, attributionControl: true })
+    .setView([39.63, 2.68], 11);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 18,
+  }).addTo(mapD4);
+
+  // 출발: 발데모사
+  L.marker(D4_VALL, {
+    icon: L.divIcon({
+      className: 'mk mk-hotel mk-friend',
+      html: '<div class="hotel-marker friend"></div>',
+      iconSize: [16, 16], iconAnchor: [8, 8],
+    }),
+  }).bindTooltip('발데모사 호텔 (출발 13:30)', {direction: 'top'}).addTo(mapD4);
+
+  // 도착: PMI
+  L.marker(D4_PMI, {
+    icon: L.divIcon({
+      className: 'mk mk-airport',
+      html: '<div class="airport-marker">✈ PMI</div>',
+      iconSize: [60, 18], iconAnchor: [30, 9],
+    }),
+  }).bindTooltip('PMI 공항 (도착 14:10 · 비행 18:35)', {direction: 'top'}).addTo(mapD4);
+
+  // 경로: 발데모사 → PMI (Ma-1 평지)
+  const d4Route = [
+    [39.7091, 2.6219], // 발데모사
+    [39.6710, 2.6320],
+    [39.6300, 2.6450],
+    [39.5907, 2.6611], // Palma 외곽
+    [39.5663, 2.6900],
+    [39.5563, 2.7100],
+    [39.5517, 2.7388], // PMI
+  ];
+  L.polyline(d4Route, {
+    color: '#1f6feb', weight: 6, opacity: 0.85,
+    lineCap: 'round', lineJoin: 'round',
+  }).addTo(mapD4);
+
+  // 라벨: 발데모사 → PMI
+  L.marker([39.625, 2.65], {
+    icon: L.divIcon({
+      className: '',
+      html: '<div class="route-label"><span class="car-icon">🚗</span>35분<div class="km">30 km</div></div>',
+      iconSize: [80, 40], iconAnchor: [40, 20],
+    }),
+  }).addTo(mapD4);
+
   // 초기 진입
   renderTodos();
   const initial = location.hash.replace('#', '') || 'home';
-  const validViews = ['home', 'flight', 'mallorca', 'barcelona', 'budget', 'itin-d1', 'itin-d2', 'itin-d3'];
+  const validViews = ['home', 'flight', 'mallorca', 'barcelona', 'budget', 'itin-d1', 'itin-d2', 'itin-d3', 'itin-d4'];
   if (validViews.includes(initial)) setView(initial);
   else setView('home');
 
@@ -3057,9 +3267,13 @@
   document.querySelector('.tree-item[data-view="itin-d3"]')?.addEventListener('click', () => {
     setTimeout(() => mapD3.invalidateSize(), 50);
   });
+  document.querySelector('.tree-item[data-view="itin-d4"]')?.addEventListener('click', () => {
+    setTimeout(() => mapD4.invalidateSize(), 50);
+  });
   if (initial === 'itin-d1') setTimeout(() => mapD1.invalidateSize(), 100);
   if (initial === 'itin-d2') setTimeout(() => mapD2.invalidateSize(), 100);
   if (initial === 'itin-d3') setTimeout(() => mapD3.invalidateSize(), 100);
+  if (initial === 'itin-d4') setTimeout(() => mapD4.invalidateSize(), 100);
 </script>
 
 </body>
