@@ -124,6 +124,9 @@
   .cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
   @media (min-width: 600px) {
     .cards { grid-template-columns: 1fr 1fr; }
+    /* 단일 확정 카드는 전체 너비 + 큰 사진 (PC) */
+    .cards:has(.opt:only-child) { grid-template-columns: 1fr; }
+    .cards:has(.opt:only-child) .opt-thumb { aspect-ratio: 16 / 9; }
   }
 
   .opt {
@@ -1734,7 +1737,7 @@
 
         <label class="opt" data-min="336280" data-max="336280">
           <input type="radio" name="palma" value="fil-suites" checked>
-          <div class="opt-thumb" style="background-image: url('https://q-xx.bstatic.com/xdata/images/hotel/608x352/71977210.webp?k=aacff3205905eea1d6a2476133668c864695461e97253e722700df9b6c644c81&o=')">
+          <div class="opt-thumb" style="background-image: url('https://filsuites.com/wp-content/uploads/2022/02/Fil_Suites-Galeria-experiencia-00001.jpg')">
             <span class="check-pill">✅ 예약완료</span>
           </div>
           <div class="opt-body">
@@ -1867,7 +1870,7 @@
 
       <label class="opt" data-min="574141" data-max="574141">
         <input type="radio" name="bcn" value="uma-house" checked>
-        <div class="opt-thumb" style="background: linear-gradient(135deg, #eef2f7, #cdd6e0)">
+        <div class="opt-thumb" style="background-image: url('https://uma.yurbban.com/assets/themes/1/img/media/1778841977_eiasanchez-umahousetrafalgar-interiorismo-baja-103.jpg')">
           <span class="check-pill">✅ 예약완료</span>
         </div>
         <div class="opt-body">
