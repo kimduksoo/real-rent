@@ -951,7 +951,7 @@
   <div class="progress-card">
     <div class="progress-head">
       <div class="label">전체 진행도</div>
-      <div class="progress-text"><span id="todo-done">0</span><span class="sep">/</span><span id="todo-total">15</span></div>
+      <div class="progress-text"><span id="todo-done">0</span><span class="sep">/</span><span id="todo-total">14</span></div>
     </div>
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill"></div>
@@ -981,7 +981,7 @@
   </section>
 
   <footer>
-    조사 기준일 2026-05-12 · 환율 €1≈₩1,500
+    갱신 2026-07 · 환율 €1≈₩1,700 (2026-07 실환율) · 항공권 + 마요르카 숙소 3박 예약 확정
   </footer>
 </div>
 </section>
@@ -2544,13 +2544,12 @@
 
   // ===== TODO state (localStorage) =====
   const TODOS = [
-    { id: 'flight', label: '항공권 예약', done: true, group: '✅ 예약 완료', detail: 'Qatar + Vueling 발권 (10/5~10/12)' },
-    { id: 'mallorca-concept', label: '마요르카 동선 컨셉 결정', done: true, group: '✅ 예약 완료', detail: '팔마 1박 + 휴양 한 곳 2박 (와이프 결정 2026-05-19)' },
-    { id: 'mallorca-rest', label: '마요르카 휴양 숙소 결정 (Sa Tanqueta vs Finca Serena)', group: '🏨 숙소 예약', detail: '와이프 픽 2곳 비교: 도구의 Step 2 참조' },
-    { id: 'mallorca-palma', label: '마요르카 팔마 1박 예약 (Fil Suites 디럭스룸)', done: true, group: '✅ 예약 완료', detail: '예약번호 6888833570 · 무료취소 9/27 · €205.15' },
-    { id: 'mallorca-book', label: '마요르카 숙소 예약 (3박)', group: '🏨 숙소 예약', detail: '결정 후 부킹닷컴 또는 공식 사이트' },
+    { id: 'flight', label: '항공권 예약', done: true, group: '✅ 예약 완료', detail: 'Qatar + Vueling 발권 (10/5~10/12) · ₩3,493,191' },
+    { id: 'mallorca-concept', label: '마요르카 동선 컨셉 결정', done: true, group: '✅ 예약 완료', detail: '팔마 1박 + 발데모사 휴양 2박 (와이프와 확정)' },
+    { id: 'mallorca-palma', label: '마요르카 팔마 1박 (Fil Suites)', done: true, group: '✅ 예약 완료', detail: '예약번호 6888833570 · 디럭스룸 · ₩336,280' },
+    { id: 'mallorca-rest', label: '마요르카 휴양 2박 (Valldemossa Hotel)', done: true, group: '✅ 예약 완료', detail: '예약번호 6401858263 · 주니어 스위트 테라스 조식포함 · ₩4,128,381' },
     { id: 'barcelona-stay', label: '바르셀로나 숙소 3박', group: '🏨 숙소 예약', detail: 'H10 계열 또는 Yurbban Trafalgar' },
-    { id: 'rental', label: '마요르카 렌터카 (10/5 18:00 ~ 10/8 16:00)', group: '🚗 이동' },
+    { id: 'rental', label: '마요르카 렌터카 (10/5 18:00 ~ 10/8 16:00)', group: '🚗 이동', detail: 'Coches Reus C급 약 €309, 1일 전 연락. [교통] 탭 참조' },
     { id: 'sagrada', label: '사그라다 파밀리아 사전 티켓', group: '🎫 입장권', detail: '성수기 매진 빠름. 도착 전 예매' },
     { id: 'park-guell', label: '구엘 공원 사전 티켓', group: '🎫 입장권' },
     { id: 'seat', label: '카타르 좌석 지정 (체크인 48h 전)', group: '✈️ 체크인 준비' },
