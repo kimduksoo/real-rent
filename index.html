@@ -2325,7 +2325,7 @@
     catch { return {}; }
   }
   function saveTodoState(s){ localStorage.setItem(TODO_KEY, JSON.stringify(s)); }
-  function isDone(t, s){ return s[t.id] !== undefined ? s[t.id] : !!t.done; }
+  function isDone(t, s){ if (t.done) return true; return s[t.id] !== undefined ? s[t.id] : false; }
 
   function renderTodos(){
     const state = todoState();
